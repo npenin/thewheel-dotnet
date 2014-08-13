@@ -180,7 +180,7 @@ namespace TheWheel.Services
 
                     foreach (var sc in values.Select(v => new FilterCriteria
                     {
-                        PropertyName = (criteria.PropertyName.StartsWith("#") ? string.Join("", Enumerable.Range(0, propertyName.Cast<char>().Count(c => c == '.') + 1).Select(c => ".")) : "") + propertyName,
+                        PropertyName = (criteria.PropertyName.StartsWith(".") ? string.Join("", Enumerable.Range(0, propertyName.Cast<char>().Count(c => c == '.') + 1).Select(c => ".")) : "") + propertyName,
                         PropertyValue = v,
                         FilterOperator = (int)@operator
                     }))
@@ -188,6 +188,7 @@ namespace TheWheel.Services
                         sc.Accept(this);
                         binaryDefaultOperation = ReflectionExpression.Or;
                         overallConstraint = binaryDefaultOperation(overallConstraint, constraint);
+                        constraint = null;
                     }
 
                     binaryDefaultOperation = oldBinaryDefaultOperation;
