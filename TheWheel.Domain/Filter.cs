@@ -75,16 +75,6 @@ namespace TheWheel.Domain
             return scopedCriteria;
         }
 
-        //public static Filter CreateTemporaryFilter(Filter filter)
-        //{
-        //    Filter f = new Filter();
-        //    f.RangeStart = filter.RangeStart;
-        //    f.RangeEnd = filter.RangeEnd;
-        //    foreach (var criteria in filter.FilterCriterias)
-        //        f.FilterCriterias.Add(new FilterCriteria { PropertyName = criteria.PropertyName, PropertyValue = criteria.PropertyValue, FilterOperator = criteria.FilterOperator });
-        //    return f;
-        //}
-
         public bool Any(string propertyPath)
         {
             return Any(fc => fc.PropertyName == propertyPath);

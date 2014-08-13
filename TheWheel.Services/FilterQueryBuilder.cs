@@ -1,0 +1,337 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using TheWheel.Domain;
+using TheWheel.Lambda;
+
+namespace TheWheel.Services
+{
+    public class FilterQueryBuilder<T> : IFilterCriteriaVisitor
+    {
+        protected static readonly Expression True = Expression.Constant(true, typeof(bool));
+        protected static readonly Expression False = Expression.Constant(false, typeof(bool));
+        protected static readonly System.Reflection.MethodInfo StartsWith;
+
+        static FilterQueryBuilder()
+        {
+            StartsWith = typeof(string).GetMethod("StartsWith", new Type[] { typeof(string) });
+        }
+
+        private IQueryable<T> query;
+        private System.Linq.Expressions.ParameterExpression item;
+        protected Expression expressionProperty = null, constraint = null;
+        protected Stack<Tuple<MethodCallExpression, LambdaExpression, Type, FilterOperator>> lambdaStack = new Stack<Tuple<MethodCallExpression, LambdaExpression, Type, FilterOperator>>();
+        protected Expression overallConstraint;
+        protected Func<Expression, Expression, Expression> binaryDefaultOperation = ReflectionExpression.And;
+
+        public FilterQueryBuilder(IQueryable<T> query)
+        {
+            this.query = query;
+            item = typeof(T).AsParameter();
+        }
+
+        public void Visit(Filter filter)
+        {
+            if (filter == null)
+                return;
+
+            lambdaStack = new Stack<Tuple<MethodCallExpression, LambdaExpression, Type, FilterOperator>>();
+
+            foreach (FilterCriteria criteria in filter.FilterCriterias)
+                criteria.Accept(this);
+
+            if (overallConstraint == null)
+                overallConstraint = constraint;
+            else
+                overallConstraint = binaryDefaultOperation(overallConstraint, constraint);
+
+            if (overallConstraint != null)
+                query = query.Where(Expression.Lambda<Func<T, bool>>(overallConstraint, item));
+        }
+
+        public void Visit(FilterCriteria criteria)
+        {
+            string propertyName = criteria.PropertyName;
+            if (lambdaStack.Count == 0 || string.IsNullOrEmpty(propertyName) || !propertyName.StartsWith("#"))
+            {
+                overallConstraint = binaryDefaultOperation(overallConstraint, constraint);
+                expressionProperty = item;
+                constraint = expressionProperty;
+                lambdaStack.Clear();
+            }
+            else
+            {
+                if (query.Expression.NodeType == ExpressionType.Convert)
+                    query = query.Provider.CreateQuery<T>((Expression)((UnaryExpression)query.Expression).Operand);
+                else
+                    query = query.Provider.CreateQuery<T>(((MethodCallExpression)query.Expression).Object);
+
+                while (propertyName.StartsWith(".") && propertyName != ".")
+                {
+                    if (propertyName != criteria.PropertyName || expressionProperty.NodeType != ExpressionType.Parameter)
+                    {
+                        if (expressionProperty.NodeType == ExpressionType.Parameter)
+                        {
+                            expressionProperty = lambdaStack.Pop().Item1.Arguments.First();
+                        }
+                        if (expressionProperty.NodeType != ExpressionType.MemberAccess)
+                            expressionProperty = lambdaStack.Pop().Item1.Arguments.First();
+
+                        expressionProperty = ((MemberExpression)expressionProperty).Expression;
+                    }
+                    propertyName = propertyName.Substring(1);
+                }
+            }
+
+            FilterOperator @operator = (FilterOperator)criteria.FilterOperator;
+
+            if (@operator != FilterOperator.Or && propertyName != null)
+            {
+                Stack<Tuple<MethodCallExpression, LambdaExpression, Type, FilterOperator>> beforeHandlingStack = null;
+
+                foreach (string property in propertyName.Split('.'))
+                {
+                    expressionProperty = Expression.Property(expressionProperty, property);
+                    var propertyType = ((System.Reflection.PropertyInfo)((MemberExpression)expressionProperty).Member).PropertyType;
+                    if (propertyType.IsCollection())
+                    {
+                        var parameter = Expression.Parameter(propertyType.GetGenericArguments()[0]);
+                        var func = typeof(Func<,>).MakeGenericType(parameter.Type, typeof(bool));
+                        var lambda = (binaryDefaultOperation == ReflectionExpression.And ? True : False).ToLambda(parameter);
+                        var call = (MethodCallExpression)expressionProperty.Any(parameter.Type, ref parameter, lambda);
+                        lambdaStack.Push(new Tuple<MethodCallExpression, LambdaExpression, Type, FilterOperator>(call, lambda, func, (FilterOperator)@operator));
+                        constraint = call;
+                        expressionProperty = parameter;
+                    }
+                    else
+                        constraint = expressionProperty;
+                }
+
+                Type pi;
+                if (expressionProperty.NodeType == ExpressionType.MemberAccess)
+                    pi = ((System.Reflection.PropertyInfo)((MemberExpression)expressionProperty).Member).PropertyType;
+                else
+                    pi = expressionProperty.Type;
+                var piType = pi;
+                if (pi.IsNullable())
+                    piType = pi.GetGenericArguments()[0];
+
+                if (!string.IsNullOrEmpty(criteria.PropertyValue) && criteria.PropertyValue.Contains(";"))
+                    criteria.IsMultiple = true;
+
+                Expression rhs = null;
+
+                if (pi.IsNullable() && !criteria.IsMultiple)
+                {
+                    if (string.IsNullOrEmpty(criteria.PropertyValue))
+                        rhs = Expression.Constant(null, pi);
+                    else
+                        rhs =
+                            Expression.Constant(
+                                Convert.ChangeType(criteria.PropertyValue, piType, CultureInfo.CurrentCulture), pi);
+                }
+                else if (criteria.IsMultiple || @operator == FilterOperator.Contains &&
+                                criteria.PropertyValue.Contains(";") && pi.GetTypeCode() != TypeCode.String)
+                {
+                    var values = criteria.PropertyValue.Split(';');
+
+                    if (lambdaStack.Count == 0)
+                        lambdaStack.Push(null);
+
+                    constraint = null;
+                    var oldOverallConstraint = overallConstraint;
+                    overallConstraint = null;
+
+                    var oldBinaryDefaultOperation = binaryDefaultOperation;
+
+                    beforeHandlingStack = new Stack<Tuple<MethodCallExpression, LambdaExpression, Type, FilterOperator>>();
+
+                    while (lambdaStack.Count > 0)
+                        beforeHandlingStack.Push(lambdaStack.Pop());
+
+                    lambdaStack.Push(null);
+
+
+
+                    foreach (var sc in values.Select(v => new FilterCriteria
+                    {
+                        PropertyName = (criteria.PropertyName.StartsWith("#") ? string.Join("", Enumerable.Range(0, propertyName.Cast<char>().Count(c => c == '.') + 1).Select(c => ".")) : "") + propertyName,
+                        PropertyValue = v,
+                        FilterOperator = (int)@operator
+                    }))
+                    {
+                        sc.Accept(this);
+                        binaryDefaultOperation = ReflectionExpression.Or;
+                        overallConstraint = binaryDefaultOperation(overallConstraint, constraint);
+                    }
+
+                    binaryDefaultOperation = oldBinaryDefaultOperation;
+
+                    lambdaStack.Clear();
+
+                    while (beforeHandlingStack.Count > 0)
+                        lambdaStack.Push(beforeHandlingStack.Pop());
+
+
+
+                    constraint = overallConstraint;
+                    overallConstraint = oldOverallConstraint;
+
+                    @operator = FilterOperator.Or;
+
+                    //lambdaStack.Push(
+                    //    new Tuple<MethodCallExpression, LambdaExpression, Type, FilterOperator>(
+                    //        (MethodCallExpression)(constraint = Expression.Call(null, Any.MakeGenericMethod(parameter.Type), valuesExpression, lambda)),
+                    //        lambda,
+                    //        func,
+                    //        (FilterOperator)criteria.FilterOperator
+                    //        )
+                    //    );
+
+                    //rhs = parameter;
+                }
+                else
+                    rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, pi, CultureInfo.CurrentCulture));
+
+                if (piType == typeof(DateTime))
+                    rhs = Expression.Constant(DateTime.ParseExact(criteria.PropertyValue, "u", CultureInfo.CurrentCulture), pi);
+
+
+                switch ((FilterOperator)@operator)
+                {
+                    case FilterOperator.Equal:
+                        if (expressionProperty.Type.IsGenericType &&
+                            expressionProperty.Type.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                            expressionProperty.Type.GetGenericArguments()[0] == rhs.Type)
+                        {
+                            constraint = Expression.And(Expression.Property(expressionProperty, "HasValue"),
+                                Expression.Equal(Expression.Property(expressionProperty, "Value"), rhs));
+                        }
+                        else
+                        {
+                            constraint = Expression.Equal(expressionProperty, rhs);
+
+                        }
+
+                        break;
+                    case FilterOperator.Not:
+                        if (expressionProperty.NodeType == ExpressionType.Parameter && criteria.PropertyValue == null && expressionProperty.Type != typeof(T))
+                            constraint = null;
+                        else
+                            constraint = Expression.NotEqual(expressionProperty, rhs);
+                        break;
+                    case FilterOperator.Greater:
+                        constraint = Expression.GreaterThan(expressionProperty, rhs);
+                        break;
+                    case FilterOperator.GreaterOrEqual:
+                        constraint = Expression.GreaterThanOrEqual(expressionProperty, rhs);
+                        break;
+                    case FilterOperator.Lower:
+                        constraint = Expression.LessThan(expressionProperty, rhs);
+                        break;
+                    case FilterOperator.LowerOrEqual:
+                        constraint = Expression.LessThanOrEqual(expressionProperty, rhs);
+                        break;
+                    case FilterOperator.Contains:
+                    case FilterOperator.Or:
+                        break;
+                    case FilterOperator.StartsWith:
+                        constraint = Expression.Call(expressionProperty, StartsWith, rhs);
+                        break;
+                    default:
+                        throw new NotSupportedException();
+                }
+
+                if (constraint == null)
+                    constraint = True;
+
+                beforeHandlingStack = new Stack<Tuple<MethodCallExpression, LambdaExpression, Type, FilterOperator>>(lambdaStack.Count);
+
+                while (lambdaStack.Count > 0)
+                {
+                    var kvp = lambdaStack.Pop();
+
+                    if (kvp == null)
+                    {
+                        beforeHandlingStack.Push(null);
+                        continue;
+                    }
+
+                    var call = kvp.Item1;
+                    var lambda = kvp.Item2;
+                    lambda = binaryDefaultOperation(constraint, lambda.Body).ToLambda(lambda.Parameters.ToArray());
+
+                    constraint = call = call.Update(null, new Expression[] { call.Arguments.First(), lambda });
+
+                    switch (kvp.Item4)
+                    {
+                        case FilterOperator.Equal:
+                        case FilterOperator.Contains:
+                        case FilterOperator.StartsWith:
+                            break;
+                        case FilterOperator.Not:
+                            constraint = Expression.Not(call);
+                            break;
+                        default:
+                            throw new NotSupportedException();
+                    }
+
+                    beforeHandlingStack.Push(new Tuple<MethodCallExpression, LambdaExpression, Type, FilterOperator>(call, lambda, kvp.Item3, kvp.Item4));
+                }
+                //Restore the stack in case we want it to be reused afterwards
+                while (beforeHandlingStack.Count > 0)
+                    lambdaStack.Push(beforeHandlingStack.Pop());
+
+                //while (beforeHandlingStack.Count > 0)
+                //    beforeHandlingStack.Pop();
+            }
+            if (criteria.FilterCriterias.Any())
+            {
+                var oldBinaryDefaultOperation = binaryDefaultOperation;
+                if (@operator == FilterOperator.Or)
+                    binaryDefaultOperation = ReflectionExpression.Or;
+                else
+                    binaryDefaultOperation = ReflectionExpression.And;
+
+                var oldOverallConstraint = overallConstraint;
+                overallConstraint = null;
+                constraint = null;
+
+                //
+                if (lambdaStack.Count == 0)
+                    lambdaStack.Push(null);
+                //
+                foreach (var c in criteria.FilterCriterias)
+                    c.Accept(this);
+
+                constraint = binaryDefaultOperation(overallConstraint, constraint);
+                overallConstraint = oldOverallConstraint;
+
+                binaryDefaultOperation = oldBinaryDefaultOperation;
+            }
+        }
+
+        public void Visit(DateRangeFilterCriteria criteria)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Visit(ScopeFilterCriteria criteria)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Visit(ExpressionFilterCriteria criteria)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Visit(AutoFilterCriteria criteria)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

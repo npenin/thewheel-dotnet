@@ -120,6 +120,13 @@ namespace TheWheel.Lambda
                                         constraint));
         }
 
+        public static ParameterExpression AsParameter(this Type type)
+        {
+            if (type == null)
+                return null;
+            return Expression.Parameter(type);
+        }
+
         public static ParameterExpression AsParameter(this object obj)
         {
             if (obj == null)
@@ -169,6 +176,11 @@ namespace TheWheel.Lambda
         public static bool IsCollection(this Type type)
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ICollection<>);
+        }
+
+        public static bool IsNullable(this Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
         public static Expression ExpressionEquals(this ParameterExpression param, string property, object value, Func<Expression, Expression, Expression> finalComparison)
