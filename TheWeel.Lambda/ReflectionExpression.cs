@@ -170,7 +170,7 @@ namespace TheWheel.Lambda
 
         public static bool IsEnumerable(this Type type)
         {
-            return type.IsCollection() || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+            return type.IsCollection() || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>) || type.IsArray;
         }
 
         public static bool IsCollection(this Type type)

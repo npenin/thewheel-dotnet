@@ -9,7 +9,17 @@ using TheWheel.Lambda;
 
 namespace TheWheel.Services
 {
-    public class FilterQueryBuilder<T> : IFilterCriteriaVisitor
+    public class FilterQueryBuilder<T> : FilterQueryBuilder
+    {
+        internal FilterQueryBuilder(IQueryable<T> query)
+            : base(query, typeof(T))
+        {
+        }
+
+        public new IQueryable<T> Query { get { return base.Query.Cast<T>(); } }
+    }
+
+    public class FilterQueryBuilder : IFilterCriteriaVisitor
     {
         protected static readonly Expression True = Expression.Constant(true, typeof(bool));
         protected static readonly Expression False = Expression.Constant(false, typeof(bool));
@@ -20,17 +30,29 @@ namespace TheWheel.Services
             StartsWith = typeof(string).GetMethod("StartsWith", new Type[] { typeof(string) });
         }
 
-        private IQueryable<T> query;
+        public static FilterQueryBuilder Create(IQueryable query, Type itemType)
+        {
+            return new FilterQueryBuilder(query, itemType);
+        }
+
+        public static FilterQueryBuilder<T> Create<T>(IQueryable<T> query)
+        {
+            return new FilterQueryBuilder<T>(query);
+        }
+
+        public IQueryable Query { get { return query; } }
+
+        private IQueryable query;
         private System.Linq.Expressions.ParameterExpression item;
         protected Expression expressionProperty = null, constraint = null;
         protected Stack<Tuple<MethodCallExpression, LambdaExpression, Type, FilterOperator>> lambdaStack = new Stack<Tuple<MethodCallExpression, LambdaExpression, Type, FilterOperator>>();
         protected Expression overallConstraint;
         protected Func<Expression, Expression, Expression> binaryDefaultOperation = ReflectionExpression.And;
 
-        public FilterQueryBuilder(IQueryable<T> query)
+        internal FilterQueryBuilder(IQueryable query, Type itemType)
         {
             this.query = query;
-            item = typeof(T).AsParameter();
+            item = itemType.AsParameter();
         }
 
         public void Visit(Filter filter)
@@ -49,13 +71,13 @@ namespace TheWheel.Services
                 overallConstraint = binaryDefaultOperation(overallConstraint, constraint);
 
             if (overallConstraint != null)
-                query = query.Where(Expression.Lambda<Func<T, bool>>(overallConstraint, item));
+                query = query.Where(item.Type, overallConstraint.ToLambda(item));
         }
 
         public void Visit(FilterCriteria criteria)
         {
             string propertyName = criteria.PropertyName;
-            if (lambdaStack.Count == 0 || string.IsNullOrEmpty(propertyName) || !propertyName.StartsWith("#"))
+            if (lambdaStack.Count == 0 || string.IsNullOrEmpty(propertyName) || !propertyName.StartsWith("."))
             {
                 overallConstraint = binaryDefaultOperation(overallConstraint, constraint);
                 expressionProperty = item;
@@ -65,9 +87,9 @@ namespace TheWheel.Services
             else
             {
                 if (query.Expression.NodeType == ExpressionType.Convert)
-                    query = query.Provider.CreateQuery<T>((Expression)((UnaryExpression)query.Expression).Operand);
-                else
-                    query = query.Provider.CreateQuery<T>(((MethodCallExpression)query.Expression).Object);
+                    query = query.Provider.CreateQuery((Expression)((UnaryExpression)query.Expression).Operand);
+                else if (query.Expression.NodeType == ExpressionType.Call)
+                    query = query.Provider.CreateQuery(((MethodCallExpression)query.Expression).Object);
 
                 while (propertyName.StartsWith(".") && propertyName != ".")
                 {
@@ -96,9 +118,9 @@ namespace TheWheel.Services
                 {
                     expressionProperty = Expression.Property(expressionProperty, property);
                     var propertyType = ((System.Reflection.PropertyInfo)((MemberExpression)expressionProperty).Member).PropertyType;
-                    if (propertyType.IsCollection())
+                    if (propertyType.IsEnumerable())
                     {
-                        var parameter = Expression.Parameter(propertyType.GetGenericArguments()[0]);
+                        ParameterExpression parameter = Expression.Parameter(propertyType.GetInterfaces().FirstOrDefault(t => t.IsEnumerable()).GetGenericArguments()[0]);
                         var func = typeof(Func<,>).MakeGenericType(parameter.Type, typeof(bool));
                         var lambda = (binaryDefaultOperation == ReflectionExpression.And ? True : False).ToLambda(parameter);
                         var call = (MethodCallExpression)expressionProperty.Any(parameter.Type, ref parameter, lambda);
@@ -218,7 +240,7 @@ namespace TheWheel.Services
 
                         break;
                     case FilterOperator.Not:
-                        if (expressionProperty.NodeType == ExpressionType.Parameter && criteria.PropertyValue == null && expressionProperty.Type != typeof(T))
+                        if (expressionProperty.NodeType == ExpressionType.Parameter && criteria.PropertyValue == null && expressionProperty.Type != item.Type)
                             constraint = null;
                         else
                             constraint = Expression.NotEqual(expressionProperty, rhs);
