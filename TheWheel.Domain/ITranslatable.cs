@@ -5,8 +5,8 @@ using System.Text;
 
 namespace TheWheel.Domain
 {
-    public interface ILogicDeletable : IIdentifiable
+    public interface ITranslatable
     {
-
+        string InternationalKey { get; set; }
     }
 }

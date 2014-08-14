@@ -5,11 +5,11 @@
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CA8087B1-050A-415A-9035-ABB5790F5831}</ProjectGuid>
+    <ProjectGuid>{8BD3E6C5-3DD1-43E0-830C-E096CCAFF1E6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TheWheel.Domain</RootNamespace>
-    <AssemblyName>TheWheel.Domain</AssemblyName>
+    <RootNamespace>TheWheel.Dto</RootNamespace>
+    <AssemblyName>TheWheel.Dto</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,28 +34,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\TheWeel.Lambda\TheWheel.Lambda.csproj">
-      <Project>{b11bf68b-d54a-45b5-bfc0-a94a0ea122f2}</Project>
-      <Name>TheWheel.Lambda</Name>
-    </ProjectReference>
+    <Compile Include="DataTableView.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities.cs" />
-    <Compile Include="Filter.cs" />
-    <Compile Include="IColumn.cs" />
-    <Compile Include="IExtendable.cs" />
-    <Compile Include="IFilterCriteriaVisitor.cs" />
-    <Compile Include="IIdentifiable.cs" />
-    <Compile Include="ILogicDeletable.cs" />
-    <Compile Include="INameable.cs" />
-    <Compile Include="ITranslatable.cs" />
-    <Compile Include="MasterData.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Property.cs" />
-    <Compile Include="View.cs" />
-    <Compile Include="Column.cs" />
-    <Compile Include="ViewItem.cs" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

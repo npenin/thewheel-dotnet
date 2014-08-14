@@ -5,8 +5,8 @@ using System.Text;
 
 namespace TheWheel.Domain
 {
-    public interface ILogicDeletable : IIdentifiable
+    public interface INameable
     {
-
+        string Name { get; set; }
     }
 }
