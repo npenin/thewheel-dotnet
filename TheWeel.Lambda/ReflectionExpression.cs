@@ -522,6 +522,12 @@ namespace TheWheel.Lambda
             return lambda;
         }
 
+        public static U AsCompilable<T, U>(this PrecompilableExpression<Func<T, U>> lambda, T source)
+        {
+            return lambda.AsExpression().Compile()(source);
+        }
+
+
         public static U AsCompilable<T, U, V>(this PrecompilableExpression<Func<T, U>> lambda, V source)
         {
             return default(U);
