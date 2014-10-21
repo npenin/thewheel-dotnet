@@ -32,5 +32,14 @@ namespace TheWheel.Domain
         {
             return extendable.Find<T>(key).FirstOrDefault();
         }
+
+        public static void Set<T>(this IExtendable<T> extendable, string key, T value)
+            where T : INameable
+        {
+            var prop = extendable.Find<T>(key).FirstOrDefault();
+            if (prop != null)
+                extendable.Properties.Remove(prop);
+            extendable.Properties.Add(value);
+        }
     }
 }
