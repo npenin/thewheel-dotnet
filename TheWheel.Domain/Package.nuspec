@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>TheWheel.Domain\Package</id>
+    <id>TheWheel.Domain</id>
     <version>1.0.0</version>
     <authors>Nicolas</authors>
     <owners>Nicolas</owners>
