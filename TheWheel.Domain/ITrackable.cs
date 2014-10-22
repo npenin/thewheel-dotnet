@@ -16,13 +16,13 @@ namespace TheWheel.Domain
         /// <value>
         /// the date when this instance was created.
         /// </value>
-        public DateTime CreatedOn { get; set; }
+        DateTime CreatedOn { get; set; }
         /// <summary>
         /// Gets or sets the date when this instance was updated.
         /// </summary>
         /// <value>
         /// the date when this instance was updated.
         /// </value>
-        public DateTime UpdatedOn { get; set; }
+        DateTime UpdatedOn { get; set; }
     }
 }
