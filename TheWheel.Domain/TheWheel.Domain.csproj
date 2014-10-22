@@ -49,6 +49,7 @@
     <Compile Include="IIdentifiable.cs" />
     <Compile Include="ILogicDeletable.cs" />
     <Compile Include="INameable.cs" />
+    <Compile Include="ITrackable.cs" />
     <Compile Include="ITranslatable.cs" />
     <Compile Include="MasterData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

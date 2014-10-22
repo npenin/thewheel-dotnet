@@ -5,8 +5,9 @@ using System.Text;
 
 namespace TheWheel.Domain
 {
-    public interface ILogicDeletable : IIdentifiable
+    public interface ITrackable
     {
-        DateTime? DeletedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
     }
 }
