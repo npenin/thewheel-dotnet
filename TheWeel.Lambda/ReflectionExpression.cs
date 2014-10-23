@@ -528,10 +528,10 @@ namespace TheWheel.Lambda
         }
 
 
-        public static U AsCompilable<T, U, V>(this PrecompilableExpression<Func<T, U>> lambda, V source)
-        {
-            return default(U);
-        }
+        //public static U AsCompilable<T, U, V>(this PrecompilableExpression<Func<T, U>> lambda, V source)
+        //{
+        //    return default(U);
+        //}
 
         public static Expression<T> Replace<T>(this Expression<T> lambda, ParameterExpression newParam)
         {
