@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>TheWheel.Domain</id>
+    <id>TheWeel.Lambda</id>
     <version>1.0.0</version>
     <authors>Nicolas</authors>
     <owners>Nicolas</owners>
@@ -9,9 +9,6 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Package description</description>
     <copyright>Copyright 2014</copyright>
-    <dependencies>
-      <dependency id="TheWheel.Lambda" version="1.0" />
-    </dependencies>
   </metadata>
   <files>
 	<file src="bin\$configuration$\$id$\.dll" target="portable-net4+sl5+wp8+win8" />
