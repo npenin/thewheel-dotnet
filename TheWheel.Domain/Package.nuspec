@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>TheWheel.Domain</id>
-    <version>1.0.0</version>
+    <version>$version$</version>
     <authors>Nicolas</authors>
     <owners>Nicolas</owners>
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>

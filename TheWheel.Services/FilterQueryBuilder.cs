@@ -120,7 +120,7 @@ namespace TheWheel.Services
 
                 foreach (string property in propertyName.Split('.'))
                 {
-                    expressionProperty = Expression.Property(expressionProperty, property);
+                    expressionProperty = expressionProperty.Property(property);
                     var propertyType = ((System.Reflection.PropertyInfo)((MemberExpression)expressionProperty).Member).PropertyType;
                     if (propertyType.IsEnumerable())
                     {
@@ -234,8 +234,8 @@ namespace TheWheel.Services
                             expressionProperty.Type.GetGenericTypeDefinition() == typeof(Nullable<>) &&
                             expressionProperty.Type.GetGenericArguments()[0] == rhs.Type)
                         {
-                            constraint = Expression.And(Expression.Property(expressionProperty, "HasValue"),
-                                Expression.Equal(Expression.Property(expressionProperty, "Value"), rhs));
+                            constraint = Expression.And(expressionProperty.Property("HasValue"),
+                                Expression.Equal(expressionProperty.Property("Value"), rhs));
                         }
                         else
                         {
@@ -349,7 +349,8 @@ namespace TheWheel.Services
 
         public void Visit(DateRangeFilterCriteria criteria)
         {
-            throw new NotImplementedException();
+            Visit(new FilterCriteria() { PropertyName = criteria.PropertyName, PropertyValue = criteria.RangeStart, FilterOperator = (int)FilterOperator.GreaterOrEqual });
+            Visit(new FilterCriteria() { PropertyName = criteria.PropertyName, PropertyValue = criteria.RangeEnd, FilterOperator = (int)FilterOperator.Lower });
         }
 
         public void Visit(ScopeFilterCriteria criteria)
