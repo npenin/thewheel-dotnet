@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>TheWheel.Services</id>
+    <version>1.0.0</version>
+    <authors>Nicolas</authors>
+    <owners>Nicolas</owners>
+    <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Package description</description>
+    <copyright>Copyright 2014</copyright>
+  </metadata>
+  <files>
+	<file src="bin\$configuration$\$id$\.dll" target="portable-net4+sl5+wp8+win8" />
+  </files>
+</package>
