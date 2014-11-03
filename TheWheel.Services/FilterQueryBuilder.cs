@@ -24,10 +24,14 @@ namespace TheWheel.Services
         protected static readonly Expression True = Expression.Constant(true, typeof(bool));
         protected static readonly Expression False = Expression.Constant(false, typeof(bool));
         protected static readonly System.Reflection.MethodInfo StartsWith;
+        protected static readonly System.Reflection.MethodInfo EndsWith;
+        protected static readonly System.Reflection.MethodInfo Contains;
 
         static FilterQueryBuilder()
         {
             StartsWith = typeof(string).GetMethod("StartsWith", new Type[] { typeof(string) });
+            EndsWith = typeof(string).GetMethod("EndsWith", new Type[] { typeof(string) });
+            Contains = typeof(string).GetMethod("Contains", new Type[] { typeof(string) });
         }
 
         public static FilterQueryBuilder Create(IQueryable query, Type itemType)
@@ -263,6 +267,12 @@ namespace TheWheel.Services
                         break;
                     case FilterOperator.StartsWith:
                         constraint = Expression.Call(expressionProperty, StartsWith, rhs);
+                        break;
+                    case FilterOperator.EndsWith:
+                        constraint = Expression.Call(expressionProperty, EndsWith, rhs);
+                        break;
+                    case FilterOperator.StringContains:
+                        constraint = Expression.Call(expressionProperty, Contains, rhs);
                         break;
                     default:
                         throw new NotSupportedException();

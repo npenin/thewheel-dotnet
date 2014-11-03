@@ -62,5 +62,7 @@ namespace TheWheel.Domain
         LowerOrEqual = 6,
         Or = 7,
         StartsWith = 8,
+        EndsWith,
+        StringContains,
     }
 }
