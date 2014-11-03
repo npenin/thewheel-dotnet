@@ -349,8 +349,8 @@ namespace TheWheel.Services
 
         public void Visit(DateRangeFilterCriteria criteria)
         {
-            Visit(new FilterCriteria() { PropertyName = criteria.PropertyName, PropertyValue = criteria.RangeStart, FilterOperator = (int)FilterOperator.GreaterOrEqual });
-            Visit(new FilterCriteria() { PropertyName = criteria.PropertyName, PropertyValue = criteria.RangeEnd, FilterOperator = (int)FilterOperator.Lower });
+            Visit(new FilterCriteria() { PropertyName = criteria.PropertyName, PropertyValue = criteria.RangeStart.ToString("u"), FilterOperator = (int)FilterOperator.GreaterOrEqual });
+            Visit(new FilterCriteria() { PropertyName = criteria.PropertyName, PropertyValue = criteria.RangeEnd.ToString("u"), FilterOperator = (int)FilterOperator.Lower });
         }
 
         public void Visit(ScopeFilterCriteria criteria)
