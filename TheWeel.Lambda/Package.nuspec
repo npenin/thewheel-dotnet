@@ -12,5 +12,6 @@
   </metadata>
   <files>
 	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Lambda.dll" />
+	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Lambda.pdb" />
   </files>
 </package>

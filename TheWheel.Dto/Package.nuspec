@@ -12,5 +12,6 @@
   </metadata>
   <files>
 	<file src="bin\Release\TheWheel.Dto.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Dto.dll" />
+	<file src="bin\Release\TheWheel.Dto.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Dto.pdb" />
   </files>
 </package>

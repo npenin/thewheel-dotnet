@@ -15,5 +15,6 @@
   </metadata>
   <files>
 	<file src="bin\Release\TheWheel.Domain.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Domain.dll" />
+	<file src="bin\Release\TheWheel.Domain.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Domain.pdb" />
   </files>
 </package>
