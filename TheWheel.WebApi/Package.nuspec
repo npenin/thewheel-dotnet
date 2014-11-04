@@ -10,7 +10,7 @@
     <description>Package description</description>
     <copyright>Copyright 2014</copyright>
     <dependencies>
-      <dependency id="TheWheel.Domain" version="1.*" />
+      <dependency id="TheWheel.Domain" version="$version$" />
     </dependencies>
   </metadata>
   <files>

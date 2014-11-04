@@ -10,7 +10,7 @@
     <description>Package description</description>
     <copyright>Copyright 2014</copyright>
     <dependencies>
-      <dependency id="TheWheel.Lambda" version="1.*" />
+      <dependency id="TheWheel.Lambda" version="$version$" />
     </dependencies>
   </metadata>
   <files>
