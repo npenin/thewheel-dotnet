@@ -17,5 +17,6 @@
   <files>
 	<file src="bin\$configuration$\TheWheel.Services.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Services.dll" />
 	<file src="bin\$configuration$\TheWheel.Services.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Services.pdb" />
+	<file src="**.cs" target="src" />
   </files>
 </package>
