@@ -14,6 +14,6 @@
     </dependencies>
   </metadata>
   <files>
-	<file src="bin\Release\TheWheel.Domain.dll" target="portable-net4+sl5+wp8+win8" />
+	<file src="bin\Release\TheWheel.Domain.dll" target="lib\portable-net4+sl5+wp8+win8" />
   </files>
 </package>
