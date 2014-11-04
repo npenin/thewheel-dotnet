@@ -11,8 +11,8 @@
     <copyright>Copyright 2014</copyright>
   </metadata>
   <files>
-	<file src="bin\Release\TheWheel.Dto.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Dto.dll" />
-	<file src="bin\Release\TheWheel.Dto.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Dto.pdb" />
+	<file src="bin\$configuration$\TheWheel.Dto.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Dto.dll" />
+	<file src="bin\$configuration$\TheWheel.Dto.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Dto.pdb" />
 	<file src="**.cs" target="src" />
   </files>
 </package>

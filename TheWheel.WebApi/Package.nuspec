@@ -14,8 +14,8 @@
     </dependencies>
   </metadata>
   <files>
-	<file src="bin\Release\TheWheel.WebApi.dll" target="lib\net45\TheWheel.WebApi.dll" />
-	<file src="bin\Release\TheWheel.WebApi.pdb" target="lib\net45\TheWheel.WebApi.pdb" />
+	<file src="bin\$configuration$\TheWheel.WebApi.dll" target="lib\net45\TheWheel.WebApi.dll" />
+	<file src="bin\$configuration$\TheWheel.WebApi.pdb" target="lib\net45\TheWheel.WebApi.pdb" />
 	<file src="**.cs" target="src" />
   </files>
 </package>
