@@ -10,11 +10,11 @@
     <description>Package description</description>
     <copyright>Copyright 2014</copyright>
     <dependencies>
-      <dependency id="TheWheel.Domain" version="$version$" />
-      <dependency id="TheWheel.Lambda" version="$version$" />
+      <dependency id="TheWheel.Domain" />
+      <dependency id="TheWheel.Lambda" />
     </dependencies>
   </metadata>
   <files>
-	<file src="bin\$configuration$\TheWheel.Services.dll" target="lib\portable-net4+sl5+wp8+win8" />
+	<file src="bin\$configuration$\TheWheel.Services.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Services.dll" />
   </files>
 </package>

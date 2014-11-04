@@ -10,10 +10,10 @@
     <description>Package description</description>
     <copyright>Copyright 2014</copyright>
     <dependencies>
-      <dependency id="TheWheel.Domain" version="$version$" />
+      <dependency id="TheWheel.Domain" />
     </dependencies>
   </metadata>
   <files>
-	<file src="bin\Release\TheWheel.WebApi.dll" target="lib\net45" />
+	<file src="bin\Release\TheWheel.WebApi.dll" target="lib\net45\TheWheel.WebApi.dll" />
   </files>
 </package>
