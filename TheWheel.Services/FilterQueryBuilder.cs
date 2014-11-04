@@ -16,7 +16,16 @@ namespace TheWheel.Services
         {
         }
 
-        public new IQueryable<T> Query { get { return (IQueryable<T>)base.Query; } }
+        public new IQueryable<T> Query
+        {
+            get
+            {
+                var queryable = base.Query as IQueryable<T>;
+                if (queryable == null)
+                    return base.Query.Cast<T>();
+                return queryable;
+            }
+        }
     }
 
     public class FilterQueryBuilder : IFilterCriteriaVisitor
