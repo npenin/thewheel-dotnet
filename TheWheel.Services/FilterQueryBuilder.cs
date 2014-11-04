@@ -16,7 +16,7 @@ namespace TheWheel.Services
         {
         }
 
-        public new IQueryable<T> Query { get { return base.Query.Cast<T>(); } }
+        public new IQueryable<T> Query { get { return (IQueryable<T>)base.Query; } }
     }
 
     public class FilterQueryBuilder : IFilterCriteriaVisitor
