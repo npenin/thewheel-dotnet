@@ -12,7 +12,7 @@ namespace TheWheel.Dto
             return new DataTableView()
             {
                 Count = source.Count(),
-                Data = source.Skip(startRowIndex).Take(maximumRows)
+                Data = source.Skip(startRowIndex).Take(maximumRows).ToList()
             };
         }
     }
