@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>TheWheel.OpenXml</id>
+    <version>1.44</version>
+    <authors>Nicolas</authors>
+    <owners>Nicolas</owners>
+    <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Package description</description>
+    <copyright>Copyright 2014</copyright>
+    <dependencies>
+      <dependency id="TheWheel.Domain" />
+      <dependency id="TheWheel.Lambda" />
+	  <dependency id="DocumentFormat.OpenXml" />
+    </dependencies>
+  </metadata>
+  <files>
+	<file src="bin\$configuration$\TheWheel.OpenXml.dll" target="lib\net451\TheWheel.OpenXml.dll" />
+	<file src="bin\$configuration$\TheWheel.OpenXml.pdb" target="lib\net451\TheWheel.OpenXml.pdb" />
+	<file src="**.cs" target="src" />
+  </files>
+</package>
