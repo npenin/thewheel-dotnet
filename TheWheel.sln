@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWheel.OpenXml", "TheWheel.OpenXml\TheWheel.OpenXml.csproj", "{1C14A3C9-95EF-48C9-9704-08F5643BAC46}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWheel.WebApi", "TheWheel.WebApi\TheWheel.WebApi.csproj", "{1D20E2F8-181D-4C30-84C8-7E03001C178E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWheel.Dto", "TheWheel.Dto\TheWheel.Dto.csproj", "{8BD3E6C5-3DD1-43E0-830C-E096CCAFF1E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWheel.OpenXml.WebApi", "TheWheel.OpenXml.WebApi\TheWheel.OpenXml.WebApi.csproj", "{6648DD53-3D61-4065-99BC-7FE6F5FFA304}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{8BD3E6C5-3DD1-43E0-830C-E096CCAFF1E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BD3E6C5-3DD1-43E0-830C-E096CCAFF1E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BD3E6C5-3DD1-43E0-830C-E096CCAFF1E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6648DD53-3D61-4065-99BC-7FE6F5FFA304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6648DD53-3D61-4065-99BC-7FE6F5FFA304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6648DD53-3D61-4065-99BC-7FE6F5FFA304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6648DD53-3D61-4065-99BC-7FE6F5FFA304}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

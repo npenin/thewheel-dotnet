@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>TheWheel.OpenXml.WebApi</id>
+    <version>1.44</version>
+    <authors>Nicolas</authors>
+    <owners>Nicolas</owners>
+    <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Package description</description>
+    <copyright>Copyright 2014</copyright>
+    <dependencies>
+      <dependency id="TheWheel.Lambda" />
+	  <dependency id="TheWheel.OpenXml" />
+    </dependencies>
+  </metadata>
+  <files>
+	<file src="bin\$configuration$\TheWheel.OpenXml.WebApi.dll" target="lib\net451\TheWheel.OpenXml.WebApi.dll" />
+	<file src="bin\$configuration$\TheWheel.OpenXml.WebApi.pdb" target="lib\net451\TheWheel.OpenXml.WebApi.pdb" />
+	<file src="**.cs" target="src" />
+  </files>
+</package>

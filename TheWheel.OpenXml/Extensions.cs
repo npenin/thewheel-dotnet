@@ -14,13 +14,18 @@ namespace TheWheel.OpenXml
 {
     public class Extensions
     {
-        public void Export<T>(Stream s, IEnumerable<T> items, string undefinedColumnName, Func<string, string> Translate)
+        public static void Export<T>(Stream s, IEnumerable<T> items, string undefinedColumnName, Func<string, string> Translate)
         {
-            var cols = typeof(T).GetProperties().Select((p, i) => new Column() { TranslatedName = Translate(p.Name), Code = p.Name, Name = p.Name, Order = i }).ToList();
+            Export(s, typeof(T), items, undefinedColumnName, Translate);
+        }
+
+        public static void Export(Stream s, Type type, IEnumerable items, string undefinedColumnName, Func<string, string> Translate)
+        {
+            var cols = type.GetProperties().Select((p, i) => new Column() { TranslatedName = Translate(p.Name), Code = p.Name, Name = p.Name, Order = i }).ToList();
             Export(s, items, cols, undefinedColumnName);
         }
 
-        public void Export(Stream s, IEnumerable items, IEnumerable<IColumn> cols, string undefinedColumnName)
+        public static void Export(Stream s, IEnumerable items, IEnumerable<IColumn> cols, string undefinedColumnName)
         {
             var doc = SpreadsheetDocument.Create(s, DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook);
             doc.AddWorkbookPart();
@@ -104,12 +109,12 @@ namespace TheWheel.OpenXml
         }
 
 
-        private DocumentFormat.OpenXml.Spreadsheet.CellValues GetDataType(object value)
+        private static DocumentFormat.OpenXml.Spreadsheet.CellValues GetDataType(object value)
         {
             return GetDataType(Convert.GetTypeCode(value));
         }
 
-        private DocumentFormat.OpenXml.Spreadsheet.CellValues GetDataType(TypeCode type)
+        private static DocumentFormat.OpenXml.Spreadsheet.CellValues GetDataType(TypeCode type)
         {
             switch (type)
             {
@@ -139,7 +144,7 @@ namespace TheWheel.OpenXml
             return DocumentFormat.OpenXml.Spreadsheet.CellValues.String;
         }
 
-        private string GetReference(int colIndex, int rowIndex)
+        private static string GetReference(int colIndex, int rowIndex)
         {
             colIndex--;
             const string columnName = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
