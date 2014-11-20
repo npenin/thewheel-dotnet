@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TheWheel.Domain
 {
-    public interface ILogicDeletable : IIdentifiable
+    public interface ILogicDeletable
     {
         DateTime? DeletedOn { get; set; }
     }
