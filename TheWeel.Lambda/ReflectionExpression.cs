@@ -370,8 +370,12 @@ namespace TheWheel.Lambda
 
         public static Expression<Func<T, U>> And<T, U>(this Expression<Func<T, U>> left, Expression<Func<T, U>> right)
         {
-            var param = Expression.Parameter(typeof(T));
+            if (left == null)
+                return right;
+            if (right == null)
+                return left;
 
+            var param = Expression.Parameter(typeof(T));
             var processedFilter = ParameterReplacerVisitor.Process(left, param).Body.And(ParameterReplacerVisitor.Process(right, param).Body);
 
             var result = processedFilter.ToLambda<Func<T, U>>(param);
