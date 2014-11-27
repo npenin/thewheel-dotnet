@@ -31,6 +31,21 @@ namespace TheWheel.Lambda
             return (IEnumerable)cast.MakeGenericMethod(type).Invoke(null, new[] { set });
         }
 
+        public static IEnumerable<T> Union<T>(this IEnumerable<T> source, T item)
+        {
+            return source.ToArray().Union(item);
+        }
+
+        public static T[] Union<T>(this T[] source, T item)
+        {
+            if (source == null)
+                return new T[] { item };
+            var result = new T[source.Length + 1];
+            source.CopyTo(result, 1);
+            result[0] = item;
+            return result;
+        }
+
         public static IEnumerable<T> Merge<T>(this IEnumerable<T> source1, IEnumerable<T> source2)
         {
             if (source1 == null)
@@ -550,6 +565,23 @@ namespace TheWheel.Lambda
         public static LambdaExpression Replace(this LambdaExpression lambda, ParameterExpression newParam, Expression newExp)
         {
             return (LambdaExpression)ParameterReplacerVisitor.Process(lambda, newParam, newExp);
+        }
+
+        public static Expression<Func<TSource, TDestination>> Combine<TSource, TDestination>(this Expression<Func<TSource, TDestination>> init, params Expression<Func<TSource, TDestination>>[] selectors)
+        {
+            return Combine(selectors.Union(init));
+        }
+
+        public static Expression<Func<TSource, TDestination>> Combine<TSource, TDestination>(params Expression<Func<TSource, TDestination>>[] selectors)
+        {
+            var param = Expression.Parameter(typeof(TSource), "x");
+            return
+                Expression.MemberInit(
+                    Expression.New(typeof(TDestination).GetConstructor(new Type[0])),
+                    selectors.SelectMany(
+                        selector => ((MemberInitExpression)selector.Body).Bindings.OfType<MemberAssignment>(),
+                        (selector, binding) => Expression.Bind(binding.Member, ParameterReplacerVisitor.Process(binding.Expression, selector.Parameters[0], param))))
+                .ToLambda<Func<TSource, TDestination>>(param);
         }
     }
 }
