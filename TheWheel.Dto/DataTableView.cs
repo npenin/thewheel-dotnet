@@ -14,6 +14,13 @@ namespace TheWheel.Dto
         public IEnumerable Data { get; set; }
     }
 
+    public class DataTableView<T>
+    {
+        public int TotalCount { get; set; }
+        public int Count { get; set; }
+        public IEnumerable<T> Data { get; set; }
+    }
+
     public class DataTableQuery
     {
         public int StartRowIndex { get; set; }
