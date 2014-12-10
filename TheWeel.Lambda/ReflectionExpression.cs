@@ -475,15 +475,17 @@ namespace TheWheel.Lambda
 
         public static MethodInfo Lambda<T>()
         {
-            return new Func<Expression, ParameterExpression[], Expression<T>>(Expression.Lambda<T>).Method;
+            return new Func<Expression, ParameterExpression[], Expression<T>>(ToLambda<T>).Method;
         }
 
         public static LambdaExpression ToLambda(this Expression body, params ParameterExpression[] parameters)
         {
+            Type funcType;
             if (parameters == null)
-                return (LambdaExpression)Lambda(body.Type.AsFuncResult()).Invoke(body, parameters);
-            return (LambdaExpression)Lambda(body.Type.AsFuncResult(parameters.Select(p => p.Type).ToArray())).Invoke(body, parameters);
-            return Expression.Lambda(body, parameters);
+                funcType = body.Type.AsFuncResult();
+            else
+                funcType = body.Type.AsFuncResult(parameters.Select(p => p.Type));
+            return (LambdaExpression)Lambda(funcType).Invoke(null, new object[] { body, parameters });
         }
 
         public static Expression<T> ToLambda<T>(this Expression body, params ParameterExpression[] parameters)
@@ -595,6 +597,11 @@ namespace TheWheel.Lambda
                         selector => ((MemberInitExpression)selector.Body).Bindings.OfType<MemberAssignment>(),
                         (selector, binding) => Expression.Bind(binding.Member, ParameterReplacerVisitor.Process(binding.Expression, selector.Parameters[0], param))))
                 .ToLambda<Func<TSource, TDestination>>(param);
+        }
+
+        public static Type AsFuncResult(this Type resultType, IEnumerable<Type> typeParameters)
+        {
+            return resultType.AsFuncResult(typeParameters.ToArray());
         }
 
         public static Type AsFuncResult(this Type resultType, params Type[] typeParameters)
