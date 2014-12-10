@@ -97,9 +97,9 @@ namespace TheWheel.Lambda
             return new Func<IQueryable<T>, Expression<Func<T, bool>>, IQueryable<T>>(Queryable.Where<T>).Method;
         }
 
-        public static IQueryable<object> Where(this IQueryable source, Type t, Expression constraint)
+        public static IQueryable Where(this IQueryable source, Type t, Expression constraint)
         {
-            return source.Provider.CreateQuery<object>(
+            return source.Provider.CreateQuery(
                                     Expression.Call(null,
                                     ReflectionExpression.Where(t),
                                         source.Expression,
