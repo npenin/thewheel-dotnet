@@ -41,8 +41,8 @@ namespace TheWheel.Lambda
             if (source == null)
                 return new T[] { item };
             var result = new T[source.Length + 1];
-            source.CopyTo(result, 1);
-            result[0] = item;
+            source.CopyTo(result, 0);
+            result[source.Length] = item;
             return result;
         }
 
@@ -468,8 +468,21 @@ namespace TheWheel.Lambda
             return Expression.Constant(expression.ToLambda().Compile().DynamicInvoke());
         }
 
+        public static MethodInfo Lambda(Type type)
+        {
+            return (MethodInfo)typeof(ReflectionExpression).GetMethods(BindingFlags.Static | BindingFlags.Public).Single(mi => mi.Name == "Lambda" && mi.GetParameters().Length == 0).MakeGenericMethod(type).Invoke(null, null);
+        }
+
+        public static MethodInfo Lambda<T>()
+        {
+            return new Func<Expression, ParameterExpression[], Expression<T>>(Expression.Lambda<T>).Method;
+        }
+
         public static LambdaExpression ToLambda(this Expression body, params ParameterExpression[] parameters)
         {
+            if (parameters == null)
+                return (LambdaExpression)Lambda(body.Type.AsFuncResult()).Invoke(body, parameters);
+            return (LambdaExpression)Lambda(body.Type.AsFuncResult(parameters.Select(p => p.Type).ToArray())).Invoke(body, parameters);
             return Expression.Lambda(body, parameters);
         }
 
@@ -582,6 +595,50 @@ namespace TheWheel.Lambda
                         selector => ((MemberInitExpression)selector.Body).Bindings.OfType<MemberAssignment>(),
                         (selector, binding) => Expression.Bind(binding.Member, ParameterReplacerVisitor.Process(binding.Expression, selector.Parameters[0], param))))
                 .ToLambda<Func<TSource, TDestination>>(param);
+        }
+
+        public static Type AsFuncResult(this Type resultType, params Type[] typeParameters)
+        {
+            var types = typeParameters.Union(resultType);
+            switch (types.Length)
+            {
+                case 1:
+                    return typeof(Func<>).MakeGenericType(types);
+                case 2:
+                    return typeof(Func<,>).MakeGenericType(types);
+                case 3:
+                    return typeof(Func<,,>).MakeGenericType(types);
+                case 4:
+                    return typeof(Func<,,,>).MakeGenericType(types);
+                case 5:
+                    return typeof(Func<,,,,>).MakeGenericType(types);
+                case 6:
+                    return typeof(Func<,,,,,>).MakeGenericType(types);
+                case 7:
+                    return typeof(Func<,,,,,,>).MakeGenericType(types);
+                case 8:
+                    return typeof(Func<,,,,,,,>).MakeGenericType(types);
+                case 9:
+                    return typeof(Func<,,,,,,,,>).MakeGenericType(types);
+                case 10:
+                    return typeof(Func<,,,,,,,,,>).MakeGenericType(types);
+                case 11:
+                    return typeof(Func<,,,,,,,,,,>).MakeGenericType(types);
+                case 12:
+                    return typeof(Func<,,,,,,,,,,,>).MakeGenericType(types);
+                case 13:
+                    return typeof(Func<,,,,,,,,,,,,>).MakeGenericType(types);
+                case 14:
+                    return typeof(Func<,,,,,,,,,,,,,>).MakeGenericType(types);
+                case 15:
+                    return typeof(Func<,,,,,,,,,,,,,,>).MakeGenericType(types);
+                case 16:
+                    return typeof(Func<,,,,,,,,,,,,,,,>).MakeGenericType(types);
+                case 17:
+                    return typeof(Func<,,,,,,,,,,,,,,,,>).MakeGenericType(types);
+                default:
+                    throw new NotSupportedException();
+            }
         }
     }
 }
