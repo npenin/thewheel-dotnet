@@ -281,7 +281,7 @@ namespace TheWheel.Services
                         constraint = Expression.Call(expressionProperty, EndsWith, rhs);
                         break;
                     case FilterOperator.StringContains:
-                        constraint = Expression.Call(Expression.Call(expressionProperty, "ToLowerInvariant", null), Contains, Expression.Call(rhs, "ToLowerInvariant", null));
+                        constraint = Expression.Call(Expression.Call(expressionProperty, "ToLower", null), Contains, Expression.Call(rhs, "ToLower", null));
                         break;
                     default:
                         throw new NotSupportedException();
