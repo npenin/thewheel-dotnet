@@ -39,7 +39,7 @@ namespace TheWheel.Domain
 
         public string PropertyValue { get; set; }
 
-        public int FilterOperator { get; set; }
+        public FilterOperator FilterOperator { get; set; }
 
         public int? FK_ParentFilterCriteria { get; set; }
         public bool IsMultiple { get; set; }

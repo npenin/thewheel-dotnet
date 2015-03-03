@@ -195,7 +195,7 @@ namespace TheWheel.Services
                     {
                         PropertyName = (criteria.PropertyName.StartsWith(".") ? string.Join("", Enumerable.Range(0, propertyName.Cast<char>().Count(c => c == '.') + 1).Select(c => ".")) : "") + propertyName,
                         PropertyValue = v,
-                        FilterOperator = (int)@operator
+                        FilterOperator = @operator
                     }))
                     {
                         sc.Accept(this);
@@ -281,7 +281,7 @@ namespace TheWheel.Services
                         constraint = Expression.Call(expressionProperty, EndsWith, rhs);
                         break;
                     case FilterOperator.StringContains:
-                        constraint = Expression.Call(expressionProperty, Contains, rhs);
+                        constraint = Expression.Call(Expression.Call(expressionProperty, "ToLowerInvariant", null), Contains, Expression.Call(rhs, "ToLowerInvariant", null));
                         break;
                     default:
                         throw new NotSupportedException();
@@ -358,8 +358,8 @@ namespace TheWheel.Services
 
         public void Visit(DateRangeFilterCriteria criteria)
         {
-            Visit(new FilterCriteria() { PropertyName = criteria.PropertyName, PropertyValue = criteria.RangeStart.ToString("u"), FilterOperator = (int)FilterOperator.GreaterOrEqual });
-            Visit(new FilterCriteria() { PropertyName = criteria.PropertyName, PropertyValue = criteria.RangeEnd.ToString("u"), FilterOperator = (int)FilterOperator.Lower });
+            Visit(new FilterCriteria() { PropertyName = criteria.PropertyName, PropertyValue = criteria.RangeStart.ToString("u"), FilterOperator = FilterOperator.GreaterOrEqual });
+            Visit(new FilterCriteria() { PropertyName = criteria.PropertyName, PropertyValue = criteria.RangeEnd.ToString("u"), FilterOperator = FilterOperator.Lower });
         }
 
         public void Visit(ScopeFilterCriteria criteria)

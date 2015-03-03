@@ -141,7 +141,7 @@ namespace TheWheel.Domain
             {
                 PropertyName = expression.GetPath(),
                 PropertyValue = Convert.ToString(valueToCompare),
-                FilterOperator = (int)@operator
+                FilterOperator = @operator
             };
         }
     }

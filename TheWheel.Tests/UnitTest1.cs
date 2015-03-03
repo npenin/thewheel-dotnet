@@ -52,12 +52,12 @@ namespace TheWheel.Tests
                     new FilterCriteria{
                         PropertyName="Children.Property1",
                         PropertyValue="pwic",
-                        FilterOperator=(int)FilterOperator.StartsWith,
+                        FilterOperator=FilterOperator.StartsWith,
                         FilterCriterias={
                             new FilterCriteria{
                                 PropertyName=".Property2",
                                 PropertyValue="2pwic",
-                                FilterOperator=(int)FilterOperator.Equal,
+                                FilterOperator=FilterOperator.Equal,
                             }
                         }
                     }
