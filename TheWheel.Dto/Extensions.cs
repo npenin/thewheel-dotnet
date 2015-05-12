@@ -15,5 +15,15 @@ namespace TheWheel.Dto
                 Data = source.Skip(startRowIndex).Take(maximumRows).ToList()
             };
         }
+
+        public static DataTableView<T> ToGridData<T>(this IQueryable<T> source, int echo, int startRowIndex, int maximumRows)
+        {
+            return new DataTableView<T>()
+            {
+                Count = source.Count(),
+                Data = source.Skip(startRowIndex).Take(maximumRows).ToList(),
+                Echo = echo
+            };
+        }
     }
 }

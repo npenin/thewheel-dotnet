@@ -12,6 +12,7 @@ namespace TheWheel.Dto
         public int TotalCount { get; set; }
         public int Count { get; set; }
         public IEnumerable Data { get; set; }
+        public int Echo { get; set; }
     }
 
     public class DataTableView<T>
@@ -19,6 +20,7 @@ namespace TheWheel.Dto
         public int TotalCount { get; set; }
         public int Count { get; set; }
         public IEnumerable<T> Data { get; set; }
+        public int Echo { get; set; }
     }
 
     public class DataTableQuery
