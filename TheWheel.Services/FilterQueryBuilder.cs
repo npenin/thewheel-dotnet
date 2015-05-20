@@ -232,7 +232,7 @@ namespace TheWheel.Services
                 else
                 {
                     if (piType.IsEnum)
-                        rhs = Expression.Constant(Convert.ChangeType(Convert.ChangeType(criteria.PropertyValue, piType.BaseType, CultureInfo.CurrentCulture), pi, CultureInfo.CurrentCulture));
+                        rhs = Expression.Constant(Convert.ChangeType(Convert.ChangeType(criteria.PropertyValue, pi.BaseType, CultureInfo.CurrentCulture), pi, CultureInfo.CurrentCulture));
                     else
                         rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, pi, CultureInfo.CurrentCulture));
                 }
