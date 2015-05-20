@@ -164,9 +164,10 @@ namespace TheWheel.Services
                     if (string.IsNullOrEmpty(criteria.PropertyValue))
                         rhs = Expression.Constant(null, pi);
                     else
-                        rhs =
-                            Expression.Constant(
-                                Convert.ChangeType(criteria.PropertyValue, piType, CultureInfo.CurrentCulture), pi);
+                        if (piType.IsEnum)
+                            rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, Enum.GetUnderlyingType(piType), CultureInfo.CurrentCulture), piType);
+                        else
+                            rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, pi, CultureInfo.CurrentCulture));
                 }
                 else if (criteria.IsMultiple || @operator == FilterOperator.Contains &&
                                 criteria.PropertyValue.Contains(";") && pi.GetTypeCode() != TypeCode.String)
@@ -232,7 +233,7 @@ namespace TheWheel.Services
                 else
                 {
                     if (piType.IsEnum)
-                        rhs = Expression.Constant(Convert.ChangeType(Convert.ChangeType(criteria.PropertyValue, pi.BaseType, CultureInfo.CurrentCulture), pi, CultureInfo.CurrentCulture));
+                        rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, Enum.GetUnderlyingType(piType), CultureInfo.CurrentCulture), piType);
                     else
                         rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, pi, CultureInfo.CurrentCulture));
                 }
