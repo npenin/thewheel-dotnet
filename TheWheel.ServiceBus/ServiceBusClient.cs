@@ -18,6 +18,7 @@ namespace TheWheel.ServiceBus
         where TMessage : MessageBase
     {
         private IDbConnection connection;
+        private bool stop;
 
         public ServiceBusClient()
         {
@@ -167,12 +168,22 @@ namespace TheWheel.ServiceBus
 
         #region IServiceBus Members
 
-        public virtual void Start(Guid tenantId)
+        public void Start()
         {
+            stop = false;
             WaitMessage();
         }
 
+        public void StartOnce()
+        {
+            stop = true;
+            WaitMessage();
+        }
 
+        public void Stop()
+        {
+            stop = true;
+        }
 
         protected async Task Process(Task<TMessage> message)
         {
@@ -180,7 +191,8 @@ namespace TheWheel.ServiceBus
             {
                 using (var m = await message)
                 {
-                    WaitMessage();
+                    if (!stop)
+                        WaitMessage();
                     if (m != null)
                     {
                         try
@@ -199,7 +211,7 @@ namespace TheWheel.ServiceBus
                     }
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 // Error occurs when reading message
                 WaitMessage();
