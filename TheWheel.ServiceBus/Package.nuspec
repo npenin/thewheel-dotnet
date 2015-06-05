@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>TheWheel.ServiceBus</id>
+    <version>1.44</version>
+    <authors>Nicolas</authors>
+    <owners>Nicolas</owners>
+    <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Package description</description>
+    <copyright>Copyright 2014</copyright>
+  </metadata>
+  <files>
+	<file src="bin\$configuration$\TheWheel.ServiceBus.dll" target="lib\net451\TheWheel.ServiceBus.dll" />
+	<file src="bin\$configuration$\TheWheel.ServiceBus.pdb" target="lib\net451\TheWheel.ServiceBus.pdb" />
+	<file src="**.cs" target="src" />
+  </files>
+</package>
