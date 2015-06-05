@@ -168,15 +168,17 @@ namespace TheWheel.ServiceBus
 
         #region IServiceBus Members
 
-        public void Start()
+        public void Start(string connectionString)
         {
             stop = false;
+            connection.ConnectionString = connectionString;
             WaitMessage();
         }
 
-        public void StartOnce()
+        public void StartOnce(string connectionString)
         {
             stop = true;
+            connection.ConnectionString = connectionString;
             WaitMessage();
         }
 
