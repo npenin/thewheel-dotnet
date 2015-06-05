@@ -52,7 +52,7 @@ namespace TheWheel.Mail
             param.ParameterName = "reply_to";
             if (mail.ReplyToList.Count > 1)
                 throw new NotSupportedException("SQL Server only accepts 1 address as a reply to");
-            param.Value = mail.ReplyToList.FirstOrDefault()?.ToString() ?? "";
+            param.Value = mail.ReplyToList.FirstOrDefault().ToString() ?? "";
 
             param = cmd.CreateParameter();
             param.ParameterName = "subject";
