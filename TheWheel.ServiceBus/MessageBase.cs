@@ -16,12 +16,6 @@ namespace TheWheel.ServiceBus
         internal Guid? ConversationGroup { get; set; }
         protected internal abstract bool IsOneWay { get; }
         public string Culture { get; set; }
-        public Guid TenantId { get; set; }
-        public int ProfileId { get; set; }
-
-        public Guid ModuleId { get; set; }
-
-        public int StudyId { get; set; }
 
         protected IDbConnection connection;
 
