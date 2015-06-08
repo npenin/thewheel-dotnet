@@ -17,7 +17,7 @@ namespace TheWheel.ServiceBus
     public abstract class ServiceBusClient<TMessage> : IDisposable
         where TMessage : MessageBase
     {
-        private IDbConnection connection;
+        internal IDbConnection connection;
         private bool stop;
 
         public ServiceBusClient()
