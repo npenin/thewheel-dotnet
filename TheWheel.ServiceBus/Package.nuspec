@@ -9,6 +9,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Contains all the base classes needed to have a service bus based upon SQL Server Service Broker</description>
     <copyright>Copyright 2014</copyright>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" />
+    </dependencies>
   </metadata>
   <files>
 	<file src="bin\$configuration$\TheWheel.ServiceBus.dll" target="lib\net451\TheWheel.ServiceBus.dll" />
