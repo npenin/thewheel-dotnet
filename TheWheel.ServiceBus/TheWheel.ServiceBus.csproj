@@ -103,6 +103,9 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="SendBrokerMessage.sql" />
+  </ItemGroup>
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
