@@ -96,9 +96,39 @@ namespace TheWheel.ServiceBus
             }
         }
 
+        internal IEnumerable<TMessage> GetMessages()
+        {
+            EnsureBrokerReady();
+            EnsureConnectionIsOpen();
+            var cmd = connection.CreateCommand();
+            cmd.CommandText = "RECEIVE CONVERT(NVARCHAR(MAX), message_body), conversation_handle, message_type_name FROM [" + Queue + "])";
+            return GetMessages(cmd);
+        }
 
+        private IEnumerable<TMessage> GetMessages(IDbCommand cmd)
+        {
 
-        public TMessage GetMessage()
+            ICollection<TMessage> messages = new List<TMessage>();
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var type = reader.GetString(2);
+                    var handle = reader.GetGuid(1);
+                    if (type == MessageType)
+                    {
+                        var m = JsonConvert.DeserializeObject<TMessage>(reader.GetString(0));
+                        m.ConversationHandle = handle;
+                        //m.ConversationGroup = reader.GetGuid(3);
+                        Init(m);
+                        messages.Add(m);
+                    }
+                }
+            }
+            return messages;
+        }
+
+        private TMessage GetMessage()
         {
             EnsureBrokerReady();
             EnsureConnectionIsOpen();
@@ -111,42 +141,14 @@ namespace TheWheel.ServiceBus
                 timeout = TimeSpan.FromSeconds(cmd.CommandTimeout - 5);
 
             cmd.CommandText += ", TIMEOUT " + timeout.TotalMilliseconds.ToString("F0");
-            TMessage m = default(TMessage);
-            using (var reader = cmd.ExecuteReader())
-            {
-                if (reader.Read())
-                {
-                    var type = reader.GetString(2);
-                    var handle = reader.GetGuid(1);
-                    if (type == MessageType)
-                    {
-                        m = JsonConvert.DeserializeObject<TMessage>(reader.GetString(0));
-                        m.ConversationHandle = handle;
-                        //m.ConversationGroup = reader.GetGuid(3);
-                        Init(m);
-                    }
-                    //else if (type == "http://schemas.microsoft.com/SQL/ServiceBroker/EndDialog")
-                    //{
-                    //    cmd = connection.CreateCommand();
-                    //    cmd.CommandText = "END CONVERSATION " + handle;
-                    //    cmd.ExecuteNonQuery();
-                    //}
-                    //else if (type == "http://schemas.microsoft.com/SQL/ServiceBroker/Error")
-                    //{
-                    //    cmd = connection.CreateCommand();
-                    //    cmd.CommandText = "END CONVERSATION " + handle;
-                    //    cmd.ExecuteNonQuery();
-                    //}
-                }
-            }
-            return m;
+            return GetMessages(cmd).FirstOrDefault();
         }
 
         protected abstract void Init(TMessage m);
 
         public void WaitMessage()
         {
-            Task.Run<TMessage>(new Func<TMessage>(GetMessage)).ContinueWith<object>(Process);
+            Task.Run(new Func<TMessage>(GetMessage)).ContinueWith<object>(Process);
         }
 
         #region IDisposable Members

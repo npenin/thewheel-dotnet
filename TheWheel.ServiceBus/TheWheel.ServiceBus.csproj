@@ -88,6 +88,7 @@
     <Compile Include="MessageBase.cs" />
     <Compile Include="OneWayMessageBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SchedulerClient.cs" />
     <Compile Include="ServiceBusClient.cs" />
   </ItemGroup>
   <ItemGroup>
