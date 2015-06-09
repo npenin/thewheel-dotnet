@@ -80,6 +80,7 @@ namespace TheWheel.ServiceBus
                 return;
             processing = true;
             await Handle(client.GetMessages());
+            processing = false;
         }
     }
 }
