@@ -20,7 +20,7 @@ namespace TheWheel.Domain
 
         public string Scope { get; set; }
 
-        public ICollection<FilterCriteria> FilterCriterias { get; set; }
+        public virtual ICollection<FilterCriteria> FilterCriterias { get; set; }
 
 
     }
@@ -44,11 +44,11 @@ namespace TheWheel.Domain
         public int? FK_ParentFilterCriteria { get; set; }
         public bool IsMultiple { get; set; }
 
-        public Filter Filter { get; set; }
+        public virtual Filter Filter { get; set; }
 
-        public ICollection<FilterCriteria> FilterCriterias { get; set; }
+        public virtual ICollection<FilterCriteria> FilterCriterias { get; set; }
 
-        public FilterCriteria Parent { get; set; }
+        public virtual FilterCriteria Parent { get; set; }
     }
 
     public enum FilterOperator
