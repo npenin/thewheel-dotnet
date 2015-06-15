@@ -113,6 +113,8 @@ namespace TheWheel.ServiceBus
             {
                 while (reader.Read())
                 {
+                    if (reader.Depth == 0)
+                        continue;
                     var type = reader.GetString(2);
                     var handle = reader.GetGuid(1);
                     if (type == MessageType)
