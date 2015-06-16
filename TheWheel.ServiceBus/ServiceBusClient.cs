@@ -113,7 +113,7 @@ namespace TheWheel.ServiceBus
             {
                 while (reader.Read())
                 {
-                    if (reader.Depth == 0)
+                    if (reader.FieldCount < 3)
                         continue;
                     var type = reader.GetString(2);
                     var handle = reader.GetGuid(1);
