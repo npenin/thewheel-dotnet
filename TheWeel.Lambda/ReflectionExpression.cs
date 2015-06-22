@@ -599,7 +599,7 @@ namespace TheWheel.Lambda
                 .ToLambda<Func<TSource, TDestination>>(param);
         }
 
-        public static Expression<Func<TSource, TDestination>> Restrict<TSource, TDestination>(this Expression<Func<TSource, TDestination>> init, params Expression<Func<TSource, TDestination>>[] selectors)
+        public static Expression<Func<TDestination, TDestination>> Restrict<TSource, TDestination>(this Expression<Func<TSource, TDestination>> init, params Expression<Func<TSource, TDestination>>[] selectors)
         {
             var param = Expression.Parameter(typeof(TDestination), "x");
             return
@@ -608,7 +608,7 @@ namespace TheWheel.Lambda
                     selectors.SelectMany(
                         selector => ((MemberInitExpression)selector.Body).Bindings.OfType<MemberAssignment>(),
                         (selector, binding) => Expression.Bind(binding.Member, param.Property(binding.Member.Name))))
-                .ToLambda<Func<TSource, TDestination>>(param);
+                .ToLambda<Func<TDestination, TDestination>>(param);
         }
 
         public static Type AsFuncResult(this Type resultType, IEnumerable<Type> typeParameters)
