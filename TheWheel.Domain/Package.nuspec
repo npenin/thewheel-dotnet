@@ -7,8 +7,8 @@
     <owners>Nicolas</owners>
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Package description</description>
-    <copyright>Copyright 2014</copyright>
+    <description>Some default business classes that you may need in any business application</description>
+    <copyright>Copyright 2015</copyright>
     <dependencies>
       <dependency id="TheWheel.Lambda" />
     </dependencies>

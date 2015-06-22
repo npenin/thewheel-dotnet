@@ -7,8 +7,8 @@
     <owners>Nicolas</owners>
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Package description</description>
-    <copyright>Copyright 2014</copyright>
+    <description>Contains helper for integration with client side table view</description>
+    <copyright>Copyright 2015</copyright>
   </metadata>
   <files>
 	<file src="bin\$configuration$\TheWheel.Dto.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Dto.dll" />

@@ -7,8 +7,8 @@
     <owners>Nicolas</owners>
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Package description</description>
-    <copyright>Copyright 2014</copyright>
+    <description>Export a list of data to an open xml document (currently only excel spreadsheet is handled)</description>
+    <copyright>Copyright 2015</copyright>
     <dependencies>
       <dependency id="TheWheel.Domain" />
       <dependency id="TheWheel.Lambda" />

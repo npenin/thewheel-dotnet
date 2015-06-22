@@ -8,7 +8,7 @@
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Contains all the base classes needed to have a service bus based upon SQL Server Service Broker</description>
-    <copyright>Copyright 2014</copyright>
+    <copyright>Copyright 2015</copyright>
     <dependencies>
       <dependency id="Newtonsoft.Json" />
     </dependencies>
