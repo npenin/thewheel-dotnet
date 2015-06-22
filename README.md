@@ -14,6 +14,19 @@ Helps you to build lambda expression easily.
 - Combine Dto building
 - Dynamically access properties or properties path on objects `o.Property("Property1.Property2")`
 
+## Simple And/Or between 2 lambda
+
+How is it to merge the following conditions ?
+```cs
+Expression<Func<A,bool>> condition1=a=>a.Property1=="toto";
+Expression<Func<A,bool>> condition2=a=>a.Property2=="titi";
+```
+
+That simple :
+```cs
+    var condition=condition1.And(condition2);
+```
+
 ## Combine Dto building
 
 Let's assume you have the following class :
@@ -126,4 +139,3 @@ public class Car
 ```
 
 You only need to maintain delta between the basic list and the full details.
-
