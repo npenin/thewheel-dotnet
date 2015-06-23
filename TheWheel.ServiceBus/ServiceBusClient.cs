@@ -35,11 +35,11 @@ namespace TheWheel.ServiceBus
         }
         protected virtual string Queue
         {
-            get { return GetType().FullName + "Queue"; }
+            get { return Contract + "Queue"; }
         }
         protected virtual string Service
         {
-            get { return GetType().FullName; }
+            get { return Contract; }
         }
         public virtual TimeSpan Timeout
         {
