@@ -18,6 +18,14 @@ namespace TheWheel.ServiceBus
                 this.scheduler = scheduler;
             }
 
+            protected override string Contract
+            {
+                get
+                {
+                    return scheduler.GetType().FullName;
+                }
+            }
+
             protected override Task Handle(TMessage tMessage)
             {
                 throw new NotSupportedException();
