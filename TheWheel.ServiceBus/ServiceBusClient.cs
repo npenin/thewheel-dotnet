@@ -101,7 +101,7 @@ namespace TheWheel.ServiceBus
             EnsureBrokerReady();
             EnsureConnectionIsOpen();
             var cmd = connection.CreateCommand();
-            cmd.CommandText = "RECEIVE CONVERT(NVARCHAR(MAX), message_body), conversation_handle, message_type_name FROM [" + Queue + "])";
+            cmd.CommandText = "RECEIVE CONVERT(NVARCHAR(MAX), message_body), conversation_handle, message_type_name FROM [" + Queue + "]";
             return GetMessages(cmd);
         }
 
