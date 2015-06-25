@@ -49,41 +49,44 @@ namespace TheWheel.ServiceBus
         public void EnsureBrokerReady()
         {
             EnsureConnectionIsOpen();
-            var cmd = connection.CreateCommand();
-            // Message type
-            cmd.CommandText = "SELECT Count(1) FROM sys.service_message_types WHERE name='" + MessageType + "'";
-            if (Convert.ToInt32(cmd.ExecuteScalar()) == 0)
+            lock (connection)
             {
+                var cmd = connection.CreateCommand();
+                // Message type
+                cmd.CommandText = "SELECT Count(1) FROM sys.service_message_types WHERE name='" + MessageType + "'";
+                if (Convert.ToInt32(cmd.ExecuteScalar()) == 0)
+                {
+                    cmd = connection.CreateCommand();
+                    cmd.CommandText = "CREATE MESSAGE TYPE [" + MessageType + "] VALIDATION = NONE";
+                    cmd.ExecuteNonQuery();
+                }
+                // contracts
                 cmd = connection.CreateCommand();
-                cmd.CommandText = "CREATE MESSAGE TYPE [" + MessageType + "] VALIDATION = NONE";
-                cmd.ExecuteNonQuery();
-            }
-            // contracts
-            cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT Count(1) FROM sys.service_contracts WHERE name='" + Contract + "'";
-            if (Convert.ToInt32(cmd.ExecuteScalar()) == 0)
-            {
+                cmd.CommandText = "SELECT Count(1) FROM sys.service_contracts WHERE name='" + Contract + "'";
+                if (Convert.ToInt32(cmd.ExecuteScalar()) == 0)
+                {
+                    cmd = connection.CreateCommand();
+                    cmd.CommandText = "CREATE CONTRACT [" + Contract + "] ([" + MessageType + "] SENT BY ANY)";
+                    cmd.ExecuteNonQuery();
+                }
+                // queues
                 cmd = connection.CreateCommand();
-                cmd.CommandText = "CREATE CONTRACT [" + Contract + "] ([" + MessageType + "] SENT BY ANY)";
-                cmd.ExecuteNonQuery();
-            }
-            // queues
-            cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT Count(1) FROM sys.service_queues WHERE name='" + Queue + "'";
-            if (Convert.ToInt32(cmd.ExecuteScalar()) == 0)
-            {
+                cmd.CommandText = "SELECT Count(1) FROM sys.service_queues WHERE name='" + Queue + "'";
+                if (Convert.ToInt32(cmd.ExecuteScalar()) == 0)
+                {
+                    cmd = connection.CreateCommand();
+                    cmd.CommandText = "CREATE QUEUE [" + Queue + "]";
+                    cmd.ExecuteNonQuery();
+                }
+                // services
                 cmd = connection.CreateCommand();
-                cmd.CommandText = "CREATE QUEUE [" + Queue + "]";
-                cmd.ExecuteNonQuery();
-            }
-            // services
-            cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT Count(1) FROM sys.services WHERE name='" + Service + "'";
-            if (Convert.ToInt32(cmd.ExecuteScalar()) == 0)
-            {
-                cmd = connection.CreateCommand();
-                cmd.CommandText = "CREATE SERVICE [" + Service + "] ON QUEUE [" + Queue + "] ([" + Contract + "])";
-                cmd.ExecuteNonQuery();
+                cmd.CommandText = "SELECT Count(1) FROM sys.services WHERE name='" + Service + "'";
+                if (Convert.ToInt32(cmd.ExecuteScalar()) == 0)
+                {
+                    cmd = connection.CreateCommand();
+                    cmd.CommandText = "CREATE SERVICE [" + Service + "] ON QUEUE [" + Queue + "] ([" + Contract + "])";
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
 
@@ -107,23 +110,25 @@ namespace TheWheel.ServiceBus
 
         private IEnumerable<TMessage> GetMessages(IDbCommand cmd)
         {
-
             ICollection<TMessage> messages = new List<TMessage>();
-            using (var reader = cmd.ExecuteReader())
+            lock (connection)
             {
-                while (reader.Read())
+                using (var reader = cmd.ExecuteReader())
                 {
-                    if (reader.FieldCount < 3)
-                        continue;
-                    var type = reader.GetString(2);
-                    var handle = reader.GetGuid(1);
-                    if (type == MessageType)
+                    while (reader.Read())
                     {
-                        var m = JsonConvert.DeserializeObject<TMessage>(reader.GetString(0));
-                        m.ConversationHandle = handle;
-                        //m.ConversationGroup = reader.GetGuid(3);
-                        Init(m);
-                        messages.Add(m);
+                        if (reader.FieldCount < 3)
+                            continue;
+                        var type = reader.GetString(2);
+                        var handle = reader.GetGuid(1);
+                        if (type == MessageType)
+                        {
+                            var m = JsonConvert.DeserializeObject<TMessage>(reader.GetString(0));
+                            m.ConversationHandle = handle;
+                            //m.ConversationGroup = reader.GetGuid(3);
+                            Init(m);
+                            messages.Add(m);
+                        }
                     }
                 }
             }
