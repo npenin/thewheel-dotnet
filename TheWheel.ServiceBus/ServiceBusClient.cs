@@ -98,7 +98,7 @@ namespace TheWheel.ServiceBus
 
         internal IEnumerable<TMessage> GetMessages()
         {
-            EnsureBrokerReady();
+            //EnsureBrokerReady();
             EnsureConnectionIsOpen();
             var cmd = connection.CreateCommand();
             cmd.CommandText = "RECEIVE CONVERT(NVARCHAR(MAX), message_body), conversation_handle, message_type_name FROM [" + Queue + "]";
@@ -132,7 +132,7 @@ namespace TheWheel.ServiceBus
 
         private TMessage GetMessage()
         {
-            EnsureBrokerReady();
+            //EnsureBrokerReady();
             EnsureConnectionIsOpen();
             var cmd = connection.CreateCommand();
             cmd.CommandText = "WAITFOR (RECEIVE TOP (1) CONVERT(NVARCHAR(MAX), message_body), conversation_handle, message_type_name FROM [" + Queue + "])";
@@ -176,6 +176,7 @@ namespace TheWheel.ServiceBus
         {
             stop = false;
             connection.ConnectionString = connectionString;
+            EnsureBrokerReady();
             WaitMessage();
         }
 
@@ -183,6 +184,7 @@ namespace TheWheel.ServiceBus
         {
             stop = true;
             connection.ConnectionString = connectionString;
+            EnsureBrokerReady();
             WaitMessage();
         }
 
