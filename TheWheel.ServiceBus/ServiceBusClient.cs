@@ -113,6 +113,7 @@ namespace TheWheel.ServiceBus
             ICollection<TMessage> messages = new List<TMessage>();
             lock (connection)
             {
+                EnsureConnectionIsOpen();
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
