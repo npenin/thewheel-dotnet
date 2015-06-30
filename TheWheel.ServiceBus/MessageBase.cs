@@ -28,6 +28,7 @@ namespace TheWheel.ServiceBus
             : this()
         {
             ConversationHandle = other.ConversationHandle;
+            connection.ConnectionString = other.connection.ConnectionString;
         }
 
         protected virtual string MessageType
