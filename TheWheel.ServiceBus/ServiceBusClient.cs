@@ -19,6 +19,8 @@ namespace TheWheel.ServiceBus
     {
         internal IDbConnection connection;
         private bool stop;
+        private bool processing;
+        private IDbTransaction transaction;
 
         public ServiceBusClient()
         {
@@ -138,6 +140,9 @@ namespace TheWheel.ServiceBus
 
         private TMessage GetMessage()
         {
+            if (processing)
+                return null;
+            processing = true;
             //EnsureBrokerReady();
             EnsureConnectionIsOpen();
             var cmd = connection.CreateCommand();
@@ -149,6 +154,7 @@ namespace TheWheel.ServiceBus
                 timeout = TimeSpan.FromSeconds(cmd.CommandTimeout - 5);
 
             cmd.CommandText += ", TIMEOUT " + timeout.TotalMilliseconds.ToString("F0");
+            transaction = connection.BeginTransaction();
             return GetMessages(cmd).FirstOrDefault();
         }
 
@@ -212,6 +218,7 @@ namespace TheWheel.ServiceBus
                         try
                         {
                             await Handle(m);
+                            transaction.Commit();
                             if (!m.IsOneWay)
                                 m.Reply();
                         }
@@ -220,6 +227,8 @@ namespace TheWheel.ServiceBus
                             using (var error = new ErrorMessage(m.ConversationHandle.Value, m, ex))
                             {
                                 error.Send();
+                                if (m.IsOneWay)
+                                    transaction.Rollback();
                             }
                         }
                     }
