@@ -209,11 +209,12 @@ namespace TheWheel.ServiceBus
 
         protected async Task Process(Task<TMessage> message)
         {
-            var transaction = this.transaction;
+            IDbTransaction transaction = null;
             try
             {
                 using (var m = await message)
                 {
+                    transaction = this.transaction;
                     if (m != null)
                     {
                         try
