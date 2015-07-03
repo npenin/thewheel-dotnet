@@ -18,7 +18,7 @@ namespace TheWheel.ServiceBus
         where TMessage : MessageBase
     {
         internal IDbConnection connection;
-        private bool stop;
+        private bool stop = true;
         private bool processing;
         private IDbTransaction transaction;
 
