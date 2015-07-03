@@ -155,7 +155,8 @@ namespace TheWheel.ServiceBus
                 timeout = TimeSpan.FromSeconds(cmd.CommandTimeout - 5);
 
             cmd.CommandText += ", TIMEOUT " + timeout.TotalMilliseconds.ToString("F0");
-            transaction = connection.BeginTransaction();
+            if (!processing)
+                transaction = connection.BeginTransaction();
             return GetMessages(cmd).FirstOrDefault();
         }
 
@@ -208,12 +209,11 @@ namespace TheWheel.ServiceBus
 
         protected async Task Process(Task<TMessage> message)
         {
+            var transaction = this.transaction;
             try
             {
                 using (var m = await message)
                 {
-                    if (!stop)
-                        WaitMessage();
                     if (m != null)
                     {
                         try
@@ -237,17 +237,13 @@ namespace TheWheel.ServiceBus
                     }
                 }
             }
-            catch (Exception)
-            {
-                // Error occurs when reading message
-                WaitMessage();
-                throw;
-            }
             finally
             {
                 processing = false;
                 if (transaction != null)
                     transaction.Commit();
+                if (!stop)
+                    WaitMessage();
             }
         }
 
