@@ -219,7 +219,6 @@ namespace TheWheel.ServiceBus
                         try
                         {
                             await Handle(m);
-                            transaction.Commit();
                             if (!m.IsOneWay)
                                 m.Reply();
                         }
@@ -229,7 +228,10 @@ namespace TheWheel.ServiceBus
                             {
                                 error.Send();
                                 if (m.IsOneWay)
+                                {
                                     transaction.Rollback();
+                                    transaction = null;
+                                }
                             }
                         }
                     }
@@ -244,6 +246,8 @@ namespace TheWheel.ServiceBus
             finally
             {
                 processing = false;
+                if (transaction != null)
+                    transaction.Commit();
             }
         }
 
