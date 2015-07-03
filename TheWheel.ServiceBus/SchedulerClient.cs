@@ -88,6 +88,7 @@ namespace TheWheel.ServiceBus
                 return;
             processing = true;
             await Handle(client.GetMessages());
+            client.Stop();
             processing = false;
         }
     }
