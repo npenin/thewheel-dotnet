@@ -241,6 +241,10 @@ namespace TheWheel.ServiceBus
                 WaitMessage();
                 throw;
             }
+            finally
+            {
+                processing = false;
+            }
         }
 
         protected abstract Task Handle(TMessage tMessage);
