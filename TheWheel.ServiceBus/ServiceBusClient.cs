@@ -116,6 +116,7 @@ namespace TheWheel.ServiceBus
             lock (connection)
             {
                 EnsureConnectionIsOpen();
+                cmd.Transaction = transaction;
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
