@@ -212,9 +212,9 @@ namespace TheWheel.ServiceBus
             IDbTransaction transaction = null;
             try
             {
+                transaction = this.transaction;
                 using (var m = await message)
                 {
-                    transaction = this.transaction;
                     if (m != null)
                     {
                         try
