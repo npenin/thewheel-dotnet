@@ -228,7 +228,7 @@ namespace TheWheel.ServiceBus
                             using (var error = new ErrorMessage(m.ConversationHandle.Value, m, ex))
                             {
                                 error.Send();
-                                if (m.IsOneWay)
+                                if (m.IsOneWay && transaction != null)
                                 {
                                     transaction.Rollback();
                                     transaction = null;
