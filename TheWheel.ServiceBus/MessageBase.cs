@@ -27,7 +27,8 @@ namespace TheWheel.ServiceBus
         public MessageBase(MessageBase other)
             : this()
         {
-            ConversationHandle = other.ConversationHandle;
+            if (other.GetType() == GetType())
+                ConversationHandle = other.ConversationHandle;
             connection.ConnectionString = other.connection.ConnectionString;
         }
 
