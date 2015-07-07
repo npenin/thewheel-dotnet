@@ -147,7 +147,7 @@ namespace TheWheel.ServiceBus
             //EnsureBrokerReady();
             EnsureConnectionIsOpen();
             var cmd = connection.CreateCommand();
-            cmd.CommandText = "WAITFOR (RECEIVE TOP (1) CONVERT(NVARCHAR(MAX), message_body), conversation_handle, message_type_name FROM [" + Queue + "])";
+            cmd.CommandText = "WAITFOR (RECEIVE TOP (1) CONVERT(NVARCHAR(MAX), message_body), conversation_handle, message_type_name, conversation_group FROM [" + Queue + "])";
             var timeout = Timeout;
             if (timeout != System.Threading.Timeout.InfiniteTimeSpan)
                 timeout = TimeSpan.FromSeconds(Math.Min(cmd.CommandTimeout - 5, Timeout.TotalSeconds));
