@@ -13,7 +13,7 @@ namespace TheWheel.ServiceBus
     public abstract class MessageBase : IDisposable
     {
         internal Guid? ConversationHandle { get; set; }
-        internal Guid? ConversationGroup { get; set; }
+        public Guid? ConversationGroup { get; set; }
         protected internal abstract bool IsOneWay { get; }
         public string Culture { get; set; }
 
@@ -124,6 +124,12 @@ namespace TheWheel.ServiceBus
             isOneWay.DbType = DbType.Boolean;
             isOneWay.Value = IsOneWay;
             cmd.Parameters.Add(isOneWay);
+
+            var group = cmd.CreateParameter();
+            group.ParameterName = "group";
+            group.DbType = DbType.Guid;
+            group.Value = ConversationGroup;
+            cmd.Parameters.Add(group);
 
             if (IsOneWay)
             {

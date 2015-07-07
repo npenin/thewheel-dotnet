@@ -2,17 +2,21 @@
 	@FromService SYSNAME,
 	@MessageType SYSNAME,
 	@MessageBody nvarchar(max),
-	@IsOneWay bit
+	@IsOneWay bit,
+	@group uniqueidentifier
 AS
 BEGIN
   SET NOCOUNT ON;
  
   DECLARE @conversation_handles TABLE(handle UNIQUEIDENTIFIER);
   DECLARE @conversation_handle UNIQUEIDENTIFIER;
-  DECLARE @group UNIQUEIDENTIFIER=NEWID();
   DECLARE @ToServices TABLE([To] sysname, [Contract] sysname)
   DECLARE @InQueue sysname;
 
+  IF @group IS NULL
+  BEGIN
+	SET @group=NEWID()
+  END
 
   BEGIN TRANSACTION;
 

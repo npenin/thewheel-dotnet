@@ -106,7 +106,7 @@ namespace TheWheel.ServiceBus
             //EnsureBrokerReady();
             EnsureConnectionIsOpen();
             var cmd = connection.CreateCommand();
-            cmd.CommandText = "RECEIVE CONVERT(NVARCHAR(MAX), message_body), conversation_handle, message_type_name FROM [" + Queue + "]";
+            cmd.CommandText = "RECEIVE CONVERT(NVARCHAR(MAX), message_body), conversation_handle, message_type_name, conversation_group FROM [" + Queue + "]";
             return GetMessages(cmd);
         }
 
@@ -129,7 +129,7 @@ namespace TheWheel.ServiceBus
                         {
                             var m = JsonConvert.DeserializeObject<TMessage>(reader.GetString(0));
                             m.ConversationHandle = handle;
-                            //m.ConversationGroup = reader.GetGuid(3);
+                            m.ConversationGroup = reader.GetGuid(3);
                             Init(m);
                             messages.Add(m);
                         }
