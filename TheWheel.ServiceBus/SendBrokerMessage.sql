@@ -3,7 +3,7 @@
 	@MessageType SYSNAME,
 	@MessageBody nvarchar(max),
 	@IsOneWay bit,
-	@group uniqueidentifier
+	@group uniqueidentifier=null
 AS
 BEGIN
   SET NOCOUNT ON;
