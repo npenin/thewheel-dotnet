@@ -1,4 +1,10 @@
-﻿ALTER PROCEDURE [dbo].[SendBrokerMessage] 
+﻿If Object_Id('dbo.SendBrokerMessage') is not null
+begin
+   drop procedure [dbo].[SendBrokerMessage]
+end
+GO
+
+CREATE PROCEDURE [dbo].[SendBrokerMessage] 
 	@FromService SYSNAME,
 	@MessageType SYSNAME,
 	@MessageBody nvarchar(max),
@@ -33,6 +39,7 @@ INNER JOIN sys.service_contracts sc ON scu.service_contract_id=sc.service_contra
 INNER JOIN sys.service_contract_message_usages scmu ON scmu.service_contract_id=scu.service_contract_id
 INNER JOIN sys.service_message_types smt ON smt.message_type_id=scmu.message_type_id
 WHERE smt.name=@MessageType
+AND sq.is_receive_enabled=1
 
  DECLARE @count int =@@ROWCOUNT;
  DECLARE @total int =@count;
@@ -67,7 +74,7 @@ WHERE smt.name=@MessageType
 
 		WHILE(@count<@total)
 		BEGIN
-			DECLARE @receive nvarchar(max)='WAITFOR (RECEIVE TOP (@total) message_type_name, CONVERT(nvarchar(max), message_body) as message_body FROM [' + @InQueue+'] WHERE conversation_group_id=@group), TIMEOUT 30000';
+			DECLARE @receive nvarchar(max)='WAITFOR (RECEIVE TOP (@total) message_type_name, CONVERT(nvarchar(max), message_body) as message_body FROM [' + @InQueue+'] WHERE conversation_group_id=@group), TIMEOUT 25000';
 			print @receive;
 			INSERT INTO @messages
 			exec sp_executesql @receive, N'@total int, @group uniqueidentifier', @total=@total, @group=@group
