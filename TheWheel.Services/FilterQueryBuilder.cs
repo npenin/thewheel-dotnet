@@ -322,6 +322,8 @@ namespace TheWheel.Services
                         case FilterOperator.Equal:
                         case FilterOperator.Contains:
                         case FilterOperator.StartsWith:
+                        case FilterOperator.EndsWith:
+                        case FilterOperator.StringContains:
                             break;
                         case FilterOperator.Not:
                             constraint = Expression.Not(call);
