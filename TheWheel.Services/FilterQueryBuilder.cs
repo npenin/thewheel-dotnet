@@ -134,7 +134,7 @@ namespace TheWheel.Services
                     if (propertyType.IsEnumerable())
                     {
                         if (!propertyType.IsGenericType || propertyType.GetGenericTypeDefinition() != typeof(IEnumerable<>))
-                            propertyType.GetInterfaces().FirstOrDefault(t => t.IsEnumerable());
+                            propertyType = propertyType.GetInterfaces().FirstOrDefault(t => t.IsEnumerable());
                         propertyType = propertyType.GetGenericArguments()[0];
                         var parameter = propertyType.AsParameter();
                         var func = typeof(Func<,>).MakeGenericType(parameter.Type, typeof(bool));
