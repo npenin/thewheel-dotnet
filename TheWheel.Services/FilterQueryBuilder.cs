@@ -133,7 +133,10 @@ namespace TheWheel.Services
                     var propertyType = ((System.Reflection.PropertyInfo)((MemberExpression)expressionProperty).Member).PropertyType;
                     if (propertyType.IsEnumerable())
                     {
-                        ParameterExpression parameter = Expression.Parameter(propertyType.GetInterfaces().FirstOrDefault(t => t.IsEnumerable()).GetGenericArguments()[0]);
+                        if (!propertyType.IsGenericType || propertyType.GetGenericTypeDefinition() != typeof(IEnumerable<>))
+                            propertyType.GetInterfaces().FirstOrDefault(t => t.IsEnumerable());
+                        propertyType = propertyType.GetGenericArguments()[0];
+                        var parameter = propertyType.AsParameter();
                         var func = typeof(Func<,>).MakeGenericType(parameter.Type, typeof(bool));
                         var lambda = (binaryDefaultOperation == ReflectionExpression.And ? True : False).ToLambda(parameter);
                         var call = (MethodCallExpression)expressionProperty.Any(parameter.Type, ref parameter, lambda);
@@ -165,9 +168,9 @@ namespace TheWheel.Services
                         rhs = Expression.Constant(null, pi);
                     else
                         if (piType.IsEnum)
-                            rhs = Expression.Constant(Enum.ToObject(piType, Convert.ChangeType(criteria.PropertyValue, Enum.GetUnderlyingType(piType), CultureInfo.CurrentCulture)), piType);
-                        else
-                            rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, pi, CultureInfo.CurrentCulture));
+                        rhs = Expression.Constant(Enum.ToObject(piType, Convert.ChangeType(criteria.PropertyValue, Enum.GetUnderlyingType(piType), CultureInfo.CurrentCulture)), piType);
+                    else
+                        rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, pi, CultureInfo.CurrentCulture));
                 }
                 else if (criteria.IsMultiple || @operator == FilterOperator.Contains &&
                                 criteria.PropertyValue.Contains(";") && pi.GetTypeCode() != TypeCode.String)
