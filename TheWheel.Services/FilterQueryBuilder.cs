@@ -290,6 +290,10 @@ namespace TheWheel.Services
                         constraint = Expression.Call(expressionProperty, EndsWith, rhs);
                         break;
                     case FilterOperator.StringContains:
+                        if (expressionProperty.Type != typeof(string))
+                            expressionProperty = Expression.Convert(expressionProperty, typeof(string));
+                        if (rhs.Type != typeof(string))
+                            rhs = Expression.Convert(rhs, typeof(string));
                         constraint = Expression.Call(Expression.Call(expressionProperty, "ToLower", null), Contains, Expression.Call(rhs, "ToLower", null));
                         break;
                     default:
