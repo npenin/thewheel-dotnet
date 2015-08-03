@@ -292,12 +292,22 @@ namespace TheWheel.Services
                     case FilterOperator.StringContains:
                         if (expressionProperty.Type != typeof(string))
                             if (ToString != null)
-                                expressionProperty = Expression.Call(expressionProperty, ToString.Method);
+                            {
+                                if (ToString.Method.IsStatic)
+                                    expressionProperty = Expression.Call(null, ToString.Method, expressionProperty);
+                                else
+                                    expressionProperty = Expression.Call(expressionProperty, ToString.Method);
+                            }
                             else
                                 expressionProperty = Expression.Call(expressionProperty, "ToString", null);
                         if (rhs.Type != typeof(string))
                             if (ToString != null)
-                                rhs = Expression.Call(rhs, ToString.Method);
+                            {
+                                if (ToString.Method.IsStatic)
+                                    rhs = Expression.Call(null, ToString.Method, rhs);
+                                else
+                                    rhs = Expression.Call(rhs, ToString.Method);
+                            }
                             else
                                 rhs = Expression.Call(rhs, "ToString", null);
                         constraint = Expression.Call(Expression.Call(expressionProperty, "ToLower", null), Contains, Expression.Call(rhs, "ToLower", null));
