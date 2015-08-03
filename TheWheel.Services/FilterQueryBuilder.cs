@@ -291,9 +291,9 @@ namespace TheWheel.Services
                         break;
                     case FilterOperator.StringContains:
                         if (expressionProperty.Type != typeof(string))
-                            expressionProperty = Expression.Convert(expressionProperty, typeof(string));
+                            expressionProperty = Expression.Call(expressionProperty, "ToString", null);
                         if (rhs.Type != typeof(string))
-                            rhs = Expression.Convert(rhs, typeof(string));
+                            rhs = Expression.Call(rhs, "ToString", null);
                         constraint = Expression.Call(Expression.Call(expressionProperty, "ToLower", null), Contains, Expression.Call(rhs, "ToLower", null));
                         break;
                     default:
