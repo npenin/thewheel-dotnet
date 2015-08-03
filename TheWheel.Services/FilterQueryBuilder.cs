@@ -291,9 +291,15 @@ namespace TheWheel.Services
                         break;
                     case FilterOperator.StringContains:
                         if (expressionProperty.Type != typeof(string))
-                            expressionProperty = Expression.Call(expressionProperty, "ToString", null);
+                            if (ToString != null)
+                                expressionProperty = Expression.Call(expressionProperty, ToString.Method);
+                            else
+                                expressionProperty = Expression.Call(expressionProperty, "ToString", null);
                         if (rhs.Type != typeof(string))
-                            rhs = Expression.Call(rhs, "ToString", null);
+                            if (ToString != null)
+                                rhs = Expression.Call(rhs, ToString.Method);
+                            else
+                                rhs = Expression.Call(rhs, "ToString", null);
                         constraint = Expression.Call(Expression.Call(expressionProperty, "ToLower", null), Contains, Expression.Call(rhs, "ToLower", null));
                         break;
                     default:
@@ -391,5 +397,7 @@ namespace TheWheel.Services
         {
             throw new NotImplementedException();
         }
+
+        public Func<decimal?, string> ToString { get; set; }
     }
 }
