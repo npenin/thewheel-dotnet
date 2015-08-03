@@ -344,6 +344,10 @@ namespace TheWheel.Services
                         case FilterOperator.StartsWith:
                         case FilterOperator.EndsWith:
                         case FilterOperator.StringContains:
+                        case FilterOperator.Greater:
+                        case FilterOperator.GreaterOrEqual:
+                        case FilterOperator.Lower:
+                        case FilterOperator.LowerOrEqual:
                             break;
                         case FilterOperator.Not:
                             constraint = Expression.Not(call);
