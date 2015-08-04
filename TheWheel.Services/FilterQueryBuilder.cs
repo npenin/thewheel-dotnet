@@ -237,6 +237,8 @@ namespace TheWheel.Services
                 {
                     if (piType.IsEnum)
                         rhs = Expression.Constant(Enum.ToObject(piType, Convert.ChangeType(criteria.PropertyValue, Enum.GetUnderlyingType(piType), CultureInfo.CurrentCulture)), piType);
+                    else if (@operator == FilterOperator.StringContains)
+                        rhs = Expression.Constant(criteria.PropertyValue, typeof(string));
                     else
                         rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, pi, CultureInfo.CurrentCulture));
                 }
@@ -294,22 +296,12 @@ namespace TheWheel.Services
                             if (ToString != null)
                             {
                                 if (ToString.Method.IsStatic)
-                                    expressionProperty = Expression.Call(null, ToString.Method, expressionProperty);
+                                    expressionProperty = Expression.Call(null, ToString.Method, Expression.Convert(expressionProperty, typeof(decimal)));
                                 else
                                     expressionProperty = Expression.Call(expressionProperty, ToString.Method);
                             }
                             else
                                 expressionProperty = Expression.Call(expressionProperty, "ToString", null);
-                        if (rhs.Type != typeof(string))
-                            if (ToString != null)
-                            {
-                                if (ToString.Method.IsStatic)
-                                    rhs = Expression.Call(null, ToString.Method, rhs);
-                                else
-                                    rhs = Expression.Call(rhs, ToString.Method);
-                            }
-                            else
-                                rhs = Expression.Call(rhs, "ToString", null);
                         constraint = Expression.Call(Expression.Call(expressionProperty, "ToLower", null), Contains, Expression.Call(rhs, "ToLower", null));
                         break;
                     default:
