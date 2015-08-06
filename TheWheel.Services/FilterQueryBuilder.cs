@@ -296,7 +296,7 @@ namespace TheWheel.Services
                             if (ToString != null)
                             {
                                 if (ToString.Method.IsStatic)
-                                    expressionProperty = Expression.Call(null, ToString.Method, Expression.Convert(expressionProperty, typeof(decimal)));
+                                    expressionProperty = Expression.Call(null, ToString.Method, Expression.Convert(expressionProperty, typeof(decimal?)));
                                 else
                                     expressionProperty = Expression.Call(expressionProperty, ToString.Method);
                             }
