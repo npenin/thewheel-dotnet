@@ -170,7 +170,7 @@ namespace TheWheel.Services
                         if (piType.IsEnum)
                         rhs = Expression.Constant(Enum.ToObject(piType, Convert.ChangeType(criteria.PropertyValue, Enum.GetUnderlyingType(piType), CultureInfo.CurrentCulture)), piType);
                     else
-                        rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, pi, CultureInfo.CurrentCulture));
+                        rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, piType, CultureInfo.CurrentCulture));
                 }
                 else if (criteria.IsMultiple || @operator == FilterOperator.Contains &&
                                 criteria.PropertyValue.Contains(";") && pi.GetTypeCode() != TypeCode.String)
