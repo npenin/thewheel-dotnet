@@ -239,6 +239,8 @@ namespace TheWheel.Services
                         rhs = Expression.Constant(Enum.ToObject(piType, Convert.ChangeType(criteria.PropertyValue, Enum.GetUnderlyingType(piType), CultureInfo.CurrentCulture)), piType);
                     else if (@operator == FilterOperator.StringContains)
                         rhs = Expression.Constant(criteria.PropertyValue, typeof(string));
+                    else if (piType == typeof(Guid))
+                        rhs = Expression.Constant(Guid.Parse(criteria.PropertyValue));
                     else
                         rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, pi, CultureInfo.CurrentCulture));
                 }
