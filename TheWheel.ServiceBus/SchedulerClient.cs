@@ -56,6 +56,7 @@ namespace TheWheel.ServiceBus
             stop = false;
             this.interval = interval;
             client.connection.ConnectionString = connectionString;
+            client.EnsureBrokerReady();
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             Process(null);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
