@@ -465,7 +465,7 @@ namespace TheWheel.Lambda
                 expression = ReflectionExpression.CallOn(expression.Type.GetMethod("AsExpression", BindingFlags.Instance | BindingFlags.Public), expression);
             if (typeof(Expression).IsAssignableFrom(expression.Type))
                 return (Expression)expression.ToLambda().Compile().DynamicInvoke();
-            return Expression.Constant(expression.ToLambda().Compile().DynamicInvoke());
+            return Evaluator.PartialEval(expression);
         }
 
         public static MethodInfo Lambda(Type type)

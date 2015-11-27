@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompilableVisitor.cs" />
+    <Compile Include="Evaluator.cs" />
     <Compile Include="Extensions.cs">
       <SubType>Code</SubType>
     </Compile>
