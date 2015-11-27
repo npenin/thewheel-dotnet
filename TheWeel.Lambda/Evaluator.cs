@@ -31,7 +31,7 @@ namespace TheWheel.Lambda
 
         private static bool CanBeEvaluatedLocally(Expression expression)
         {
-            return expression.NodeType != ExpressionType.Parameter && expression.NodeType != ExpressionType.Constant && !expression.Type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IQueryable<>));
+            return expression.NodeType != ExpressionType.Parameter && !expression.Type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IQueryable<>));
         }
 
         /// <summary>

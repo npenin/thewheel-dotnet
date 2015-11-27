@@ -4,12 +4,22 @@ using TheWheel.Lambda;
 using TheWheel.Domain;
 using TheWheel.Services;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace TheWheel.Tests
 {
     [TestClass]
     public class UnitTest1
     {
+        [TestMethod]
+        public void TestPartiaEval()
+        {
+            var it = new { Property = "pwic" };
+            Expression<Func<FilterCriteria, bool>> filter = f => f.PropertyName == it.Property;
+            Expression filterReduced = filter.PartialEval();
+            Assert.AreEqual(ExpressionType.Constant, ((BinaryExpression)((LambdaExpression)filterReduced).Body).Right.NodeType);
+        }
+
         [TestMethod]
         public void TestPropertyAccessor()
         {
@@ -30,15 +40,15 @@ namespace TheWheel.Tests
                     }
                 }
             };
-            var source = new[] { 
-                new { 
-                    Property = "pwic", 
-                    Children = new[] { new { Property1 = "pwic1",Property2 = "1pwic" }, new { Property1 = "pwic2",Property2 = "2pwic" }, new { Property1 = "pwic3",Property2 = "2pwic" } } 
-                }, 
-                new { 
-                    Property = "pwet", 
+            var source = new[] {
+                new {
+                    Property = "pwic",
+                    Children = new[] { new { Property1 = "pwic1",Property2 = "1pwic" }, new { Property1 = "pwic2",Property2 = "2pwic" }, new { Property1 = "pwic3",Property2 = "2pwic" } }
+                },
+                new {
+                    Property = "pwet",
                     Children = new[]{new { Property1 = "pwet1",Property2 = "1pwet"  } }
-                } 
+                }
             };
             var fqb = FilterQueryBuilder.Create(source.AsQueryable());
             fqb.Visit(filter);
