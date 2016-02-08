@@ -111,9 +111,62 @@ namespace TheWheel.Lambda
             return (MethodInfo)typeof(ReflectionExpression).GetMethods(BindingFlags.Static | BindingFlags.Public).Single(mi => mi.Name == "Select" && mi.GetParameters().Length == 0).MakeGenericMethod(tSource, tResult).Invoke(null, null);
         }
 
+        public static Expression SelectMany(this Expression getter, Type type, ref ParameterExpression param, LambdaExpression selector)
+        {
+            if (!typeof(IQueryable).IsAssignableFrom(getter.Type))
+                getter = getter.AsQueryable(type);
+            return Expression.Call(
+                null,
+                SelectMany(type.GetGenericArguments()[0], selector.ReturnType),
+                getter,
+                selector);
+        }
+
+        public static Expression Select(this Expression getter, Type type, ref ParameterExpression param, LambdaExpression selector)
+        {
+            if (!typeof(IQueryable).IsAssignableFrom(getter.Type))
+                getter = getter.AsQueryable(type);
+            return Expression.Call(
+                null,
+                Select(type.GetGenericArguments()[0], selector.ReturnType),
+                getter,
+                selector);
+        }
+
+        public static MethodInfo SelectMany(Type tSource, Type tResult)
+        {
+            return (MethodInfo)typeof(ReflectionExpression).GetMethods(BindingFlags.Static | BindingFlags.Public).Single(mi => mi.Name == "SelectMany" && mi.GetParameters().Length == 0).MakeGenericMethod(tSource, tResult).Invoke(null, null);
+        }
+
+        public static MethodInfo AsQueryable(Type type)
+        {
+            return (MethodInfo)typeof(ReflectionExpression).GetMethods(BindingFlags.Static | BindingFlags.Public).Single(mi => mi.Name == "AsQueryable" && mi.GetParameters().Length == 0).MakeGenericMethod(type).Invoke(null, null);
+        }
+
+        public static Expression AsQueryable(this Expression expression, Type type)
+        {
+            if (type.IsEnumerable())
+                type = type.GetGenericArguments()[0];
+            if (expression.Type != typeof(IEnumerable<>).MakeGenericType(type))
+                expression = Expression.Convert(expression, typeof(IEnumerable<>).MakeGenericType(type));
+            return Expression.Call(null,
+                AsQueryable(type),
+                expression);
+        }
+
+        public static MethodInfo AsQueryable<T>()
+        {
+            return new Func<IEnumerable<T>, IQueryable<T>>(Queryable.AsQueryable<T>).Method;
+        }
+
         public static MethodInfo Select<TSource, TResult>()
         {
             return new Func<IQueryable<TSource>, Expression<Func<TSource, TResult>>, IQueryable<TResult>>(Queryable.Select<TSource, TResult>).Method;
+        }
+
+        public static MethodInfo SelectMany<TSource, TResult>()
+        {
+            return new Func<IQueryable<TSource>, Expression<Func<TSource, IEnumerable<TResult>>>, IQueryable<TResult>>(Queryable.SelectMany<TSource, TResult>).Method;
         }
 
         public static MethodInfo FirstOrDefault<T>()
@@ -133,6 +186,15 @@ namespace TheWheel.Lambda
                                     ReflectionExpression.Select(tSource, tResult),
                                         source.Expression,
                                         constraint));
+        }
+
+        public static IQueryable SelectMany(this IQueryable source, Type tSource, Type tResult, Expression selector)
+        {
+            return source.Provider.CreateQuery<object>(
+                                    Expression.Call(null,
+                                    ReflectionExpression.SelectMany(tSource, tResult),
+                                        source.Expression,
+                                        selector));
         }
 
         public static ParameterExpression AsParameter(this Type type)
@@ -172,13 +234,16 @@ namespace TheWheel.Lambda
             for (int i = 0; i < properties.Length; i++)
             {
                 var prop = properties[i];
-                if (expression.Type.IsEnumerable())
+                if (expression.Type.IsEnumerable() && i < properties.Length)
                 {
                     var param = Expression.Parameter(expression.Type.GetGenericArguments()[0]);
-                    //expression = expression.SelectMany(param.Property(property.Substring(i + properties.Take(i).Select(p => p.Length).Sum())).ToLambda(param));
+
+
+
+                    return expression.Select(expression.Type, ref param, param.Property(property.Substring(i + properties.Take(i).Select(p => p.Length).Sum())).ToLambda(param));
                 }
-                //else
-                expression = Expression.Property(expression, prop);
+                else
+                    expression = Expression.Property(expression, prop);
             }
             return expression;
         }
@@ -241,7 +306,7 @@ namespace TheWheel.Lambda
                 //    return null;
 
                 string currentProperty = string.Empty;
-                expression = param.IsNotNullUntil<T>(property);
+                expression = param.IsNotNullUntil(property);
                 for (int i = 0; i < properties.Length - 1; i++)
                 {
                     if (i > 0)
@@ -282,7 +347,7 @@ namespace TheWheel.Lambda
                 //    return null;
 
                 string currentProperty = string.Empty;
-                expression = param.IsNotNullUntil<T>(property);
+                expression = param.IsNotNullUntil(property);
                 for (int i = 0; i < properties.Length - 1; i++)
                 {
                     if (i > 0)
@@ -319,7 +384,14 @@ namespace TheWheel.Lambda
             return property.Substring(newRoot.Length + 1);
         }
 
-        public static Expression IsNotNullUntil<T>(this ParameterExpression param, string property)
+        public static bool IsNotNullUntil(this object param, string property)
+        {
+            var paramExpression = param.AsParameter();
+            var exp = paramExpression.IsNotNullUntil(property);
+            return exp == null && param != null || exp != null && (bool)exp.ToLambda(paramExpression).Compile().DynamicInvoke(param);
+        }
+
+        public static Expression IsNotNullUntil(this ParameterExpression param, string property)
         {
             var properties = property.Split('.');
             if (properties.Length == 1)
@@ -446,6 +518,8 @@ namespace TheWheel.Lambda
                             return Expression.Convert(Expression.Call(typeof(Convert).GetMethod("To" + typeCode, new Type[] { sourceType }), Expression.Convert(value, typeof(object))), targetType);
                         return Expression.Convert(Expression.Call(typeof(Convert).GetMethod("To" + typeCode, new Type[] { sourceType }), Expression.Convert(value, typeof(object))), targetType);
                     }
+                    if (typeCode == TypeCode.String && value.NodeType == ExpressionType.Constant && ((ConstantExpression)value).Value == null)
+                        return value;
                     return Expression.Convert(Expression.Call(typeof(Convert).GetMethod("To" + typeCode, new Type[] { sourceType }), Expression.TypeAs(value, sourceType)), targetType);
                 default:
                     if (sourceType == typeof(object))
@@ -661,3 +735,4 @@ namespace TheWheel.Lambda
         }
     }
 }
+
