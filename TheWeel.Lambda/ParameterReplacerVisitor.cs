@@ -33,7 +33,7 @@ namespace TheWheel.Lambda
 
         public static Expression Process(LambdaExpression exp, ParameterExpression newParam)
         {
-            return Process(exp, exp.Parameters.First(), newParam, newParam);
+            return Process(exp, newParam, (Expression)newParam);
         }
 
         public static Expression<T> Process<T>(Expression<T> exp, ParameterExpression newParam)
@@ -46,11 +46,6 @@ namespace TheWheel.Lambda
             return Process((Expression)exp, exp.Parameters.First(), newParam, newExp);
         }
 
-        public static Expression Process<T>(Expression<T> exp, ParameterExpression newParam, Expression newExp)
-        {
-            return Process((LambdaExpression)exp, newExp, newParam);
-        }
-
 
 
         //public static LambdaExpression Process(LambdaExpression exp, ParameterExpression newParam)
@@ -60,6 +55,14 @@ namespace TheWheel.Lambda
 
         protected override Expression VisitConstant(ConstantExpression node)
         {
+            var exp = node.Value as Expression;
+            if (exp != null)
+            {
+                var newExp = Visit(exp);
+                if (exp != newExp)
+                    return Expression.Constant(newExp);
+                return newExp;
+            }
             return base.VisitConstant(node);
         }
 

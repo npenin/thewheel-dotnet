@@ -174,6 +174,41 @@ namespace TheWheel.Lambda
             return new Func<IEnumerable<T>, T>(Enumerable.FirstOrDefault<T>).Method;
         }
 
+        public static object FirstOrDefault(this IEnumerable query, Type type)
+        {
+            if (query == null)
+                return null;
+
+            var enumerator = query.GetEnumerator();
+            if (enumerator != null && enumerator.MoveNext())
+                return enumerator.Current;
+
+            return null;
+        }
+
+        public static IList ToArrayList(this IEnumerable source)
+        {
+            var result = new List<object>();
+            foreach (var item in source)
+                result.Add(item);
+            return result;
+        }
+
+        public static IList ToList(this IQueryable source)
+        {
+            return (IList)ToList(source.ElementType).Invoke(null, new[] { source });
+        }
+
+        public static MethodInfo ToList(Type type)
+        {
+            return (MethodInfo)typeof(ReflectionExpression).GetMethods(BindingFlags.Static | BindingFlags.Public).Single(mi => mi.Name == "ToList" && mi.GetParameters().Length == 0).MakeGenericMethod(type).Invoke(null, null);
+        }
+
+        public static MethodInfo ToList<T>()
+        {
+            return new Func<IEnumerable<T>, IList<T>>(Enumerable.ToList).Method;
+        }
+
         public static MethodInfo OfType<T>()
         {
             return new Func<IQueryable, IQueryable<T>>(Queryable.OfType<T>).Method;
