@@ -733,36 +733,68 @@ namespace TheWheel.Lambda
                 case 1:
                     return typeof(Func<>).MakeGenericType(types);
                 case 2:
+                    if (resultType == typeof(void))
+                        return typeof(Action<>).MakeGenericType(typeParameters);
                     return typeof(Func<,>).MakeGenericType(types);
                 case 3:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,>).MakeGenericType(types);
                 case 4:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,>).MakeGenericType(types);
                 case 5:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,>).MakeGenericType(types);
                 case 6:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,>).MakeGenericType(types);
                 case 7:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,,>).MakeGenericType(types);
                 case 8:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,,,>).MakeGenericType(types);
                 case 9:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,,,,>).MakeGenericType(types);
                 case 10:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,,,,,>).MakeGenericType(types);
                 case 11:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,,,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,,,,,,>).MakeGenericType(types);
                 case 12:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,,,,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,,,,,,,>).MakeGenericType(types);
                 case 13:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,,,,,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,,,,,,,,>).MakeGenericType(types);
                 case 14:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,,,,,,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,,,,,,,,,>).MakeGenericType(types);
                 case 15:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,,,,,,,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,,,,,,,,,,>).MakeGenericType(types);
                 case 16:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,,,,,,,,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,,,,,,,,,,,>).MakeGenericType(types);
                 case 17:
+                    if (resultType == typeof(void))
+                        return typeof(Action<,,,,,,,,,,,,,,,>).MakeGenericType(typeParameters);
                     return typeof(Func<,,,,,,,,,,,,,,,,>).MakeGenericType(types);
                 default:
                     throw new NotSupportedException();
