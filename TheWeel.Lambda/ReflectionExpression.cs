@@ -731,6 +731,8 @@ namespace TheWheel.Lambda
             switch (types.Length)
             {
                 case 1:
+                    if (resultType == typeof(void))
+                        return typeof(Action).MakeGenericType(typeParameters);
                     return typeof(Func<>).MakeGenericType(types);
                 case 2:
                     if (resultType == typeof(void))
