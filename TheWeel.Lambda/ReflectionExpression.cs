@@ -504,6 +504,20 @@ namespace TheWheel.Lambda
             return result;
         }
 
+        public static Expression<Func<T, U>> Or<T, U>(this Expression<Func<T, U>> left, Expression<Func<T, U>> right)
+        {
+            if (left == null)
+                return right;
+            if (right == null)
+                return left;
+
+            var param = Expression.Parameter(typeof(T));
+            var processedFilter = ParameterReplacerVisitor.Process(left, param).Body.Or(ParameterReplacerVisitor.Process(right, param).Body);
+
+            var result = processedFilter.ToLambda<Func<T, U>>(param);
+            return result;
+        }
+
         public static Expression Or(this Expression left, Expression right)
         {
             if (left == null)
