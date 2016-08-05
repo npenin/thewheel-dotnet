@@ -133,9 +133,13 @@ namespace TheWheel.Lambda
                 selector);
         }
 
-        public static MethodInfo SelectMany(Type tSource, Type tResult, int parametersCount = 2)
+        public static MethodInfo SelectMany(Type tSource, Type tResult)
         {
-            return (MethodInfo)typeof(ReflectionExpression).GetMethods(BindingFlags.Static | BindingFlags.Public).Single(mi => mi.Name == "SelectMany" && mi.GetParameters().Length == parametersCount).MakeGenericMethod(tSource, tResult).Invoke(null, null);
+            return (MethodInfo)typeof(ReflectionExpression).GetMethods(BindingFlags.Static | BindingFlags.Public).Single(mi => mi.Name == "SelectMany" && mi.GetParameters().Length == 0 && mi.GetGenericArguments().Length == 2).MakeGenericMethod(tSource, tResult).Invoke(null, null);
+        }
+        public static MethodInfo SelectMany(Type tSource, Type tCollection, Type tResult)
+        {
+            return (MethodInfo)typeof(ReflectionExpression).GetMethods(BindingFlags.Static | BindingFlags.Public).Single(mi => mi.Name == "SelectMany" && mi.GetParameters().Length == 0 && mi.GetGenericArguments().Length == 3).MakeGenericMethod(tSource, tCollection, tResult).Invoke(null, null);
         }
 
         public static MethodInfo AsQueryable(Type type)
@@ -167,6 +171,11 @@ namespace TheWheel.Lambda
         public static MethodInfo SelectMany<TSource, TResult>()
         {
             return new Func<IQueryable<TSource>, Expression<Func<TSource, IEnumerable<TResult>>>, IQueryable<TResult>>(Queryable.SelectMany<TSource, TResult>).Method;
+        }
+
+        public static MethodInfo SelectMany<TSource, TCollection, TResult>()
+        {
+            return new Func<IQueryable<TSource>, Expression<Func<TSource, IEnumerable<TCollection>>>, Expression<Func<TSource, TCollection, TResult>>, IQueryable<TResult>>(Queryable.SelectMany<TSource, TCollection, TResult>).Method;
         }
 
         public static MethodInfo FirstOrDefault<T>()
@@ -232,11 +241,11 @@ namespace TheWheel.Lambda
                                         selector));
         }
 
-        public static IQueryable SelectMany(this IQueryable source, Type tSource, Type tResult, Expression selector, Expression resultSelector)
+        public static IQueryable SelectMany(this IQueryable source, Type tSource, Type tCollection, Type tResult, Expression selector, Expression resultSelector)
         {
-            return source.Provider.CreateQuery<object>(
+            return source.Provider.CreateQuery(
                                     Expression.Call(null,
-                                    ReflectionExpression.SelectMany(tSource, tResult, 3),
+                                    ReflectionExpression.SelectMany(tSource, tCollection, tResult),
                                         source.Expression,
                                         selector,
                                         resultSelector));
