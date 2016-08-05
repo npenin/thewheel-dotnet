@@ -133,9 +133,9 @@ namespace TheWheel.Lambda
                 selector);
         }
 
-        public static MethodInfo SelectMany(Type tSource, Type tResult)
+        public static MethodInfo SelectMany(Type tSource, Type tResult, int parametersCount = 2)
         {
-            return (MethodInfo)typeof(ReflectionExpression).GetMethods(BindingFlags.Static | BindingFlags.Public).Single(mi => mi.Name == "SelectMany" && mi.GetParameters().Length == 0).MakeGenericMethod(tSource, tResult).Invoke(null, null);
+            return (MethodInfo)typeof(ReflectionExpression).GetMethods(BindingFlags.Static | BindingFlags.Public).Single(mi => mi.Name == "SelectMany" && mi.GetParameters().Length == parametersCount).MakeGenericMethod(tSource, tResult).Invoke(null, null);
         }
 
         public static MethodInfo AsQueryable(Type type)
@@ -230,6 +230,16 @@ namespace TheWheel.Lambda
                                     ReflectionExpression.SelectMany(tSource, tResult),
                                         source.Expression,
                                         selector));
+        }
+
+        public static IQueryable SelectMany(this IQueryable source, Type tSource, Type tResult, Expression selector, Expression resultSelector)
+        {
+            return source.Provider.CreateQuery<object>(
+                                    Expression.Call(null,
+                                    ReflectionExpression.SelectMany(tSource, tResult, 3),
+                                        source.Expression,
+                                        selector,
+                                        resultSelector));
         }
 
         public static ParameterExpression AsParameter(this Type type)
