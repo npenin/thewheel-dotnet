@@ -292,8 +292,6 @@ namespace TheWheel.Lambda
                 {
                     var param = Expression.Parameter(expression.Type.GetGenericArguments()[0]);
 
-
-
                     return expression.Select(expression.Type, ref param, param.Property(property.Substring(i + properties.Take(i).Select(p => p.Length).Sum())).ToLambda(param));
                 }
                 else
