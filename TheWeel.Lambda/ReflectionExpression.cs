@@ -315,20 +315,20 @@ namespace TheWheel.Lambda
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
-        public static Expression ExpressionEquals(this ParameterExpression param, string property, object value, Func<Expression, Expression, Expression> finalComparison)
+        public static Expression ExpressionEquals(this ParameterExpression param, string property, object value, Func<Expression, Expression, Expression> finalComparison, bool skipParamCheck = false)
         {
             return (Expression)typeof(ReflectionExpression).GetMethods()
                 .FirstOrDefault(mi => mi.Name == "Equals" && mi.IsGenericMethodDefinition && mi.GetParameters().First().ParameterType == typeof(ParameterExpression) && mi.GetParameters().Last().ParameterType == typeof(Func<Expression, Expression, Expression>))
                 .MakeGenericMethod(param.Type)
-                .Invoke(null, new object[] { param, property, value, finalComparison });
+                .Invoke(null, new object[] { param, property, value, finalComparison, skipParamCheck });
         }
 
-        public static Expression ExpressionEquals(this ParameterExpression param, object value, Func<Expression, Expression, Expression> finalComparison)
+        public static Expression ExpressionEquals(this ParameterExpression param, object value, Func<Expression, Expression, Expression> finalComparison, bool skipParamCheck = false)
         {
             return (Expression)typeof(ReflectionExpression).GetMethods()
                 .FirstOrDefault(mi => mi.Name == "Equals" && mi.IsGenericMethodDefinition && mi.GetParameters().First().ParameterType == typeof(ParameterExpression) && mi.GetParameters().Last().ParameterType == typeof(Func<Expression, Expression, Expression>))
                 .MakeGenericMethod(param.Type)
-                .Invoke(null, new object[] { param, "", value, finalComparison });
+                .Invoke(null, new object[] { param, "", value, finalComparison, skipParamCheck });
         }
 
         public static Expression<Func<Func<U, object>, Expression>> ExpressionEquals<U>(this ParameterExpression param, string property, Func<Expression, Expression, Expression> finalComparison, bool skipParamCheck = false)
