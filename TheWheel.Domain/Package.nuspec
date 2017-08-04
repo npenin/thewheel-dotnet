@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>TheWheel.Domain</id>
-    <version>1.44</version>
+    <version>$version$</version>
     <authors>Nicolas</authors>
     <owners>Nicolas</owners>
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
@@ -10,7 +10,7 @@
     <description>Some default business classes that you may need in any business application</description>
     <copyright>Copyright 2015</copyright>
     <dependencies>
-      <dependency id="TheWheel.Lambda" />
+      <dependency id="TheWheel.Lambda" version="$version$" />
     </dependencies>
   </metadata>
   <files>

@@ -10,9 +10,9 @@
     <description>Export a list of data to an open xml document (currently only excel spreadsheet is handled)</description>
     <copyright>Copyright 2015</copyright>
     <dependencies>
-      <dependency id="TheWheel.Domain" />
-      <dependency id="TheWheel.Lambda" />
-	  <dependency id="DocumentFormat.OpenXml" />
+      <dependency id="TheWheel.Domain" version="$version$" />
+      <dependency id="TheWheel.Lambda" version="$version$" />
+	  <dependency id="DocumentFormat.OpenXml" version="2.7.2" />
     </dependencies>
   </metadata>
   <files>

@@ -10,8 +10,8 @@
     <description>Manipulates classes from the domain to apply filters</description>
     <copyright>Copyright 2015</copyright>
     <dependencies>
-      <dependency id="TheWheel.Domain" />
-      <dependency id="TheWheel.Lambda" />
+      <dependency id="TheWheel.Domain" version="$version$" />
+      <dependency id="TheWheel.Lambda" version="$version$" />
     </dependencies>
   </metadata>
   <files>

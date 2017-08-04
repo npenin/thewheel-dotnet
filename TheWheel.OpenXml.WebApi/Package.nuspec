@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>TheWheel.OpenXml.WebApi</id>
-    <version>1.44</version>
+    <version>$version$</version>
     <authors>Nicolas</authors>
     <owners>Nicolas</owners>
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
@@ -10,8 +10,8 @@
     <description>Adds a new web api formatter to handle rendering in xslx</description>
     <copyright>Copyright 2015</copyright>
     <dependencies>
-      <dependency id="TheWheel.Lambda" />
-	  <dependency id="TheWheel.OpenXml" />
+      <dependency id="TheWheel.Lambda" version="$version$" />
+	  <dependency id="TheWheel.OpenXml" version="$version$" />
     </dependencies>
   </metadata>
   <files>

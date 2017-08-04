@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>TheWheel.ServiceBus</id>
-    <version>1.44</version>
+    <version>$version$</version>
     <authors>Nicolas</authors>
     <owners>Nicolas</owners>
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
@@ -10,7 +10,7 @@
     <description>Contains all the base classes needed to have a service bus based upon SQL Server Service Broker</description>
     <copyright>Copyright 2015</copyright>
     <dependencies>
-      <dependency id="Newtonsoft.Json" />
+      <dependency id="Newtonsoft.Json" version="8.0" />
     </dependencies>
   </metadata>
   <files>
