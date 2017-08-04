@@ -459,7 +459,7 @@ namespace TheWheel.Lambda
                 if (i > 0)
                     currentProperty += '.';
                 currentProperty += properties[i];
-                if (expression.NodeType == ExpressionType.Lambda)
+                if (expression != null && expression.NodeType == ExpressionType.Lambda)
                     expression = ((LambdaExpression)expression).Body;
                 var propType = param.GetType(currentProperty);
                 if (propType.IsEnumerable())
