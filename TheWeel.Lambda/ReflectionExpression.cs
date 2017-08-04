@@ -331,23 +331,23 @@ namespace TheWheel.Lambda
                 .Invoke(null, new object[] { param, "", value, finalComparison });
         }
 
-        public static Expression<Func<Func<U, object>, Expression>> ExpressionEquals<U>(this ParameterExpression param, string property, Func<Expression, Expression, Expression> finalComparison)
+        public static Expression<Func<Func<U, object>, Expression>> ExpressionEquals<U>(this ParameterExpression param, string property, Func<Expression, Expression, Expression> finalComparison, bool skipParamCheck = false)
         {
             return (Expression<Func<Func<U, object>, Expression>>)typeof(ReflectionExpression).GetMethods()
-                .FirstOrDefault(mi => mi.Name == "Equals" && mi.IsGenericMethodDefinition && mi.GetGenericArguments().Count() == 2 && mi.GetParameters().First().ParameterType == typeof(ParameterExpression) && mi.GetParameters().Last().ParameterType == typeof(Func<Expression, Expression, Expression>))
+                .FirstOrDefault(mi => mi.Name == "Equals" && mi.IsGenericMethodDefinition && mi.GetGenericArguments().Count() == 2 && mi.GetParameters().First().ParameterType == typeof(ParameterExpression) && mi.GetParameters().Last().ParameterType == typeof(bool))
                 .MakeGenericMethod(param.Type, typeof(U))
-                .Invoke(null, new object[] { param, property, finalComparison });
+                .Invoke(null, new object[] { param, property, finalComparison, skipParamCheck });
         }
 
-        public static Expression<Func<Func<U, object>, Expression>> ExpressionEquals<U>(this ParameterExpression param, Func<Expression, Expression, Expression> finalComparison)
+        public static Expression<Func<Func<U, object>, Expression>> ExpressionEquals<U>(this ParameterExpression param, Func<Expression, Expression, Expression> finalComparison, bool skipParamCheck = false)
         {
             return (Expression<Func<Func<U, object>, Expression>>)typeof(ReflectionExpression).GetMethods()
-                .FirstOrDefault(mi => mi.Name == "Equals" && mi.IsGenericMethodDefinition && mi.GetGenericArguments().Count() == 2 && mi.GetParameters().First().ParameterType == typeof(ParameterExpression) && mi.GetParameters().Last().ParameterType == typeof(Func<Expression, Expression, Expression>))
+                .FirstOrDefault(mi => mi.Name == "Equals" && mi.IsGenericMethodDefinition && mi.GetGenericArguments().Count() == 2 && mi.GetParameters().First().ParameterType == typeof(ParameterExpression) && mi.GetParameters().Last().ParameterType == typeof(bool))
                 .MakeGenericMethod(param.Type, typeof(U))
-                .Invoke(null, new object[] { param, "", finalComparison });
+                .Invoke(null, new object[] { param, "", finalComparison, skipParamCheck });
         }
 
-        public static Expression Equals<T>(this ParameterExpression param, string property, object value, Func<Expression, Expression, Expression> finalComparison)
+        public static Expression Equals<T>(this ParameterExpression param, string property, object value, Func<Expression, Expression, Expression> finalComparison, bool skipParamCheck = false)
         {
             Type t = param.GetType(property);
             Expression expression = null;
@@ -358,7 +358,7 @@ namespace TheWheel.Lambda
                 //    return null;
 
                 string currentProperty = string.Empty;
-                expression = param.IsNotNullUntil(property);
+                expression = param.IsNotNullUntil(property, skipParamCheck);
                 for (int i = 0; i < properties.Length - 1; i++)
                 {
                     if (i > 0)
@@ -387,7 +387,7 @@ namespace TheWheel.Lambda
             return expression.And(finalComparison(param.Property(property), Expression.Constant(value).Convert(typeof(string), t).PartialEvalAs(t)));
         }
 
-        public static Expression<Func<object, Expression>> Equals<T>(this ParameterExpression param, string property, Func<Expression, Expression, Expression> finalComparison)
+        public static Expression<Func<object, Expression>> Equals<T>(this ParameterExpression param, string property, Func<Expression, Expression, Expression> finalComparison, bool skipParamCheck = false)
         {
             Type t = param.GetType(property);
             Expression expression = null;
@@ -399,7 +399,7 @@ namespace TheWheel.Lambda
                 //    return null;
 
                 string currentProperty = string.Empty;
-                expression = param.IsNotNullUntil(property);
+                expression = param.IsNotNullUntil(property, skipParamCheck);
                 for (int i = 0; i < properties.Length - 1; i++)
                 {
                     if (i > 0)
@@ -410,7 +410,7 @@ namespace TheWheel.Lambda
                     {
                         var reRooted = Chroot(property, currentProperty);
                         var newParam = Expression.Parameter(propType.GetGenericArguments()[0]);
-                        var equals = ParameterReplacerVisitor.Process(newParam.Equals<T>(reRooted, finalComparison), metaParam).Compile();
+                        var equals = ParameterReplacerVisitor.Process(newParam.Equals<T>(reRooted, finalComparison, skipParamCheck), metaParam).Compile();
                         return ParameterReplacerVisitor.Process<Func<object, Expression>>((object obj) => expression.And(Any(ref param, currentProperty, equals(obj).ToLambda(newParam))), metaParam);
                         //return (Expression<Func<object, Expression>>)ParameterReplacerVisitor.Process<Func<object, Expression>>(obj => .ToLambda(newParam)), metaParam);
 
@@ -420,7 +420,7 @@ namespace TheWheel.Lambda
             if (t.IsEnumerable())
             {
                 var newParam = Expression.Parameter(t.GetGenericArguments()[0]);
-                return obj => expression.And(Any(ref param, property, (LambdaExpression)ParameterReplacerVisitor.Process(newParam.Equals<T>("", finalComparison), metaParam)).ToLambda(newParam));
+                return obj => expression.And(Any(ref param, property, (LambdaExpression)ParameterReplacerVisitor.Process(newParam.Equals<T>("", finalComparison, skipParamCheck), metaParam)).ToLambda(newParam));
             }
             return (object obj) => expression.And(finalComparison(param.Property(property), Expression.Constant(obj).Convert(typeof(string), t).PartialEvalAs(t)));
         }
@@ -436,14 +436,14 @@ namespace TheWheel.Lambda
             return property.Substring(newRoot.Length + 1);
         }
 
-        public static bool IsNotNullUntil(this object param, string property)
+        public static bool IsNotNullUntil(this object param, string property, bool skipParamCheck = false)
         {
             var paramExpression = param.AsParameter();
-            var exp = paramExpression.IsNotNullUntil(property);
+            var exp = paramExpression.IsNotNullUntil(property, skipParamCheck);
             return exp == null && param != null || exp != null && (bool)exp.ToLambda(paramExpression).Compile().DynamicInvoke(param);
         }
 
-        public static Expression IsNotNullUntil(this ParameterExpression param, string property)
+        public static Expression IsNotNullUntil(this ParameterExpression param, string property, bool skipParamCheck = false)
         {
             var properties = property.Split('.');
             if (properties.Length == 1)
@@ -451,7 +451,9 @@ namespace TheWheel.Lambda
 
             string currentProperty = string.Empty;
             var NULL = Expression.Constant(null);
-            Expression expression = Expression.NotEqual(param, NULL);
+            Expression expression = null;
+            if (!skipParamCheck)
+                expression = Expression.NotEqual(param, NULL);
             for (int i = 0; i < properties.Length - 1; i++)
             {
                 if (i > 0)
