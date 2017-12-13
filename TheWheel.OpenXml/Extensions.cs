@@ -77,7 +77,7 @@ namespace TheWheel.OpenXml
                 int iCol = 0;
                 foreach (var column in cols)
                 {
-                    var value = item.Property(column.Code);
+                    var value = column.Evaluate(item);
                     string stringValue = null;
                     if (value != null)
                     {

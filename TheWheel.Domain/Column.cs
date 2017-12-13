@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TheWheel.Lambda;
 
 namespace TheWheel.Domain
 {
@@ -12,5 +13,9 @@ namespace TheWheel.Domain
         public string TranslatedName { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
+        public object Evaluate(object target)
+        {
+            return target.Property(Code);
+        }
     }
 }
