@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TheWheel.Domain;
 using TheWheel.Lambda;
 using System.Linq.Expressions;
+using DocumentFormat.OpenXml;
 
 namespace TheWheel.OpenXml
 {
@@ -41,14 +42,18 @@ namespace TheWheel.OpenXml
                 Name = "Export"
             };
             doc.WorkbookPart.Workbook.Sheets.AppendChild(sheet);
-            var row = new DocumentFormat.OpenXml.Spreadsheet.Row();
+            var row = new DocumentFormat.OpenXml.Spreadsheet.Row()
+            {
+                RowIndex = 1,
+                Spans = new ListValue<StringValue>() { InnerText = "1:" + cols.Count() },
+            };
             data.AppendChild(row);
             var tableDef = worksheetPart.AddNewPart<TableDefinitionPart>("rId1");
             tableDef.Table = new DocumentFormat.OpenXml.Spreadsheet.Table();
             tableDef.Table.Name = "Export";
             tableDef.Table.DisplayName = "Table1";
             tableDef.Table.Id = 1;
-            //tableDef.Table.HeaderRowCount = 1;
+            tableDef.Table.HeaderRowCount = 1;
             tableDef.Table.Reference = GetReference(1, 1) + ":" + GetReference(cols.Count(), items.Count() + 1);
             tableDef.Table.AutoFilter = new DocumentFormat.OpenXml.Spreadsheet.AutoFilter() { Reference = tableDef.Table.Reference };
             tableDef.Table.TableColumns = new DocumentFormat.OpenXml.Spreadsheet.TableColumns();
@@ -70,9 +75,15 @@ namespace TheWheel.OpenXml
             tableDef.Table.TableStyleInfo = new DocumentFormat.OpenXml.Spreadsheet.TableStyleInfo() { Name = "TableStyleMedium2", ShowRowStripes = true, ShowFirstColumn = false, ShowLastColumn = false, ShowColumnStripes = false };
             DocumentFormat.OpenXml.Spreadsheet.TableParts tableParts = new DocumentFormat.OpenXml.Spreadsheet.TableParts { Count = 1 };
             tableParts.Append(new DocumentFormat.OpenXml.Spreadsheet.TablePart { Id = "rId1" });
+            uint iRow = 0;
             foreach (var item in items)
             {
-                row = new DocumentFormat.OpenXml.Spreadsheet.Row();
+                row = new DocumentFormat.OpenXml.Spreadsheet.Row()
+                {
+                    RowIndex = iRow + 2,
+                    Spans = new ListValue<StringValue>() { InnerText = "1:" + cols.Count() },
+                };
+
                 data.AppendChild(row);
                 int iCol = 0;
                 foreach (var column in cols)
@@ -89,6 +100,7 @@ namespace TheWheel.OpenXml
                     row.AppendChild(new DocumentFormat.OpenXml.Spreadsheet.Cell() { DataType = dataType, CellValue = new DocumentFormat.OpenXml.Spreadsheet.CellValue(stringValue) });
                     iCol++;
                 }
+                iRow++;
             }
             for (uint i = 0; i < columnSize.Count; i++)
             {
@@ -149,11 +161,13 @@ namespace TheWheel.OpenXml
             colIndex--;
             const string columnName = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             StringBuilder sb = new StringBuilder();
-            while (colIndex >= 0)
+            while (colIndex >= columnName.Length)
             {
-                sb.Append(columnName[colIndex % columnName.Length]);
+                sb.Append(columnName[colIndex / columnName.Length - 1]);
+
                 colIndex -= columnName.Length;
             }
+            sb.Append(columnName[colIndex % columnName.Length]);
             sb.Append(rowIndex);
             return sb.ToString();
         }

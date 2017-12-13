@@ -5,6 +5,7 @@ using TheWheel.Domain;
 using TheWheel.Services;
 using System.Linq;
 using System.Linq.Expressions;
+using System.IO;
 
 namespace TheWheel.Tests
 {
@@ -25,6 +26,70 @@ namespace TheWheel.Tests
         {
             var it = new { Property = "pwic" };
             Assert.AreEqual("pwic", it.Property("Property"));
+        }
+
+        [TestMethod]
+        public void TestExcelExport()
+        {
+            TheWheel.OpenXml.Extensions.Export(File.Create("test.xlsx"), Enumerable.Range(0, 10).Select(i => new
+            {
+                a = i,
+                b = i,
+                c = i,
+                d = i,
+                e = i,
+                f = i,
+                g = i,
+                h = i,
+                i = i,
+                j = i,
+                k = i,
+                l = i,
+                m = i,
+                n = i,
+                o = i,
+                p = i,
+                q = i,
+                r = i,
+                s = i,
+                t = i,
+                u = i,
+                v = i,
+                w = i,
+                x = i,
+                y = i,
+                z = i,
+                aa = i,
+                ab = i,
+            }), new[]{
+                "a",
+                "b",
+                "c",
+                "d",
+                "e",
+                "f",
+                "g",
+                "h",
+                "i",
+                "j",
+                "k",
+                "l",
+                "m",
+                "n",
+                "o",
+                "p",
+                "q",
+                "r",
+                "s",
+                "t",
+                "u",
+                "v",
+                "w",
+                "x",
+                "y",
+                "z",
+                "aa",
+                "ab"}.Select((c, i) => new Column { Code = c, Name = c.ToUpper(), TranslatedName = c.ToUpper(), Id = i+1 }), "Column");
         }
 
         [TestMethod]
