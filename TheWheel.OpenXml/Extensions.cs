@@ -89,7 +89,7 @@ namespace TheWheel.OpenXml
                 foreach (var column in cols)
                 {
                     var value = column.Evaluate(item);
-                    string stringValue = null;
+                    string stringValue = "";
                     if (value != null)
                     {
                         stringValue = value.ToString();
