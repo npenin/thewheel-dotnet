@@ -31,9 +31,9 @@ namespace TheWheel.Lambda
             return new ParameterReplacerVisitor(oldParam, newParam, newParam).Visit(exp);
         }
 
-        public static Expression Process(LambdaExpression exp, ParameterExpression newParam)
+        public static LambdaExpression Process(LambdaExpression exp, ParameterExpression newParam)
         {
-            return Process(exp, newParam, (Expression)newParam);
+            return (LambdaExpression)Process(exp, newParam, (Expression)newParam);
         }
 
         public static Expression<T> Process<T>(Expression<T> exp, ParameterExpression newParam)
