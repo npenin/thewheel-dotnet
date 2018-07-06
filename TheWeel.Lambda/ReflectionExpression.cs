@@ -533,7 +533,7 @@ namespace TheWheel.Lambda
             var param = left.Parameters[0];
             var processedFilter = left.Body.And(ParameterReplacerVisitor.Process(right, param).Body);
 
-            var result = processedFilter.ToLambda<Func<T, U>>(param);
+            var result = processedFilter.ToLambda(param);
             return result;
         }
 
