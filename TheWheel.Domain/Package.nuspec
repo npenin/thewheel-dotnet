@@ -16,6 +16,8 @@
   <files>
 	<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Domain.dll" />
 	<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Domain.pdb" />
+	<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\dotnet\TheWheel.Domain.dll" />
+	<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\dotnet\TheWheel.Domain.pdb" />
 	<file src="**.cs" target="src" />
   </files>
 </package>
