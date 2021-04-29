@@ -1,0 +1,16 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: DocumentFormat.OpenXml
+    versions:
+    - 2.12.1
+    - 2.12.2
+  - dependency-name: Newtonsoft.Json
+    versions:
+    - 12.0.3
