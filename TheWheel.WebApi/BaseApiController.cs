@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 using TheWheel.Domain;
 
 namespace TheWheel.WebApi
 {
-    public class BaseApiController<T> : ApiController
+    public class BaseApiController<T> : Controller
         where T : IIdentifiable
     {
         private IQueryable<T> source;

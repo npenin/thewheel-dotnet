@@ -1,0 +1,15 @@
+{
+    "metadata1": "aalsdkal;skda",
+    "metadata2": "asasd,sasda",
+    "results": [
+        {
+            "column1": "dasdas,asdas",
+            "column2": "asdasa\nasdad\nasasdada\nd"
+        },
+        {
+            "column1": "sdadasd\"asdasdas",
+            "column2": "asdasdads"
+        }
+    ],
+    "metadata3": "adasd"
+}

@@ -5,7 +5,6 @@ using TheWheel.Domain;
 using TheWheel.Services;
 using System.Linq;
 using System.Linq.Expressions;
-using TheWheel.Lambda;
 using System.Collections.Generic;
 
 namespace TheWheel.Tests

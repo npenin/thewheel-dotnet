@@ -1,0 +1,86 @@
+using System.Data;
+using System.IO;
+using System.Threading.Tasks;
+using TheWheel.ETL.Contracts;
+
+namespace TheWheel.ETL.Providers
+{
+    public class PageProvider<TSupport>
+    {
+        private string offsetParameterName;
+        private string countParameterName;
+        public PageProvider(string offsetParameterName, string countParameterName)
+        {
+            this.offsetParameterName = offsetParameterName;
+            this.countParameterName = countParameterName;
+        }
+
+        public PageProvider<TDataReader, TQueryOptions, TTransport, TSupport> Use<TDataReader, TQueryOptions, TTransport>(Task<IDataProvider> reader)
+        {
+            
+        }
+    }
+
+    public class PageProvider<TDataReader, TQueryOptions, TTransport, TSupport> : DataProvider<TDataReader, TQueryOptions, ITransport<TSupport>>, IAsyncQueryable<TQueryOptions>, ITransportable<ITransport<TSupport>>
+    where TDataReader : class, IDataReader, IConfigurable<TQueryOptions, Task<IDataReader>>, new()
+    where TTransport : ITransport, ITransport<TSupport>, new()
+    where TQueryOptions : ITransportable<ITransport<TSupport>>, IConfigurable<ITransport<TSupport>, Task<TQueryOptions>>
+    {
+        private string offsetParameterName;
+        private string countParameterName;
+        private PagedReader reader;
+        public PageProvider(string offsetParameterName, string countParameterName)
+        {
+            this.offsetParameterName = offsetParameterName;
+            this.countParameterName = countParameterName;
+            reader = new PagedReader(this);
+        }
+
+        internal class PagedReader : DataReaderProxy<TDataReader>
+        {
+            PageProvider<TDataReader, TQueryOptions, TTransport, TSupport> provider;
+            public PagedReader(PageProvider<TDataReader, TQueryOptions, TTransport, TSupport> provider)
+                : base(default(TDataReader))
+            {
+                this.provider = provider;
+            }
+
+            public TDataReader Page { get { return reader; } internal set { reader = value; } }
+
+            public override bool MoveNext()
+            {
+                if (base.MoveNext())
+                    return true;
+                var t = provider.NextPage(this);
+                t.Wait();
+                if (t.Result)
+                {
+                    var t2 = this.reader.Configure(provider.options);
+                    t2.Wait();
+                    this.reader = t2.Result as TDataReader;
+                }
+                return t.Result;
+            }
+        }
+
+        private int offset;
+        private int count;
+
+        internal async Task<bool> NextPage(PagedReader pagedReader)
+        {
+            var newTransport = await (Transport as PagedTransport<TTransport, TSupport>).NextPage(offset += count, count);
+            if (newTransport != null)
+                this.options = await options.Configure(newTransport);
+            return newTransport != null;
+        }
+
+        private TQueryOptions options;
+
+        public async override Task<IDataReader> ExecuteReaderAsync()
+        {
+            reader.Page = new TDataReader();
+            await reader.Page.Configure(this.options);
+            return reader;
+        }
+    }
+}

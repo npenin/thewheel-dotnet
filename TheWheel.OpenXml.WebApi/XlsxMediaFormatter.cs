@@ -2,14 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading.Tasks;
 using TheWheel.Lambda;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace TheWheel.OpenXml.WebApi
 {
-    public class XlsxMediaFormatter : MediaTypeFormatter
+    public class XlsxMediaFormatter : TextOutputFormatter
     {
         private Func<string, string> translate;
         public XlsxMediaFormatter(Func<string, string> translate)
@@ -23,21 +23,15 @@ namespace TheWheel.OpenXml.WebApi
 
         }
 
-        public override bool CanReadType(Type type)
-        {
-            return false;
-        }
-
-        public override bool CanWriteType(Type type)
+        protected override bool CanWriteType(Type type)
         {
             return type.IsEnumerable();
         }
 
-        public override Task WriteToStreamAsync(Type type, object value, System.IO.Stream writeStream, System.Net.Http.HttpContent content, System.Net.TransportContext transportContext)
+        public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
-
-            Extensions.Export(writeStream, type.GetGenericArguments()[0], (IEnumerable)value, null, translate);
-            return base.WriteToStreamAsync(type, value, writeStream, content, transportContext);
+            Extensions.Export(context.HttpContext.Response.Body, context.ObjectType.GetGenericArguments()[0], (IEnumerable)context.Object, null, translate);
+            return Task.CompletedTask;
         }
     }
 }
