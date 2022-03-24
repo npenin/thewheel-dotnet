@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
 using TheWheel.ETL.ControlFlow;
+using TheWheel.Domain;
 
 namespace TheWheel.ETL.Fluent
 {

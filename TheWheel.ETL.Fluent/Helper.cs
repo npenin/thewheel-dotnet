@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using TheWheel.Domain;
 using TheWheel.ETL.Contracts;
 using TheWheel.ETL.Providers;
 

@@ -142,6 +142,7 @@ namespace TheWheel.Domain
         private void Reorganize(long hashIndex)
         {
             long touchedIndex = -1;
+            long untouchedIndex = hashIndex;
             do
             {
                 if (touchedIndex != -1)
@@ -169,7 +170,7 @@ namespace TheWheel.Domain
                     }
                 }
             }
-            while (touchedIndex != -1);
+            while (touchedIndex != -1 && touchedIndex != untouchedIndex);
         }
 
         bool IDictionary<TKey, TValue>.Remove(TKey key)

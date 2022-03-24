@@ -8,12 +8,26 @@ using TheWheel.ETL.Contracts;
 using TheWheel.ETL.Fluent;
 using TheWheel.ETL.Provider.Ldap;
 using TheWheel.ETL.Providers;
+using TheWheel.Domain;
 
 namespace TheWheel.ETL.Tests
 {
     [TestClass]
     public class UnitTest1
     {
+        [TestMethod]
+        public async Task TestLdapProvider()
+        {
+            var ldap = await Ldap.From("eu.novartis.net")
+            .Query(new LdapOptions { Request = new SearchRequest("DC=EU,DC=novartis,DC=net", "(sAMAccountName=MARROLA1)", SearchScope.Subtree, "DistinguishedName", "sAMAccountName") });
+            using (var reader = await ldap.ExecuteReaderAsync(System.Threading.CancellationToken.None))
+            {
+                Assert.IsTrue(reader.Read());
+                Assert.AreEqual(reader.GetString(1), "asdasa\nasdad\nasasdada\nd");
+                Assert.IsFalse(reader.Read());
+            }
+            Console.WriteLine("pwet");
+        }
         [TestMethod]
         public async Task TestCsvProvider()
         {
