@@ -1,0 +1,3 @@
+SELECT 'SELECT Id, Discriminator, Source, Host_Id, Issue_Id, LastImported FROM Unsecured.DetectedIssues di WHERE di.Id IN ('+ [findingids] +')' as [SQL]
+INTO Csv<FileWrite>('TheWheel.ETL.Tests/test-parlotoutput.csv', new CsvReceiverOptions { SkipLines = null, Separator = Separator.Comma })
+FROM Csv<FileRead>('D:\\Share\\duplicated_findings.csv', new CsvOptions{ SkipLines=null, Separator = Separator.Comma})

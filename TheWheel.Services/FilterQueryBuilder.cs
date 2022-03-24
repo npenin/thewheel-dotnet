@@ -406,6 +406,6 @@ namespace TheWheel.Services
             throw new NotImplementedException();
         }
 
-        public Func<decimal?, string> ToString { get; set; }
+        public new Func<decimal?, string> ToString { get; set; }
     }
 }
