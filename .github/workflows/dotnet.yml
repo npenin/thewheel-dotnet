@@ -18,8 +18,10 @@ jobs:
       with:
         dotnet-version: 5.0.101
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore TheWheel.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore TheWheel.sln
+    - name: Download test file
+      run: wget https://cve.mitre.org/data/downloads/allitems-cvrf-year-2020.xml
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal TheWheel.sln
