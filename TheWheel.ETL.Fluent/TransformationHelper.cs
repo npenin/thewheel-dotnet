@@ -124,6 +124,16 @@ namespace TheWheel.ETL.Fluent
             return transform;
         }
 
+        public static async Task<ILazyReceiver> Transform<T>(this Task<ILazyReceiver> reader, string name, Func<Func<object>, T> fieldTransformation)
+        {
+            return new LazyTransformer(await reader, new string[0], record => Transform<T>(record, name, fieldTransformation));
+        }
+
+        public static async Task<ILazyReceiver> Transform<T>(this Task<ILazyReceiver> reader, int field, Func<Func<object>, T> fieldTransformation)
+        {
+            return new LazyTransformer(await reader, new string[0], record => Transform<T>(record, field, fieldTransformation));
+        }
+
         #endregion
 
         public static IDataRecord Add<T>(IDataRecord record, string name, Func<T> fieldTransformation)
