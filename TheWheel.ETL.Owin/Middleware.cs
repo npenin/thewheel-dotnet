@@ -11,6 +11,7 @@ using Microsoft.Owin;
 using Newtonsoft.Json;
 using TheWheel.ETL.Contracts;
 using TheWheel.ETL.Providers;
+using TheWheel.Domain;
 
 namespace TheWheel.ETL.Owin
 {

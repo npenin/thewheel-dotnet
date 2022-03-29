@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using TheWheel.ETL.Contracts;
+using TheWheel.Domain;
 
 namespace TheWheel.ETL.Contracts
 {

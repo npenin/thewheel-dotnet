@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TheWheel.ETL.Contracts\TheWheel.ETL.Contracts.csproj" />
     <ProjectReference Include="..\TheWheel.ETL.Providers\TheWheel.ETL.Providers.csproj" />
+    <ProjectReference Include="..\TheWheel.Domain\TheWheel.Domain.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

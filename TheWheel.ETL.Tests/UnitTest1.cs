@@ -8,6 +8,7 @@ using TheWheel.ETL.Contracts;
 using TheWheel.ETL.Fluent;
 using TheWheel.ETL.Provider.Ldap;
 using TheWheel.ETL.Providers;
+using TheWheel.Domain;
 
 namespace TheWheel.ETL.Tests
 {

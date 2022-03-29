@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Newtonsoft.Json;
 using TheWheel.ETL.Contracts;
+using TheWheel.Domain;
 
 namespace TheWheel.ETL.Providers
 {
