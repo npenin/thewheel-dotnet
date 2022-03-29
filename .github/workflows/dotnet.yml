@@ -21,6 +21,8 @@ jobs:
       run: dotnet restore TheWheel.sln
     - name: Build
       run: dotnet build --no-restore  TheWheel.sln
+    - name: retrieve test file
+      run: wget https://cve.mitre.org/data/downloads/allitems-cvrf-year-2020.xml
     - name: debug
       run: ls -l
     - name: Test
