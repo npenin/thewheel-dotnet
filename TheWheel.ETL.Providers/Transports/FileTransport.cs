@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
+using TheWheel.Domain;
 
 namespace TheWheel.ETL.Providers
 {

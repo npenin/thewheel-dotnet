@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TheWheel.ETL.Contracts\TheWheel.ETL.Contracts.csproj" />
+    <ProjectReference Include="..\TheWheel.Domain\TheWheel.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
