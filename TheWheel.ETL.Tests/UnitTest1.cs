@@ -52,7 +52,7 @@ namespace TheWheel.ETL.Tests
                 Assert.AreEqual("xml:///cvrfdoc/Vulnerability/CVE/text()", reader.GetName(1));
                 while (reader.Read())
                     n++;
-                Assert.AreEqual(31091, n);
+                Assert.AreEqual(31098, n);
             }
         }
 
