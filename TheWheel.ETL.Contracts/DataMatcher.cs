@@ -23,8 +23,8 @@ namespace TheWheel.ETL.Contracts
         public DataMatcher(int index, string root)
         {
             this.index = index;
-            this.Root = root.Substring(0, root.Length);
-            this.rootUri = new Uri(root);
+            this.Root = root;
+            this.rootUri = new Uri(root + '/');
         }
 
         public bool Matches(string path)

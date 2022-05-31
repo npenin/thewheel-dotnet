@@ -1,46 +1,46 @@
 <?xml version="1.0"?>
-<package >
-  <metadata>
-    <id>TheWheel.Lambda</id>
-    <version>$version$</version>
-    <authors>Nicolas</authors>
-    <owners>Nicolas</owners>
-    <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Easily use lambda expressions</description>
-    <copyright>Copyright 2015</copyright>
-  </metadata>
-  <files>
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.0\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.1\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.2\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.3\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.4\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.5\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.6\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard2.0\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netcoreapp1.0\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netcoreapp1.1\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netcoreapp2.0\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netcoreapp2.1\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netcoreapp2.2\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\dotnet\TheWheel.Lambda.dll" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.0\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.1\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.2\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.3\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.4\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.5\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.6\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard2.0\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netcoreapp1.0\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netcoreapp1.1\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netcoreapp2.0\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netcoreapp2.1\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netcoreapp2.2\TheWheel.Lambda.pdb" />
-	<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\dotnet\TheWheel.Lambda.pdb" />
-	<file src="**.cs" target="src" />
-  </files>
+<package>
+	<metadata>
+		<id>TheWheel.Lambda</id>
+		<version>$version$</version>
+		<authors>Nicolas</authors>
+		<owners>Nicolas</owners>
+		<projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Easily use lambda expressions</description>
+		<copyright>Copyright 2022</copyright>
+	</metadata>
+	<files>
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.0\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.1\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.2\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.3\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.4\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.5\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard1.6\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netstandard2.0\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netcoreapp1.0\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netcoreapp1.1\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netcoreapp2.0\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netcoreapp2.1\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\netcoreapp2.2\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.dll" target="lib\dotnet\TheWheel.Lambda.dll" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.0\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.1\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.2\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.3\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.4\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.5\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard1.6\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netstandard2.0\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netcoreapp1.0\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netcoreapp1.1\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netcoreapp2.0\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netcoreapp2.1\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\netcoreapp2.2\TheWheel.Lambda.pdb" />
+		<file src="bin\$configuration$\TheWheel.Lambda.pdb" target="lib\dotnet\TheWheel.Lambda.pdb" />
+		<file src="**.cs" target="src" />
+	</files>
 </package>

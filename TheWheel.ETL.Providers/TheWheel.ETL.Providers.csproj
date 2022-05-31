@@ -5,6 +5,11 @@
     <ProjectReference Include="..\TheWheel.Domain\TheWheel.Domain.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <PackageId>TheWheel.ETL.Providers</PackageId>
+    <Authors>Nicolas Penin</Authors>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.12.1" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />

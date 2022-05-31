@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>TheWheel.Services</id>
     <version>$version$</version>
@@ -8,15 +8,15 @@
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Manipulates classes from the domain to apply filters</description>
-    <copyright>Copyright 2015</copyright>
+    <copyright>Copyright 2022</copyright>
     <dependencies>
       <dependency id="TheWheel.Domain" version="$version$" />
       <dependency id="TheWheel.Lambda" version="$version$" />
     </dependencies>
   </metadata>
   <files>
-	<file src="bin\$configuration$\TheWheel.Services.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Services.dll" />
-	<file src="bin\$configuration$\TheWheel.Services.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Services.pdb" />
-	<file src="**.cs" target="src" />
+    <file src="bin\$configuration$\TheWheel.Services.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Services.dll" />
+    <file src="bin\$configuration$\TheWheel.Services.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Services.pdb" />
+    <file src="**.cs" target="src" />
   </files>
 </package>

@@ -225,6 +225,8 @@ namespace TheWheel.ETL.Providers
         protected bool CloseSegment(string segment, ref Bag<string, object> subItem, ref int lastPosition, string subItemPath)
         {
             int matchingIndex = -1;
+            if (segment == "/")
+                currentPath = currentPath.Substring(0, currentPath.Length - segment.Length);
 
             for (int i = 0; i < matchers.Length; i++)
             {
@@ -247,7 +249,8 @@ namespace TheWheel.ETL.Providers
             else if (matchingIndex > -1)
                 clearOnNextResult = null;
 
-            currentPath = currentPath.Substring(0, currentPath.Length - segment.Length);
+            if (segment != "/")
+                currentPath = currentPath.Substring(0, currentPath.Length - segment.Length);
 
             if (subItemPath == currentPath)
                 subItem = new Bag<string, object>();

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>TheWheel.ServiceBus</id>
     <version>$version$</version>
@@ -8,14 +8,14 @@
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Contains all the base classes needed to have a service bus based upon SQL Server Service Broker</description>
-    <copyright>Copyright 2015</copyright>
+    <copyright>Copyright 2022</copyright>
     <dependencies>
       <dependency id="Newtonsoft.Json" version="8.0" />
     </dependencies>
   </metadata>
   <files>
-	<file src="bin\$configuration$\TheWheel.ServiceBus.dll" target="lib\net451\TheWheel.ServiceBus.dll" />
-	<file src="bin\$configuration$\TheWheel.ServiceBus.pdb" target="lib\net451\TheWheel.ServiceBus.pdb" />
-	<file src="**.cs" target="src" />
+    <file src="bin\$configuration$\TheWheel.ServiceBus.dll" target="lib\net451\TheWheel.ServiceBus.dll" />
+    <file src="bin\$configuration$\TheWheel.ServiceBus.pdb" target="lib\net451\TheWheel.ServiceBus.pdb" />
+    <file src="**.cs" target="src" />
   </files>
 </package>

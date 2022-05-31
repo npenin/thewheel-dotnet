@@ -4,6 +4,11 @@
     <ProjectReference Include="..\TheWheel.ETL.Contracts\TheWheel.ETL.Contracts.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <PackageId>TheWheel.ETL.Providers.Mail</PackageId>
+    <Authors>Nicolas Penin</Authors>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.15.0" />
   </ItemGroup>
