@@ -367,6 +367,8 @@ namespace TheWheel.Domain
             if (item.Key == null)
                 throw new ArgumentNullException("key");
             locker.EnterWriteLock();
+            if (count > 2 * hashList.Length / 3)
+                Resize(hashList.Length * 2);
             var index = GetEmptyIndex(hash);
             try
             {
