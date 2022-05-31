@@ -144,7 +144,7 @@ namespace TheWheel.ETL.Tests
                 .From<FileRead>("../../../test.csv")
                 .Query(new CsvOptions { SkipLines = csvHeader }));
 
-            Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length - 6, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+            Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length, new System.IO.FileInfo("../../../testOutput.csv").Length);
         }
 
         [TestMethod]
@@ -192,7 +192,7 @@ namespace TheWheel.ETL.Tests
                 }, System.Threading.CancellationToken.None)
             );
 
-            Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length - 6, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+            Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length, new System.IO.FileInfo("../../../testOutput.csv").Length);
         }
     }
 }
