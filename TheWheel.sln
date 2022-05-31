@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
-MinimumVisualStudioVersion = 10.0.40219.1
+VisualStudioVersion = 15.0.26124.0
+MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWheel.OpenXml", "TheWheel.OpenXml\TheWheel.OpenXml.csproj", "{1C14A3C9-95EF-48C9-9704-08F5643BAC46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWheel.Domain", "TheWheel.Domain\TheWheel.Domain.csproj", "{CA8087B1-050A-415A-9035-ABB5790F5831}"
