@@ -4,6 +4,11 @@
     <TargetFrameworks>net5.0;net4.8</TargetFrameworks>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>TheWheel.ETL.Cyberark</PackageId>
+    <Authors>Nicolas Penin</Authors>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\TheWheel.ETL.Providers\TheWheel.ETL.Providers.csproj" />
     <ProjectReference Include="..\TheWheel.ETL.Contracts\TheWheel.ETL.Contracts.csproj" />

@@ -56,6 +56,8 @@ namespace TheWheel.ETL.Contracts
                 roots = new string[this.roots.Length + 1];
                 Array.Copy(this.roots, roots, this.roots.Length);
             }
+            if (root[root.Length - 1] == '/')
+                root = root.Substring(0, root.Length - 1);
             roots[roots.Length - 1] = root;
             this.roots = roots;
             TreeLeaf[] newPaths;

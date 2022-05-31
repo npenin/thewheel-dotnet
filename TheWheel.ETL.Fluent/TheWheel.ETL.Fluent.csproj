@@ -8,6 +8,11 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <PackageId>TheWheel.ETL.Fluent</PackageId>
+    <Authors>Nicolas Penin</Authors>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <TargetFrameworks>net5.0;net4.8</TargetFrameworks>
   </PropertyGroup>
 

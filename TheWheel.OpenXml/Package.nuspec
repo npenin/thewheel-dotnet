@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>TheWheel.OpenXml</id>
     <version>1.44</version>
@@ -8,16 +8,16 @@
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Export a list of data to an open xml document (currently only excel spreadsheet is handled)</description>
-    <copyright>Copyright 2015</copyright>
+    <copyright>Copyright 2022</copyright>
     <dependencies>
       <dependency id="TheWheel.Domain" version="$version$" />
       <dependency id="TheWheel.Lambda" version="$version$" />
-	  <dependency id="DocumentFormat.OpenXml" version="2.7.2" />
+      <dependency id="DocumentFormat.OpenXml" version="2.7.2" />
     </dependencies>
   </metadata>
   <files>
-	<file src="bin\$configuration$\TheWheel.OpenXml.dll" target="lib\net451\TheWheel.OpenXml.dll" />
-	<file src="bin\$configuration$\TheWheel.OpenXml.pdb" target="lib\net451\TheWheel.OpenXml.pdb" />
-	<file src="**.cs" target="src" />
+    <file src="bin\$configuration$\TheWheel.OpenXml.dll" target="lib\net451\TheWheel.OpenXml.dll" />
+    <file src="bin\$configuration$\TheWheel.OpenXml.pdb" target="lib\net451\TheWheel.OpenXml.pdb" />
+    <file src="**.cs" target="src" />
   </files>
 </package>
