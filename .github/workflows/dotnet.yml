@@ -27,3 +27,29 @@ jobs:
       run: ls -l
     - name: Test
       run: dotnet test --no-build --verbosity normal TheWheel.sln
+    - name: Git Version
+      uses: codacy/git-version@2.4.0
+      with:
+          # The name of the release branch
+        release-branch: main # default is master 
+    #- name: pack
+    #  run: >-
+    #    nuget pack TheWeel.Lambda\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
+    #    nuget pack TheWheel.Domain\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
+    #    nuget pack TheWheel.WebApi\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
+    #    nuget pack TheWheel.Services\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
+    #    nuget pack TheWheel.Dto\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
+    #    nuget pack TheWheel.OpenXml\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
+    #    nuget pack TheWheel.OpenXml.WebApi\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
+    #    dotnet nuget pack TheWheel.ETL.Contracts -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
+    #    dotnet nuget pack TheWheel.ETL.ControlFlow -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
+    #    dotnet nuget pack TheWheel.ETL.Providers -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
+    #    dotnet nuget pack TheWheel.ETL.Providers.Ldap -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
+    #    dotnet nuget pack TheWheel.ETL.Providers.Mail -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
+    #    dotnet nuget pack TheWheel.ETL.Snow -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
+    #    dotnet nuget pack TheWheel.ETL.Jira -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
+    #    dotnet nuget pack TheWheel.ETL.Fluent -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
+    #    dotnet nuget pack TheWheel.ETL.DacPac -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
+    #    dotnet nuget pack TheWheel.ETL.CyberArk -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
+        
+    
