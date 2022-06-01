@@ -2,10 +2,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard20</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup>
-  </ItemGroup>
+  <ItemGroup></ItemGroup>
 
 </Project>
