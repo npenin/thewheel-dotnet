@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>TheWheel.WebApi</id>
     <version>$version$</version>
@@ -14,8 +14,10 @@
     </dependencies>
   </metadata>
   <files>
-	<file src="bin\$configuration$\TheWheel.WebApi.dll" target="lib\net45\TheWheel.WebApi.dll" />
-	<file src="bin\$configuration$\TheWheel.WebApi.pdb" target="lib\net45\TheWheel.WebApi.pdb" />
-	<file src="**.cs" target="src" />
+    <file src="bin\netstandard2.0\TheWheel.WebApi.dll" target="lib\net45\TheWheel.WebApi.dll" />
+    <file src="bin\netstandard2.0\TheWheel.WebApi.pdb" target="lib\net45\TheWheel.WebApi.pdb" />
+    <file src="bin\netstandard2.0\TheWheel.WebApi.dll" target="lib\netstandard2.0\TheWheel.WebApi.dll" />
+    <file src="bin\netstandard2.0\TheWheel.WebApi.pdb" target="lib\netstandard2.0\TheWheel.WebApi.pdb" />
+    <file src="**.cs" target="src" />
   </files>
 </package>

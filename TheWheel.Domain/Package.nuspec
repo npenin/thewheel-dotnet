@@ -15,36 +15,36 @@
 	</metadata>
 	<files>
 
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netstandard1.0\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netstandard1.1\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netstandard1.2\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netstandard1.3\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netstandard1.4\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netstandard1.5\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netstandard1.6\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netstandard2.0\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netcoreapp1.0\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netcoreapp1.1\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netcoreapp2.0\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netcoreapp2.1\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\netcoreapp2.2\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.dll" target="lib\dotnet\TheWheel.Domain.dll" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netstandard1.0\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netstandard1.1\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netstandard1.2\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netstandard1.3\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netstandard1.4\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netstandard1.5\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netstandard1.6\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netstandard2.0\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netcoreapp1.0\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netcoreapp1.1\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netcoreapp2.0\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netcoreapp2.1\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\netcoreapp2.2\TheWheel.Domain.pdb" />
-		<file src="bin\$configuration$\TheWheel.Domain.pdb" target="lib\dotnet\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netstandard1.0\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netstandard1.1\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netstandard1.2\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netstandard1.3\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netstandard1.4\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netstandard1.5\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netstandard1.6\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netstandard2.0\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netcoreapp1.0\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netcoreapp1.1\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netcoreapp2.0\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netcoreapp2.1\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\netcoreapp2.2\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.dll" target="lib\dotnet\TheWheel.Domain.dll" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netstandard1.0\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netstandard1.1\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netstandard1.2\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netstandard1.3\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netstandard1.4\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netstandard1.5\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netstandard1.6\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netstandard2.0\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netcoreapp1.0\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netcoreapp1.1\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netcoreapp2.0\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netcoreapp2.1\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\netcoreapp2.2\TheWheel.Domain.pdb" />
+		<file src="bin\netstandard2.0\TheWheel.Domain.pdb" target="lib\dotnet\TheWheel.Domain.pdb" />
 		<file src="**.cs" target="src" />
 	</files>
 </package>

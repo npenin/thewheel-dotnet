@@ -15,8 +15,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\$configuration$\TheWheel.OpenXml.WebApi.dll" target="lib\net451\TheWheel.OpenXml.WebApi.dll" />
-    <file src="bin\$configuration$\TheWheel.OpenXml.WebApi.pdb" target="lib\net451\TheWheel.OpenXml.WebApi.pdb" />
+    <file src="bin\net50\TheWheel.OpenXml.WebApi.dll" target="lib\net50\TheWheel.OpenXml.WebApi.dll" />
+    <file src="bin\net50\TheWheel.OpenXml.WebApi.pdb" target="lib\net50\TheWheel.OpenXml.WebApi.pdb" />
     <file src="**.cs" target="src" />
   </files>
 </package>

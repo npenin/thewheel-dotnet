@@ -16,8 +16,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\$configuration$\TheWheel.OpenXml.dll" target="lib\net451\TheWheel.OpenXml.dll" />
-    <file src="bin\$configuration$\TheWheel.OpenXml.pdb" target="lib\net451\TheWheel.OpenXml.pdb" />
+    <file src="bin\netstandard2.0\TheWheel.OpenXml.dll" target="lib\net451\TheWheel.OpenXml.dll" />
+    <file src="bin\netstandard2.0\TheWheel.OpenXml.pdb" target="lib\net451\TheWheel.OpenXml.pdb" />
+    <file src="bin\netstandard2.0\TheWheel.OpenXml.dll" target="lib\netstandard2.0\TheWheel.OpenXml.dll" />
+    <file src="bin\netstandard2.0\TheWheel.OpenXml.pdb" target="lib\netstandard2.0\TheWheel.OpenXml.pdb" />
     <file src="**.cs" target="src" />
   </files>
 </package>
