@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
+# Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWheel.OpenXml", "TheWheel.OpenXml\TheWheel.OpenXml.csproj", "{1C14A3C9-95EF-48C9-9704-08F5643BAC46}"
