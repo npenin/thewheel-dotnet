@@ -40,6 +40,48 @@ namespace TheWheel.ETL.Fluent
             return receiver.Transform(new string[0], (record) => new DataRecordTruncater(record, truncateFields));
         }
 
+        public static async Task Do(this Task<IDataProvider> receiverTask, Action<IDataRecord> action, CancellationToken token)
+        {
+            var receiver = await receiverTask;
+            var reader = await receiver.ExecuteReaderAsync(token);
+            if (reader is IEnumerable<IDataRecord> enumerator)
+            {
+                foreach (var record in enumerator)
+                    action(record);
+            }
+            else
+                while (reader.Read())
+                    action(reader);
+        }
+
+        public static async Task Do(this Task<IDataProvider> receiverTask, Func<IDataRecord, Task> action, CancellationToken token)
+        {
+            var receiver = await receiverTask;
+            var reader = await receiver.ExecuteReaderAsync(token);
+            if (reader is IEnumerable<IDataRecord> enumerator)
+            {
+                foreach (var record in enumerator)
+                    await action(record);
+            }
+            else
+                while (reader.Read())
+                    await action(reader);
+        }
+
+        public static async Task Do(this Task<IDataProvider> receiverTask, Func<IDataRecord, CancellationToken, Task> action, CancellationToken token)
+        {
+            var receiver = await receiverTask;
+            var reader = await receiver.ExecuteReaderAsync(token);
+            if (reader is IEnumerable<IDataRecord> enumerator)
+            {
+                foreach (var record in enumerator)
+                    await action(record, token);
+            }
+            else
+                while (reader.Read())
+                    await action(reader, token);
+        }
+
         public static async Task<IDataProvider> Add<T>(this Task<IDataProvider> reader, string name, Func<IDataRecord, T> fieldTransformation, CancellationToken token)
         {
             var transform = new TransformProvider();
