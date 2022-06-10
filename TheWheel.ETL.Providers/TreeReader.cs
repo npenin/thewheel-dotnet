@@ -151,7 +151,7 @@ namespace TheWheel.ETL.Providers
         public static readonly Regex quotesRegex = new Regex(@"^'(([^\']|\[^']|\')*)'$");
         private Bag<string, List<string>> closingPathActions = new Bag<string, List<string>>();
         private string[] closingPathActionsKeys;
-        private Bag<string, List<Bag<string, object>>> subItems = new Bag<string, List<Bag<string, object>>>();
+        private Bag<string, List<IDictionary<string, object>>> subItems = new Bag<string, List<IDictionary<string, object>>>();
         private bool supportsPaging;
         private bool noMatch;
         private readonly string schema;
@@ -248,6 +248,17 @@ namespace TheWheel.ETL.Providers
             }
             else if (matchingIndex > -1)
                 clearOnNextResult = null;
+            // else
+            // {
+            //     foreach (var key in currentItem.Keys.ToArray())
+            //     {
+            //         if (!key.StartsWith(currentPath))
+            //             continue;
+            //         if (key.IndexOf('/', currentPath.Length) == -1)
+            //             continue;
+            //         currentItem.Remove(key);
+            //     }
+            // }
 
             if (segment != "/")
                 currentPath = currentPath.Substring(0, currentPath.Length - segment.Length);
@@ -268,7 +279,7 @@ namespace TheWheel.ETL.Providers
             return false;
         }
 
-        protected void OpenSegment(string segment, ref int lastPosition, Bag<string, object> subItem, ref string subItemPath)
+        protected void OpenSegment(string segment, ref int lastPosition, IDictionary<string, object> subItem, ref string subItemPath)
         {
             positions.Push(lastPosition + 1);
             lastPosition = -1;
@@ -278,7 +289,7 @@ namespace TheWheel.ETL.Providers
             {
                 if (key.Path == currentPath)
                 {
-                    var subItemList = subItems.AddIfNotExists(key.Path, () => new List<Bag<string, object>>());
+                    var subItemList = subItems.AddIfNotExists(key.Path, () => new List<IDictionary<string, object>>());
                     subItemPath = currentPath;
                     subItemList.Add(subItem);
                 }
