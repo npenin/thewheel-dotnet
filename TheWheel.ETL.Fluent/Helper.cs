@@ -35,102 +35,61 @@ namespace TheWheel.ETL.Fluent
         {
             return new LazyReceiver<TReceiverOptions>(await receiver, options);
         }
-        public static async Task<Bag<string, bool>> Cache<TProvider, TQueryOptions>(this Task<TProvider> providerTask, TQueryOptions query, CancellationToken token)
-        where TProvider : IAsyncNewQueryable<TQueryOptions>, new()
-        {
-            var provider = await (await providerTask).QueryNewAsync(query, token);
+        
+        // public static async Task<Bag<string, bool>> Cache<TProvider, TQueryOptions>(this Task<TProvider> providerTask, TQueryOptions query, CancellationToken token)
+        // where TProvider : IAsyncNewQueryable<TQueryOptions>, new()
+        // {
+        //     var provider = await (await providerTask).QueryNewAsync(query, token);
 
-            // trace.TraceInformation(cmd.CommandText);
-            var index = new Bag<string, bool>();
-            string[] keys = null;
+        //     // trace.TraceInformation(cmd.CommandText);
+        //     var index = new Bag<string, bool>();
+        //     string[] keys = null;
 
-            using (var reader = await provider.ExecuteReaderAsync(token))
-            {
-                if (index.Capacity < reader.RecordsAffected)
-                    index.Resize(reader.RecordsAffected);
+        //     using (var reader = await provider.ExecuteReaderAsync(token))
+        //     {
+        //         if (index.Capacity < reader.RecordsAffected)
+        //             index.Resize(reader.RecordsAffected);
 
-                while (reader.Read())
-                {
-                    if (keys == null)
-                    {
-                        keys = new string[reader.FieldCount];
-                        for (var i = 0; i < reader.FieldCount; i++)
-                            keys[i] = reader.GetName(i);
-                    }
-                    index.Add(string.Join("/", keys.Select(k => reader.GetValue(reader.GetOrdinal(k)))), true);
-                }
-            }
+        //         while (reader.Read())
+        //         {
+        //             if (keys == null)
+        //             {
+        //                 keys = new string[reader.FieldCount];
+        //                 for (var i = 0; i < reader.FieldCount; i++)
+        //                     keys[i] = reader.GetName(i);
+        //             }
+        //             index.Add(string.Join("/", keys.Select(k => reader.GetValue(reader.GetOrdinal(k)))), true);
+        //         }
+        //     }
 
-            return index;
-        }
+        //     return index;
+        // }
 
         public static Task<Bag<string, bool>> Cache(this Task<IDataProvider> provider, CancellationToken token)
         {
             return Cache(provider, -1, (record) => true, token);
         }
 
-        public static async Task<Bag<string, DataRecord>> Cache(this Task<IDataProvider> provider, int ignoredField, CancellationToken token)
+        public static Task<Bag<string, IDataRecord>> Cache(this Task<IDataProvider> provider, int ignoredField, CancellationToken token)
         {
-            // trace.TraceInformation(cmd.CommandText);
-            var index = new Bag<string, DataRecord>();
-            int[] keys = null;
-
-            using (var reader = await (await provider).ExecuteReaderAsync(token))
-            {
-                if (index.Capacity < reader.RecordsAffected)
-                    index.Resize(reader.RecordsAffected);
-
-                var enumerable = reader as IEnumerator<DataRecord>;
-                if (enumerable != null)
-                    while (enumerable.MoveNext())
-                    {
-                        if (keys == null)
-                        {
-                            if (ignoredField == -1)
-                                keys = new int[reader.FieldCount];
-                            else
-                                keys = new int[reader.FieldCount - 1];
-                            for (var i = 0; i < reader.FieldCount; i++)
-                            {
-                                if (i == ignoredField)
-                                    continue;
-                                if (i > ignoredField && ignoredField > -1)
-                                    keys[i - 1] = i;
-                                else
-                                    keys[i] = i;
-                            }
-                        }
-                        index.Add(string.Join("/", keys.Select(k => reader.GetValue(k))), enumerable.Current);
-                    }
-                else
-                    while (reader.Read())
-                    {
-                        if (keys == null)
-                        {
-                            if (ignoredField == -1)
-                                keys = new int[reader.FieldCount];
-                            else
-                                keys = new int[reader.FieldCount - 1];
-                            for (var i = 0; i < reader.FieldCount; i++)
-                            {
-                                if (i == ignoredField)
-                                    continue;
-                                if (i > ignoredField && ignoredField > -1)
-                                    keys[i - 1] = i;
-                                else
-                                    keys[i] = i;
-                            }
-                        }
-                        index.Add(string.Join("/", keys.Select(k => reader.GetValue(k))), new DataRecord(reader));
-                    }
-            }
-
-            return index;
+            return Cache<IDataRecord>(provider, ignoredField, record=>record, token);
         }
-        public static async Task<Bag<string, T>> Cache<T>(this Task<IDataProvider> provider, int ignoredField, Func<IDataRecord, T> getter, CancellationToken token)
+
+        public static Task<Bag<string, T>> Cache<T>(this Task<IDataProvider> provider, int ignoredField, Func<IDataRecord, T> getter, CancellationToken token)
+        {
+            return Cache<string, T>(provider, ignoredField, (record,keys)=>string.Join("/", keys.Select(k => record.GetValue(k))), getter, token);
+        }
+
+
+        public static Task<Bag<string, T>> Cache<T>(this Task<IDataProvider> provider, string ignoredField, Func<IDataRecord, T> getter, CancellationToken token)
+        {
+            return Cache<string, T>(provider, ignoredField, (record,keys)=>string.Join("/", keys.Select(k => record.GetValue(k))), getter, token);
+        }
+
+        public static async Task<Bag<TKey, T>> Cache<TKey, T>(this Task<IDataProvider> provider, int ignoredField, Func<IDataRecord, int[], TKey> keyGetter,Func<IDataRecord, T> getter, CancellationToken token)
         {
             // trace.TraceInformation(cmd.CommandText);
-            var index = new Bag<string, T>();
+            var index = new Bag<TKey, T>();
             int[] keys = null;
 
             using (var reader = await (await provider).ExecuteReaderAsync(token))
@@ -158,7 +117,7 @@ namespace TheWheel.ETL.Fluent
                                     keys[i] = i;
                             }
                         }
-                        index.Add(string.Join("/", keys.Select(k => reader.GetValue(k))), getter(enumerable.Current));
+                        index.Add(keyGetter(enumerable.Current, keys), getter(enumerable.Current));
                     }
                 else
                     while (reader.Read())
@@ -179,7 +138,7 @@ namespace TheWheel.ETL.Fluent
                                     keys[i] = i;
                             }
                         }
-                        index.Add(string.Join("/", keys.Select(k => reader.GetValue(k))), getter(reader));
+                        index.Add(keyGetter(reader,keys), getter(reader));
                     }
             }
 
@@ -187,10 +146,10 @@ namespace TheWheel.ETL.Fluent
         }
 
 
-        public static async Task<Bag<string, T>> Cache<T>(this Task<IDataProvider> provider, string ignoredField, Func<IDataRecord, T> getter, CancellationToken token)
+        public static async Task<Bag<TKey, T>> Cache<TKey, T>(this Task<IDataProvider> provider, string ignoredField, Func<IDataRecord,int[], TKey> keyGetter, Func<IDataRecord, T> getter, CancellationToken token)
         {
             // trace.TraceInformation(cmd.CommandText);
-            var index = new Bag<string, T>();
+            var index = new Bag<TKey, T>();
             int[] keys = null;
 
             using (var reader = await (await provider).ExecuteReaderAsync(token))
@@ -221,7 +180,7 @@ namespace TheWheel.ETL.Fluent
                                 keys[i] = i;
                         }
                     }
-                    index.Add(string.Join("/", keys.Select(k => reader.GetValue(k))), getter(reader));
+                    index.Add(keyGetter(reader,keys), getter(reader));
                 }
             }
             Console.WriteLine("Index completed");
