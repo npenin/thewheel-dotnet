@@ -295,10 +295,11 @@ namespace TheWheel.ETL.Providers
                 }
                 else if (key.Path.StartsWith(currentPath))
                 {
-                    switch (key.Path[currentPath.Length - 1])
+                    switch (key.Path[currentPath.Length])
                     {
                         case '/':
-                            if (key.Path == currentPath + "position()")
+                            if (currentPath[currentPath.Length - 1] == '/' && key.Path == currentPath + "position()" ||
+                            currentPath[currentPath.Length - 1] != '/' && key.Path == currentPath + "/position()")
                                 currentItem.Add(key.Path, positions.Peek().ToString());
                             break;
                         case '@':
