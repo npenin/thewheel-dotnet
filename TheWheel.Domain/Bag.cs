@@ -230,36 +230,51 @@ namespace TheWheel.Domain
 
         internal static ulong Hash(TKey key)
         {
-            var stringKey = key as string;
-            if (stringKey != null)
+            switch (Convert.GetTypeCode(key))
             {
-                var hash = hashOffset;
-                var tmp = new byte[(stringKey.Length + 1) * 2];
-                unsafe
-                {
-                    fixed (void* ptr = stringKey)
+                case TypeCode.String:
+                    var stringKey = key as string;
+
+                    if (stringKey != null)
                     {
-                        Marshal.Copy(new IntPtr(ptr), tmp, 0, tmp.Length);
+                        var hash = hashOffset;
+                        var tmp = new byte[(stringKey.Length + 1) * 2];
+                        unsafe
+                        {
+                            fixed (void* ptr = stringKey)
+                            {
+                                Marshal.Copy(new IntPtr(ptr), tmp, 0, tmp.Length);
+                            }
+                        }
+
+                        //FNV-1 hash
+                        for (var i = 0; i < tmp.Length; i++)
+                        {
+                            hash *= hashPrime;
+                            hash ^= tmp[i];
+                        }
+
+
+
+                        return hash;
+                        //var hashText = new SHA256CryptoServiceProvider().ComputeHash(bytes);
+                        //uint hashCodeStart = BitConverter.ToUInt32(hashText, 0);
+                        //uint hashCodeMedium = BitConverter.ToUInt32(hashText, 8);
+                        //uint hashCodeEnd = BitConverter.ToUInt32(hashText, 24);
+                        //return hashCodeStart ^ hashCodeMedium ^ hashCodeEnd;
                     }
-                }
-
-                //FNV-1 hash
-                for (var i = 0; i < tmp.Length; i++)
-                {
-                    hash *= hashPrime;
-                    hash ^= tmp[i];
-                }
-
-
-
-                return hash;
-                //var hashText = new SHA256CryptoServiceProvider().ComputeHash(bytes);
-                //uint hashCodeStart = BitConverter.ToUInt32(hashText, 0);
-                //uint hashCodeMedium = BitConverter.ToUInt32(hashText, 8);
-                //uint hashCodeEnd = BitConverter.ToUInt32(hashText, 24);
-                //return hashCodeStart ^ hashCodeMedium ^ hashCodeEnd;
+                    return Convert.ToUInt64(key.GetHashCode());
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                    return Convert.ToUInt64(key);
+                case TypeCode.Int64:
+                    return Convert.ToUInt64(key);
+                default:
+                    return Convert.ToUInt64(key.GetHashCode());
             }
-            return Convert.ToUInt64(key.GetHashCode());
         }
 
         private ulong GetPreferredIndex(TKey key)
