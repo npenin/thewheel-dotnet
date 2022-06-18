@@ -15,7 +15,7 @@ namespace TheWheel.ETL.Providers
     public class XmlTreeReader : TreeReader
     {
         public XmlTreeReader()
-        : base("xml:///", "TheWheel.ETL.Providers.Xml")
+        : base("xml://", "TheWheel.ETL.Providers.Xml")
         {
 
         }
@@ -52,11 +52,11 @@ namespace TheWheel.ETL.Providers
                 switch (reader.NodeType)
                 {
                     case XmlNodeType.Attribute:
-                        QuickPath(subItemPath, subItem, "@" + reader.LocalName, reader.Value);
+                        QuickPath(subItemPath, subItem, "/@" + reader.LocalName, reader.Value);
                         break;
                     case XmlNodeType.CDATA:
                     case XmlNodeType.Text:
-                        QuickPath(subItemPath, subItem, "text()", reader.Value);
+                        QuickPath(subItemPath, subItem, "/text()", reader.Value);
 
                         break;
                     case XmlNodeType.Comment:
@@ -68,17 +68,17 @@ namespace TheWheel.ETL.Providers
                     case XmlNodeType.DocumentType:
                         break;
                     case XmlNodeType.Element:
-                        OpenSegment(reader.LocalName + '/', ref lastPosition, subItem, ref subItemPath);
+                        OpenSegment('/' + reader.LocalName, ref lastPosition, subItem, ref subItemPath);
 
                         if (reader.IsEmptyElement)
                         {
-                            if (CloseSegment(reader.LocalName + '/', ref subItem, ref lastPosition, subItemPath))
+                            if (CloseSegment('/' + reader.LocalName, ref subItem, ref lastPosition, subItemPath))
                                 return true;
                         }
                         break;
                     case XmlNodeType.EndElement:
 
-                        if (CloseSegment(reader.LocalName + '/', ref subItem, ref lastPosition, subItemPath))
+                        if (CloseSegment('/' + reader.LocalName, ref subItem, ref lastPosition, subItemPath))
                             return true;
                         break;
                     case XmlNodeType.EndEntity:
