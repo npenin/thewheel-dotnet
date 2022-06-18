@@ -81,7 +81,18 @@ namespace TheWheel.ETL.Providers
                     copy.ColumnMappings.Add(mapping);
             var reader = await provider.ExecuteReaderAsync(token);
             if (reader.FieldCount > 0)
-                await copy.WriteToServerAsync(reader, token);
+            {
+                try
+                {
+                    await copy.WriteToServerAsync(reader, token);
+                }
+                catch (SqlException ex)
+                {
+                    if (Transport.Transaction != null)
+                        Transport.Transaction.Rollback();
+                    throw;
+                }
+            }
             if (Transport.Transaction != null)
                 Transport.Transaction.Commit();
             // }
