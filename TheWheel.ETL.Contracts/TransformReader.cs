@@ -67,7 +67,7 @@ namespace TheWheel.ETL.Contracts
                     if (record == reader)
                         record = new DataRecord(transform(reader));
                     else
-                        record = transform(record);
+                        record = transform(reader);
                 }
                 else
                     record = transform(record);
