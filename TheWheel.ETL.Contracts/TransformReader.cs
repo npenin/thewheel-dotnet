@@ -62,7 +62,7 @@ namespace TheWheel.ETL.Contracts
                     }))
                         throw new InvalidOperationException("Transform cannot a field with the same name :" + string.Join(", ", fieldNames));
                 }
-                if (reader != null)
+                if (enumerator == null)
                 {
                     if (record == reader)
                         record = new DataRecord(transform(reader));
@@ -97,7 +97,7 @@ namespace TheWheel.ETL.Contracts
                     }))
                         throw new InvalidOperationException("Transform cannot a field with the same name :" + string.Join(", ", fieldNames));
                 }
-                if (reader != null)
+                if (enumerator == null)
                 {
                     if (record == reader)
                         record = new DataRecord(transform(reader));
