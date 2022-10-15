@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Net.Http;
 using System.Threading;
@@ -14,6 +14,10 @@ namespace TheWheel.ETL.Azure
 
     public class TableReader : TheWheel.ETL.Contracts.DataReader, IConfigurableAsync<TableQuery, IDataReader>
     {
+        public TableReader() : base(typeof(TableReader).FullName)
+        {
+        }
+
         public override int Depth => throw new NotImplementedException();
 
         public override bool IsClosed => throw new NotImplementedException();
@@ -27,7 +31,7 @@ namespace TheWheel.ETL.Azure
 
         public async Task<IDataReader> Configure(TableQuery options, CancellationToken token)
         {
-            var provider = new PagedTransport<>;
+            var provider = new PagedTransport<,>();
             provider.Initialize(options.Transport);
             var stream = await options.Transport.GetStreamAsync(token);
             Json.Extract()
