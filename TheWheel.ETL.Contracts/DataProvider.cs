@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 namespace TheWheel.ETL.Contracts
 {
     public class DataProvider<TDataReader, TQueryOptions, TTransport> : DataProvider<TTransport>, IAsyncQueryable<TQueryOptions>
-    where TDataReader : IDataReader, IConfigurable<TQueryOptions, Task<IDataReader>>, new()
+    where TDataReader : IDataReader, IConfigurableAsync<TQueryOptions, IDataReader>, new()
     where TTransport : ITransport
-    where TQueryOptions : ITransportable<TTransport>, IConfigurable<TTransport, Task<TQueryOptions>>
+    where TQueryOptions : ITransportable<TTransport>, IConfigurableAsync<TTransport, TQueryOptions>
     {
         private TQueryOptions options;
 
         public override Task<IDataReader> ExecuteReaderAsync(CancellationToken token)
         {
-            return new TDataReader().Configure(this.options);
+            return new TDataReader().Configure(this.options, token);
         }
 
         public Task QueryAsync(TQueryOptions query, CancellationToken token)
         {
             this.options = query;
             if (options.Transport == null && this.Transport != null)
-                return options.Configure(this.Transport).ContinueWith(t => this.options = t.Result, token);
+                return options.Configure(this.Transport, token).ContinueWith(t => this.options = t.Result, token);
             return Task.FromResult(this);
         }
     }
@@ -55,12 +55,11 @@ namespace TheWheel.ETL.Contracts
 
         public abstract Task<IDataReader> ExecuteReaderAsync(CancellationToken token);
 
-        public Task InitializeAsync(TTransport transport)
+        public void Initialize(TTransport transport)
         {
             if (this.transport != null)
                 throw new InvalidOperationException("The provider has already been initialized with another transport");
             this.transport = transport;
-            return Task.FromResult(this);
         }
     }
 

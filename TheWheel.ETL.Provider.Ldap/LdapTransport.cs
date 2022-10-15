@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.DirectoryServices.Protocols;
 using System.Linq;
 using System.Net;
+using System.Threading;
 
 namespace TheWheel.ETL.Provider.Ldap
 {
@@ -10,7 +11,7 @@ namespace TheWheel.ETL.Provider.Ldap
     {
         private LdapConnection ldapConnection;
 
-        public Task InitializeAsync(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public Task InitializeAsync(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
         {
             var id = new LdapDirectoryIdentifier(connectionString);
             if (parameters != null)
@@ -26,7 +27,7 @@ namespace TheWheel.ETL.Provider.Ldap
             return Task.CompletedTask;
         }
 
-        public Task<LdapConnection> GetStreamAsync()
+        public Task<LdapConnection> GetStreamAsync(CancellationToken token)
         {
             return Task.FromResult(this.ldapConnection);
         }

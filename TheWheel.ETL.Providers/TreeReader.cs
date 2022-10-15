@@ -4,6 +4,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Newtonsoft.Json;
@@ -12,7 +13,7 @@ using TheWheel.ETL.Contracts;
 
 namespace TheWheel.ETL.Providers
 {
-    public abstract class TreeReader : DataReader, IConfigurable<TreeOptions, Task<IDataReader>>, IMultiDataReader
+    public abstract class TreeReader : DataReader, IConfigurableAsync<TreeOptions, IDataReader>, IMultiDataReader
     {
         public TreeReader(string schema, string trace) : base(trace)
         {
@@ -30,9 +31,9 @@ namespace TheWheel.ETL.Providers
         public int OutputIndex { get; private set; }
         public abstract bool EndOfStream { get; }
 
-        public async Task<IDataReader> Configure(TreeOptions options)
+        public async Task<IDataReader> Configure(TreeOptions options, CancellationToken token)
         {
-            this.BaseStream = await options.Transport.GetStreamAsync();
+            this.BaseStream = await options.Transport.GetStreamAsync(token);
             var reConfiguring = this.options == options;
             if (!reConfiguring)
             {
@@ -54,22 +55,22 @@ namespace TheWheel.ETL.Providers
 
         public override bool NextResult()
         {
-            var t = NextResultAsync();
+            var t = NextResultAsync(CancellationToken.None);
             t.Wait();
             return t.Result;
         }
-        public async Task<bool> NextResultAsync()
+        public async Task<bool> NextResultAsync(CancellationToken token)
         {
-            if (Read())
+            if (Read(token))
                 return true;
             if (supportsPaging)
             {
-                return await ((IPageable)options.Transport).NextPage().ContinueWith<Task<bool>>(async t =>
+                return await ((IPageable)options.Transport).NextPage(token).ContinueWith<Task<bool>>(async t =>
                 {
                     if (t.IsCanceled)
                         return false;
-                    await Configure(this.options);
-                    return await NextResultAsync();
+                    await Configure(this.options, token);
+                    return await NextResultAsync(token);
                 }).Unwrap();
             }
             return false;
@@ -165,6 +166,10 @@ namespace TheWheel.ETL.Providers
 
         public override bool Read()
         {
+            return Read(CancellationToken.None);
+        }
+        public bool Read(CancellationToken token)
+        {
             if (EndOfStream)
                 return false;
             // parsing = true;
@@ -207,11 +212,11 @@ namespace TheWheel.ETL.Providers
 
             if (supportsPaging && !noMatch)
             {
-                var t = ((IPageable)options.Transport).NextPage().ContinueWith<Task<bool>>(async t2 =>
+                var t = ((IPageable)options.Transport).NextPage(token).ContinueWith<Task<bool>>(async t2 =>
                  {
                      if (t2.IsCanceled)
                          return false;
-                     await Configure(this.options);
+                     await Configure(this.options, token);
                      return Read();
                  }).Unwrap();
                 t.Wait();

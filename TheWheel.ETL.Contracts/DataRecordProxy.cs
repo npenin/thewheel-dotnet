@@ -83,7 +83,7 @@ namespace TheWheel.ETL.Contracts
 
         public virtual Guid GetGuid(int i)
         {
-            throw new NotImplementedException();
+            return record.GetGuid(i);
         }
 
         public virtual short GetInt16(int i)

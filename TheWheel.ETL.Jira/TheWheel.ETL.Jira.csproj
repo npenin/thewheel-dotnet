@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\TheWheel.ETL.fluent\TheWheel.ETL.Fluent.csproj" />
+    <ProjectReference Include="..\TheWheel.ETL.Fluent\TheWheel.ETL.Fluent.csproj" />
     <ProjectReference Include="..\TheWheel.ETL.Providers\TheWheel.ETL.Providers.csproj" />
     <ProjectReference Include="..\TheWheel.ETL.Contracts\TheWheel.ETL.Contracts.csproj" />
   </ItemGroup>

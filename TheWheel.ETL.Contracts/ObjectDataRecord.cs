@@ -14,7 +14,8 @@ namespace TheWheel.ETL.Contracts
 
         static ObjectDataRecord()
         {
-            members = typeof(T).GetMembers(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.GetField | System.Reflection.BindingFlags.GetProperty);
+            members = typeof(T).GetMembers(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                .Where(m => m.MemberType == MemberTypes.Field || m.MemberType == MemberTypes.Property).ToArray();
             ordinalMapping = members.Select((m, i) => new { m.Name, i }).ToDictionary(m => m.Name, m => m.i);
         }
 

@@ -9,6 +9,7 @@ using System.Xml;
 using Newtonsoft.Json;
 using TheWheel.ETL.Contracts;
 using TheWheel.Domain;
+using System.Threading;
 
 namespace TheWheel.ETL.Providers
 {
@@ -20,12 +21,12 @@ namespace TheWheel.ETL.Providers
 
         }
 
-        public static async Task<DataProvider<XmlTreeReader, TreeOptions, ITransport<Stream>>> From<TTransport>(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public static async Task<DataProvider<XmlTreeReader, TreeOptions, ITransport<Stream>>> From<TTransport>(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
             where TTransport : ITransport<Stream>, new()
         {
             var provider = new DataProvider<XmlTreeReader, TreeOptions, ITransport<Stream>>();
-            await provider.InitializeAsync(new TTransport());
-            await provider.Transport.InitializeAsync(connectionString, parameters);
+            provider.Initialize(new TTransport());
+            await provider.Transport.InitializeAsync(connectionString, token, parameters);
             return provider;
         }
         public override bool IsClosed => reader.ReadState != ReadState.Closed;

@@ -2,18 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
 
 namespace TheWheel.ETL.Providers
 {
-    public interface IPageable
-    {
-        int Total { get; set; }
-
-        Task NextPage();
-    }
-
     public class PagedTransport<T, TSupport> : ITransport, ITransport<TSupport>, IPageable
     where T : ITransport, ITransport<TSupport>, new()
     {
@@ -38,21 +32,21 @@ namespace TheWheel.ETL.Providers
             transport.Dispose();
         }
 
-        public Task<TSupport> GetStreamAsync()
+        public Task<TSupport> GetStreamAsync(CancellationToken token)
         {
-            return transport.GetStreamAsync();
+            return transport.GetStreamAsync(token);
         }
 
-        public virtual Task InitializeAsync(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public virtual Task InitializeAsync(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
         {
             this.connectionString = connectionString;
             this.parameters = parameters;
             count = Convert.ToInt32(parameters.First(p => p.Key == countParameterName).Value);
             offset = Convert.ToInt32(parameters.First(p => p.Key == offsetParameterName).Value);
-            return transport.InitializeAsync(connectionString, parameters);
+            return transport.InitializeAsync(connectionString, token, parameters);
         }
 
-        public async Task NextPage()
+        public async Task NextPage(CancellationToken token)
         {
             offset += count;
             if (offset > Total)
@@ -61,7 +55,7 @@ namespace TheWheel.ETL.Providers
                 return;
             }
             var nextPageTransport = new T();
-            await nextPageTransport.InitializeAsync(connectionString, parameters.Select(p =>
+            await nextPageTransport.InitializeAsync(connectionString, token, parameters.Select(p =>
             {
                 if (p.Key == offsetParameterName)
                     return new KeyValuePair<string, object>(p.Key, offset);

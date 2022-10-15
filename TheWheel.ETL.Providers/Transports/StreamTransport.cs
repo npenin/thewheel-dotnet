@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
 
@@ -21,12 +22,12 @@ namespace TheWheel.ETL.Providers
                 this.stream.Dispose();
         }
 
-        public Task<Stream> GetStreamAsync()
+        public Task<Stream> GetStreamAsync(CancellationToken token)
         {
             return Task.FromResult(this.stream);
         }
 
-        public Task InitializeAsync(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public Task InitializeAsync(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
         {
             return Task.CompletedTask;
         }

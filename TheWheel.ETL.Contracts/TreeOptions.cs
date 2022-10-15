@@ -1,12 +1,13 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
 
 namespace TheWheel.ETL.Contracts
 {
-    public class TreeOptions : ITransportable<ITransport<Stream>>, IConfigurable<ITransport<Stream>, Task<TreeOptions>>
+    public class TreeOptions : ITransportable<ITransport<Stream>>, IConfigurableAsync<ITransport<Stream>, TreeOptions>
     {
         public DataMatcher[] Matchers { get; private set; }
 
@@ -116,7 +117,7 @@ namespace TheWheel.ETL.Contracts
                 Paths = option.paths;
         }
 
-        public Task<TreeOptions> Configure(ITransport<Stream> options)
+        public Task<TreeOptions> Configure(ITransport<Stream> options, CancellationToken token)
         {
             return Task.FromResult(new TreeOptions(options, this));
         }

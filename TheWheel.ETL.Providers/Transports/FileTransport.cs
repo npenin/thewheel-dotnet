@@ -21,12 +21,12 @@ namespace TheWheel.ETL.Providers
                 System.IO.File.Move(path, archivePath);
         }
 
-        public virtual Task<Stream> GetStreamAsync()
+        public virtual Task<Stream> GetStreamAsync(CancellationToken token)
         {
             return Task.FromResult<Stream>(System.IO.File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read));
         }
 
-        public Task InitializeAsync(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public Task InitializeAsync(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
         {
             path = connectionString;
             return Task.CompletedTask;
@@ -64,7 +64,7 @@ namespace TheWheel.ETL.Providers
 
         public int Total { get; set; }
 
-        public override Task<Stream> GetStreamAsync()
+        public override async Task<Stream> GetStreamAsync(CancellationToken token)
         {
             var path = this.path;
             var unzip = zipFileMatcher.Match(path);
@@ -115,7 +115,11 @@ namespace TheWheel.ETL.Providers
                             }
                             var entryStream = entry.Open();
 
+#if NET5_0_OR_GREATER
+                            await entryStream.CopyToAsync(tmpStream, token);
+#else
                             entryStream.CopyTo(tmpStream);
+#endif
                         }
 
                         path = tmpFile;
@@ -123,10 +127,10 @@ namespace TheWheel.ETL.Providers
                 }
             }
 
-            return Task.FromResult<Stream>(System.IO.File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read));
+            return System.IO.File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
 
-        public Task NextPage()
+        public Task NextPage(CancellationToken token)
         {
 #if NET5_0
             if (fileQueue.TryDequeue(out path))
@@ -144,7 +148,7 @@ namespace TheWheel.ETL.Providers
 
     public class FileWrite : File
     {
-        public override Task<Stream> GetStreamAsync()
+        public override Task<Stream> GetStreamAsync(CancellationToken token)
         {
             return Task.FromResult<Stream>(System.IO.File.Open(path, FileMode.Create, FileAccess.Write, FileShare.Read));
         }

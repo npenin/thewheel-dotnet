@@ -1,11 +1,11 @@
-namespace TheWheel.ETL.Owin
+namespace TheWheel.ETL.DacPac
 {
     public class TableModel
     {
         public int object_id;
         public string type;
         public string name;
-        public string[] columns;
+        public ColumnModel[] columns;
         public ParameterModel[] parameters;
     }
 }

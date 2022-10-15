@@ -4,10 +4,11 @@ using System.DirectoryServices.Protocols;
 using System.Threading.Tasks;
 using System.Linq;
 using TheWheel.ETL.Contracts;
+using System.Threading;
 
 namespace TheWheel.ETL.Provider.Ldap
 {
-    public class LdapReader : DataReader, IConfigurable<LdapOptions, Task<IDataReader>>
+    public class LdapReader : DataReader, IConfigurableAsync<LdapOptions, IDataReader>
     {
         private bool isClosed;
         private LdapOptions options;
@@ -34,9 +35,9 @@ namespace TheWheel.ETL.Provider.Ldap
             isClosed = true;
         }
 
-        public async Task<IDataReader> Configure(LdapOptions options)
+        public async Task<IDataReader> Configure(LdapOptions options, CancellationToken token)
         {
-            var connection = await options.Transport.GetStreamAsync();
+            var connection = await options.Transport.GetStreamAsync(token);
             SearchResponse response;
             if (options.Timeout.HasValue)
                 response = (SearchResponse)await Task.Factory.FromAsync((callback, state) => connection.BeginSendRequest(options.Request, options.Timeout.Value, System.DirectoryServices.Protocols.PartialResultProcessing.NoPartialResultSupport, callback, state),

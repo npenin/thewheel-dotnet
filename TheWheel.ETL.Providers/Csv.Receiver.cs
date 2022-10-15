@@ -18,11 +18,11 @@ namespace TheWheel.ETL.Providers
     {
         private ITransport<Stream> receiverTransport;
 
-        public static async Task<IDataReceiver<CsvReceiverOptions>> To<TTransport>(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public static async Task<IDataReceiver<CsvReceiverOptions>> To<TTransport>(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
             where TTransport : ITransport<Stream>, new()
         {
             var transport = new TTransport();
-            await transport.InitializeAsync(connectionString, parameters);
+            await transport.InitializeAsync(connectionString, token, parameters);
             return new Csv(transport);
         }
 
@@ -40,7 +40,7 @@ namespace TheWheel.ETL.Providers
             var separatorChar = Csv.GetSeparatorChar(options.Separator);
             using (var reader = await provider.ExecuteReaderAsync(token))
             {
-                using (var targetStream = await receiverTransport.GetStreamAsync())
+                using (var targetStream = await receiverTransport.GetStreamAsync(token))
                 {
                     using (var writer = new StreamWriter(targetStream))
                     {
@@ -143,7 +143,7 @@ namespace TheWheel.ETL.Providers
         }
     }
 
-    public class CsvReceiverOptions : CsvOptions, IConfigurable<ITransport<Stream>, Task<CsvReceiverOptions>>
+    public class CsvReceiverOptions : CsvOptions, IConfigurableAsync<ITransport<Stream>, CsvReceiverOptions>
     {
         public CsvReceiverOptions()
         {
@@ -152,9 +152,9 @@ namespace TheWheel.ETL.Providers
 
         public Func<object, string>[] formatters;
 
-        async Task<CsvReceiverOptions> IConfigurable<ITransport<Stream>, Task<CsvReceiverOptions>>.Configure(ITransport<Stream> options)
+        async Task<CsvReceiverOptions> IConfigurableAsync<ITransport<Stream>, CsvReceiverOptions>.Configure(ITransport<Stream> options, CancellationToken token)
         {
-            await this.Configure(options);
+            await this.Configure(options, token);
             return this;
         }
     }

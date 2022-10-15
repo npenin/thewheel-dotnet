@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
 
@@ -23,9 +24,9 @@ namespace TheWheel.ETL.Providers
         {
         }
 
-        public abstract Task<Stream> GetStreamAsync();
+        public abstract Task<Stream> GetStreamAsync(CancellationToken token);
 
-        public Task InitializeAsync(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public Task InitializeAsync(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
         {
             return Task.CompletedTask;
         }
@@ -36,7 +37,7 @@ namespace TheWheel.ETL.Providers
     public class StdOutput : ProcessTransport
     {
 
-        public override Task<Stream> GetStreamAsync()
+        public override Task<Stream> GetStreamAsync(CancellationToken token)
         {
             if (process == null)
                 return Task.FromResult<Stream>(Console.OpenStandardOutput());
@@ -46,7 +47,7 @@ namespace TheWheel.ETL.Providers
 
     public class StdInput : ProcessTransport
     {
-        public override Task<Stream> GetStreamAsync()
+        public override Task<Stream> GetStreamAsync(CancellationToken token)
         {
             if (process == null)
                 return Task.FromResult<Stream>(Console.OpenStandardInput());
@@ -56,7 +57,7 @@ namespace TheWheel.ETL.Providers
 
     public class StdError : ProcessTransport
     {
-        public override Task<Stream> GetStreamAsync()
+        public override Task<Stream> GetStreamAsync(CancellationToken token)
         {
             if (process == null)
                 return Task.FromResult<Stream>(Console.OpenStandardError());

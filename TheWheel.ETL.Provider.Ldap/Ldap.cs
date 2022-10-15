@@ -25,20 +25,20 @@ namespace TheWheel.ETL.Provider.Ldap
 
     public class Ldap : DataProvider<LdapReader, LdapOptions, LdapTransport>
     {
-        public static async Task<IAsyncQueryable<LdapOptions>> From(string connectionString, NetworkCredential creds = null)
+        public static async Task<IAsyncQueryable<LdapOptions>> From(string connectionString, CancellationToken token, NetworkCredential creds = null)
         {
             var transport = new LdapTransport();
             if (creds == null)
-                await transport.InitializeAsync(connectionString);
+                await transport.InitializeAsync(connectionString, token);
             else
-                await transport.InitializeAsync(connectionString, new KeyValuePair<string, object>("Credentials", creds));
+                await transport.InitializeAsync(connectionString, token, new KeyValuePair<string, object>("Credentials", creds));
             var result = new Ldap();
-            await result.InitializeAsync(transport);
+            result.Initialize(transport);
             return result;
         }
     }
 
-    public class LdapOptions : IConfigurable<LdapTransport, Task<LdapOptions>>, ITransportable<LdapTransport>
+    public class LdapOptions : IConfigurableAsync<LdapTransport, LdapOptions>, ITransportable<LdapTransport>
     {
         public LdapTransport Transport { get; set; }
 
@@ -46,9 +46,11 @@ namespace TheWheel.ETL.Provider.Ldap
 
         public TimeSpan? Timeout { get; set; }
 
-        public Task<LdapOptions> Configure(LdapTransport transport)
+        public CancellationToken Token { get; set; }
+
+        public Task<LdapOptions> Configure(LdapTransport transport, CancellationToken token)
         {
-            return Task.FromResult(new LdapOptions { Transport = transport, Request = Request, Timeout = Timeout });
+            return Task.FromResult(new LdapOptions { Transport = transport, Request = Request, Timeout = Timeout, Token = token });
         }
     }
 }

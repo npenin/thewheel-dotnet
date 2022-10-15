@@ -29,7 +29,7 @@ namespace TheWheel.ETL.DacPac
                     if (col.GetMetadata<ColumnType>(Column.ColumnType) == ColumnType.ComputedColumn)
                         continue;
                     Console.Write("\t\tpublic ");
-                    Console.Write(MapType(col));
+                    Console.Write(FormatType(MapType(col)));
                     Console.Write(' ');
                     Console.Write(col.Name.Parts.Last());
                     Console.WriteLine(';');
@@ -40,7 +40,35 @@ namespace TheWheel.ETL.DacPac
             }
         }
 
-        private static string MapType(TSqlObject column)
+        private static string FormatType(Type type)
+        {
+            if (type.IsArray)
+            {
+                if (type.IsGenericType)
+                    return FormatType(type.GenericTypeArguments[0]) + "[]";
+                else
+                    return FormatType(typeof(object[]));
+            }
+            if (type == typeof(int))
+                return "int";
+            if (type == typeof(DateTime))
+                return "System.DateTime";
+            if (type == typeof(string))
+                return "string";
+            if (type == typeof(bool))
+                return "bool";
+            if (type == typeof(byte[]))
+                return "byte[]";
+            if (type == typeof(float))
+                return "float";
+            if (type == typeof(double))
+                return "double";
+            if (type == typeof(decimal))
+                return "decimal";
+            return type.FullName;
+        }
+
+        private static Type MapType(TSqlObject column)
         {
             var type = column.GetReferencedRelationshipInstances(Column.DataType).FirstOrDefault();
             if (type == null)
@@ -48,23 +76,23 @@ namespace TheWheel.ETL.DacPac
             switch (type.ObjectName.ToString())
             {
                 case "[int]":
-                    return "int";
+                    return typeof(int);
                 case "[datetime]":
                 case "[datetime2]":
-                    return "System.DateTime";
+                    return typeof(System.DateTime);
                 case "[varchar]":
                 case "[nvarchar]":
-                    return "string";
+                    return typeof(string);
                 case "[bit]":
-                    return "boolean";
+                    return typeof(bool);
                 case "[varbinary]":
-                    return "byte[]";
+                    return typeof(byte[]);
                 case "[float]":
-                    return "float";
+                    return typeof(float);
                 case "[real]":
-                    return "double";
+                    return typeof(double);
                 case "[decimal]":
-                    return "decimal";
+                    return typeof(decimal);
                 default:
                     throw new NotSupportedException(type.ObjectName.ToString());
             }

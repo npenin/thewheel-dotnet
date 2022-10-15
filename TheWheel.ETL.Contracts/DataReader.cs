@@ -267,8 +267,8 @@ namespace TheWheel.ETL.Contracts
 
     public class EnumerableDataReader<T> : DataReader
     {
-        private IEnumerator<T> enumerator;
-        private readonly CancellationToken token;
+        protected readonly IEnumerator<T> enumerator;
+        protected readonly CancellationToken token;
 
         public EnumerableDataReader(IEnumerable<T> source, CancellationToken token)
         : base("TheWheel.ETL.EnumerableDataReader")

@@ -16,11 +16,11 @@ namespace TheWheel.ETL.Providers
     {
         private ITransport<Stream> receiverTransport;
 
-        public static async Task<IDataReceiver<TreeOptions>> To<TTransport>(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public static async Task<IDataReceiver<TreeOptions>> To<TTransport>(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
             where TTransport : ITransport<Stream>, new()
         {
             var transport = new TTransport();
-            await transport.InitializeAsync(connectionString, parameters);
+            await transport.InitializeAsync(connectionString, token, parameters);
             return new Json(transport);
         }
 
@@ -35,9 +35,11 @@ namespace TheWheel.ETL.Providers
             if (query != null && query.Transport != null)
                 receiverTransport = query.Transport;
             EnsureValidForReception(query);
-            using (var stream = new StreamWriter(await receiverTransport.GetStreamAsync()))
+            var stream = await receiverTransport.GetStreamAsync(token);
+            var streamWriter = new StreamWriter(stream, null, -1, leaveOpen: true);
+            using (var writer = new JsonTextWriter(streamWriter) { CloseOutput = false })
             {
-                using (var writer = new JsonTextWriter(stream))
+                try
                 {
                     int dataSet = -1;
                     using (var reader = await provider.ExecuteReaderAsync(token))
@@ -51,21 +53,21 @@ namespace TheWheel.ETL.Providers
                                 throw new NotSupportedException("Currently json serialization does not support more than 1 result set");
                             var uri = query.Matchers[dataSet].rootUri;
 
-                            for (var i = 1; i < uri.Segments.Length; i++)
+                            for (var i = 0; i < uri.Segments.Length; i++)
                             {
                                 if (uri.Segments[i] == "/")
                                 {
-                                    await writer.WriteStartArrayAsync();
+                                    await writer.WriteStartArrayAsync(token);
                                 }
                                 else
                                 {
-                                    await writer.WriteStartObjectAsync();
-                                    await writer.WritePropertyNameAsync(uri.Segments[i].Substring(0, uri.Segments[i].Length - 1));
+                                    await writer.WriteStartObjectAsync(token);
+                                    await writer.WritePropertyNameAsync(uri.Segments[i].Substring(0, uri.Segments[i].Length - 1), token);
                                 }
                             }
                             while (reader.Read())
                             {
-                                await writer.WriteStartObjectAsync();
+                                await writer.WriteStartObjectAsync(token);
                                 for (var i = 0; i < reader.FieldCount; i++)
                                 {
                                     var path = query.Matchers[dataSet].Root;
@@ -74,18 +76,38 @@ namespace TheWheel.ETL.Providers
                                         targetPath.Substring(path.Length + 1);
 
                                     await Move(writer, targetPath);
-                                    await writer.WriteValueAsync(reader.GetValue(i));
+                                    switch (reader.GetFieldType(i).GetTypeCode())
+                                    {
+                                        case TypeCode.Object:
+                                            await writer.WriteRawValueAsync(JsonConvert.SerializeObject(reader.GetValue(i)), token);
+                                            break;
+                                        default:
+                                            await writer.WriteValueAsync(reader.GetValue(i), token);
+                                            break;
+                                    }
                                 }
-                                await writer.WriteEndObjectAsync();
+                                await writer.WriteEndObjectAsync(token);
                             }
                         }
                         while (reader.NextResult());
                     }
                     if (dataSet == -1)
                     {
-                        await writer.WriteStartArrayAsync();
-                        await writer.WriteEndArrayAsync();
+                        await writer.WriteStartArrayAsync(token);
+                        await writer.WriteEndArrayAsync(token);
                     }
+
+                    await writer.CloseAsync(token);
+                }
+                finally
+                {
+#if NET5_0_OR_GREATER
+                    await streamWriter.DisposeAsync();
+                    await stream.DisposeAsync();
+#else
+                    streamWriter.Dispose();
+                    stream.Dispose();
+#endif
                 }
             }
         }

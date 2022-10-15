@@ -9,10 +9,11 @@ using System.Xml;
 using Newtonsoft.Json;
 using TheWheel.ETL.Contracts;
 using TheWheel.Domain;
+using System.Threading;
 
 namespace TheWheel.ETL.Providers
 {
-    public class Xml : DataReader, IConfigurable<TreeOptions, Task<IDataReader>>, IMultiDataReader
+    public class Xml : DataReader, IConfigurableAsync<TreeOptions, IDataReader>, IMultiDataReader
     {
         public Xml() : base("TheWheel.ETL.Providers.Xml")
         {
@@ -20,12 +21,12 @@ namespace TheWheel.ETL.Providers
         }
 
 
-        public static async Task<DataProvider<Xml, TreeOptions, ITransport<Stream>>> From<TTransport>(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public static async Task<DataProvider<Xml, TreeOptions, ITransport<Stream>>> From<TTransport>(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
             where TTransport : ITransport<Stream>, new()
         {
             var provider = new DataProvider<Xml, TreeOptions, ITransport<Stream>>();
-            await provider.InitializeAsync(new TTransport());
-            await provider.Transport.InitializeAsync(connectionString, parameters);
+            provider.Initialize(new TTransport());
+            await provider.Transport.InitializeAsync(connectionString, token, parameters);
             return provider;
         }
         public Stream BaseStream { get; private set; }
@@ -40,9 +41,9 @@ namespace TheWheel.ETL.Providers
 
         private XmlReader reader;
 
-        public async Task<IDataReader> Configure(TreeOptions options)
+        public async Task<IDataReader> Configure(TreeOptions options, CancellationToken token)
         {
-            this.BaseStream = await options.Transport.GetStreamAsync();
+            this.BaseStream = await options.Transport.GetStreamAsync(token);
             reader = XmlReader.Create(this.BaseStream, new XmlReaderSettings
             {
                 DtdProcessing = DtdProcessing.Ignore,

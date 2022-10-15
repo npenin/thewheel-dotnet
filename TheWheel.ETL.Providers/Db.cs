@@ -17,12 +17,12 @@ namespace TheWheel.ETL.Providers
     {
         protected static readonly ILogger<Db> trace = Logging.factory.CreateLogger<Db>();
 
-        public static async Task<Db> From(ConnectionStringSettings connectionString)
+        public static async Task<Db> From(ConnectionStringSettings connectionString, CancellationToken token)
         {
             if (connectionString.ProviderName == null || connectionString.ProviderName == "System.Data.SqlClient")
-                return await Sql.From(connectionString.ConnectionString);
+                return await Sql.From(connectionString.ConnectionString, token);
             var db = new Db(DbProviderFactories.GetFactory(connectionString.ProviderName));
-            await db.Transport.InitializeAsync(connectionString.ConnectionString);
+            await db.Transport.InitializeAsync(connectionString.ConnectionString, token);
             return db;
         }
 
@@ -48,7 +48,9 @@ namespace TheWheel.ETL.Providers
 
         public override async Task<IDataReader> ExecuteReaderAsync(CancellationToken token)
         {
-            this.command = await Transport.GetStreamAsync();
+            this.command = await Transport.GetStreamAsync(token);
+            if (Transport.Behavior.HasValue)
+                return command.ExecuteReader(Transport.Behavior.Value);
             return command.ExecuteReader();
         }
 
@@ -143,7 +145,7 @@ namespace TheWheel.ETL.Providers
             using (var reader = await provider.ExecuteReaderAsync(token))
             {
                 await Transport.QueryAsync(query.query, token);
-                var cmd = await Transport.GetStreamAsync();
+                var cmd = await Transport.GetStreamAsync(token);
 
                 if (query.mapping != null)
                 {

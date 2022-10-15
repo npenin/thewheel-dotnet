@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\TheWheel.ETL.Owin\TheWheel.ETL.Owin.csproj" />
+    <ProjectReference Include="..\TheWheel.ETL.Contracts\TheWheel.ETL.Contracts.csproj" />
+    <ProjectReference Include="..\TheWheel.ETL.Providers\TheWheel.ETL.Providers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="6.0.7" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

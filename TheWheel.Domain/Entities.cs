@@ -12,11 +12,8 @@ namespace TheWheel.Domain
             FilterCriterias = new List<FilterCriteria>();
         }
 
-        public int FK_Owner { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
-
-        public int? FK_Source { get; set; }
 
         public string Scope { get; set; }
 
@@ -37,11 +34,10 @@ namespace TheWheel.Domain
 
         public string PropertyName { get; set; }
 
-        public string PropertyValue { get; set; }
+        public object PropertyValue { get; set; }
 
         public FilterOperator FilterOperator { get; set; }
 
-        public int? FK_ParentFilterCriteria { get; set; }
         public bool IsMultiple { get; set; }
 
         public virtual Filter Filter { get; set; }

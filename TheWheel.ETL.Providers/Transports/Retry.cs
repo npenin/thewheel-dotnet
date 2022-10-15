@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
 
@@ -44,11 +45,11 @@ namespace TheWheel.ETL.Providers
             this.transport.Dispose();
         }
 
-        public async Task<TSupport> GetStreamAsync()
+        public async Task<TSupport> GetStreamAsync(CancellationToken token)
         {
             try
             {
-                var support = await this.transport.GetStreamAsync();
+                var support = await this.transport.GetStreamAsync(token);
                 this.retryLeft = this.retryCount;
                 return support;
             }
@@ -56,16 +57,16 @@ namespace TheWheel.ETL.Providers
             {
                 retryLeft--;
                 if (this.retryLeft > 0)
-                    return await this.GetStreamAsync();
+                    return await this.GetStreamAsync(token);
                 throw;
             }
         }
 
-        public async Task InitializeAsync(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public async Task InitializeAsync(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
         {
             try
             {
-                await this.transport.InitializeAsync(connectionString, parameters);
+                await this.transport.InitializeAsync(connectionString, token, parameters);
                 this.retryLeft = this.retryCount;
             }
             catch (Exception)
@@ -73,18 +74,18 @@ namespace TheWheel.ETL.Providers
                 retryLeft--;
                 if (this.retryLeft > 0)
                 {
-                    await this.InitializeAsync(connectionString, parameters);
+                    await this.InitializeAsync(connectionString, token, parameters);
                     return;
                 }
                 throw;
             }
         }
 
-        public async Task NextPage()
+        public async Task NextPage(CancellationToken token)
         {
             try
             {
-                await this.transport.NextPage();
+                await this.transport.NextPage(token);
                 this.retryLeft = this.retryCount;
             }
             catch (Exception)
@@ -92,7 +93,7 @@ namespace TheWheel.ETL.Providers
                 retryLeft--;
                 if (this.retryLeft > 0)
                 {
-                    await this.GetStreamAsync();
+                    await this.GetStreamAsync(token);
                     return;
                 }
                 throw;

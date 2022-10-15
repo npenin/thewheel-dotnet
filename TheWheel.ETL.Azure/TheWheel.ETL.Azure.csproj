@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\TheWheel.ETL.Contracts\TheWheel.ETL.Contracts.csproj" />
+    <ProjectReference Include="..\TheWheel.ETL.Providers\TheWheel.ETL.Providers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Data.Tables" Version="12.6.1" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+    <!-- <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable> -->
+  </PropertyGroup>
+
+</Project>

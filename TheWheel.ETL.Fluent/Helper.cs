@@ -13,20 +13,20 @@ namespace TheWheel.ETL.Fluent
 {
     public static partial class Helper
     {
-        public static async Task<DataProvider<Xml, TreeOptions, ITransport<Stream>>> FromXml<TTransport>(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public static async Task<DataProvider<Xml, TreeOptions, ITransport<Stream>>> FromXml<TTransport>(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
             where TTransport : ITransport<Stream>, new()
         {
             var provider = new DataProvider<Xml, TreeOptions, ITransport<Stream>>();
-            await provider.InitializeAsync(new TTransport());
-            await provider.Transport.InitializeAsync(connectionString, parameters);
+            provider.Initialize(new TTransport());
+            await provider.Transport.InitializeAsync(connectionString, token, parameters);
             return provider;
         }
-        public static async Task<DataProvider<Csv, CsvOptions, ITransport<Stream>>> FromCsv<TTransport>(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public static async Task<DataProvider<Csv, CsvOptions, ITransport<Stream>>> FromCsv<TTransport>(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
             where TTransport : ITransport<Stream>, new()
         {
             var provider = new DataProvider<Csv, CsvOptions, ITransport<Stream>>();
-            await provider.InitializeAsync(new TTransport());
-            await provider.Transport.InitializeAsync(connectionString, parameters);
+            provider.Initialize(new TTransport());
+            await provider.Transport.InitializeAsync(connectionString, token, parameters);
             return provider;
         }
 
@@ -35,7 +35,7 @@ namespace TheWheel.ETL.Fluent
         {
             return new LazyReceiver<TReceiverOptions>(await receiver, options);
         }
-        
+
         // public static async Task<Bag<string, bool>> Cache<TProvider, TQueryOptions>(this Task<TProvider> providerTask, TQueryOptions query, CancellationToken token)
         // where TProvider : IAsyncNewQueryable<TQueryOptions>, new()
         // {
@@ -72,21 +72,21 @@ namespace TheWheel.ETL.Fluent
 
         public static Task<Bag<string, IDataRecord>> Cache(this Task<IDataProvider> provider, int ignoredField, CancellationToken token)
         {
-            return Cache<IDataRecord>(provider, ignoredField, record=>record, token);
+            return Cache<IDataRecord>(provider, ignoredField, record => record, token);
         }
 
         public static Task<Bag<string, T>> Cache<T>(this Task<IDataProvider> provider, int ignoredField, Func<IDataRecord, T> getter, CancellationToken token)
         {
-            return Cache<string, T>(provider, ignoredField, (record,keys)=>string.Join("/", keys.Select(k => record.GetValue(k))), getter, token);
+            return Cache<string, T>(provider, ignoredField, (record, keys) => string.Join("/", keys.Select(k => record.GetValue(k))), getter, token);
         }
 
 
         public static Task<Bag<string, T>> Cache<T>(this Task<IDataProvider> provider, string ignoredField, Func<IDataRecord, T> getter, CancellationToken token)
         {
-            return Cache<string, T>(provider, ignoredField, (record,keys)=>string.Join("/", keys.Select(k => record.GetValue(k))), getter, token);
+            return Cache<string, T>(provider, ignoredField, (record, keys) => string.Join("/", keys.Select(k => record.GetValue(k))), getter, token);
         }
 
-        public static async Task<Bag<TKey, T>> Cache<TKey, T>(this Task<IDataProvider> provider, int ignoredField, Func<IDataRecord, int[], TKey> keyGetter,Func<IDataRecord, T> getter, CancellationToken token)
+        public static async Task<Bag<TKey, T>> Cache<TKey, T>(this Task<IDataProvider> provider, int ignoredField, Func<IDataRecord, int[], TKey> keyGetter, Func<IDataRecord, T> getter, CancellationToken token)
         {
             // trace.TraceInformation(cmd.CommandText);
             var index = new Bag<TKey, T>();
@@ -138,7 +138,7 @@ namespace TheWheel.ETL.Fluent
                                     keys[i] = i;
                             }
                         }
-                        index.Add(keyGetter(reader,keys), getter(reader));
+                        index.Add(keyGetter(reader, keys), getter(reader));
                     }
             }
 
@@ -146,7 +146,7 @@ namespace TheWheel.ETL.Fluent
         }
 
 
-        public static async Task<Bag<TKey, T>> Cache<TKey, T>(this Task<IDataProvider> provider, string ignoredField, Func<IDataRecord,int[], TKey> keyGetter, Func<IDataRecord, T> getter, CancellationToken token)
+        public static async Task<Bag<TKey, T>> Cache<TKey, T>(this Task<IDataProvider> provider, string ignoredField, Func<IDataRecord, int[], TKey> keyGetter, Func<IDataRecord, T> getter, CancellationToken token)
         {
             // trace.TraceInformation(cmd.CommandText);
             var index = new Bag<TKey, T>();
@@ -180,7 +180,7 @@ namespace TheWheel.ETL.Fluent
                                 keys[i] = i;
                         }
                     }
-                    index.Add(keyGetter(reader,keys), getter(reader));
+                    index.Add(keyGetter(reader, keys), getter(reader));
                 }
             }
             Console.WriteLine("Index completed");
@@ -199,11 +199,11 @@ namespace TheWheel.ETL.Fluent
         //     return provider;
         // }
 
-        public static async Task<TProvider> Initialize<TProvider, TTransport>(this TProvider provider, string connectionString, params KeyValuePair<string, object>[] parameters)
+        public static async Task<TProvider> Initialize<TProvider, TTransport>(this TProvider provider, string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
         where TProvider : ITransportable<TTransport>
         where TTransport : ITransport, new()
         {
-            await provider.Transport.InitializeAsync(connectionString, parameters);
+            await provider.Transport.InitializeAsync(connectionString, token, parameters);
             return provider;
         }
 

@@ -4,6 +4,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TheWheel.Domain;
@@ -19,17 +20,17 @@ namespace TheWheel.ETL.Providers
 
         }
 
-        public static Task<DataProvider<Json, TreeOptions, ITransport<Stream>>> From<TTransport>(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public static Task<DataProvider<Json, TreeOptions, ITransport<Stream>>> From<TTransport>(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
             where TTransport : ITransport<Stream>, new()
         {
-            return From(new TTransport(), connectionString, parameters);
+            return From(new TTransport(), token, connectionString, parameters);
         }
-        public static async Task<DataProvider<Json, TreeOptions, ITransport<Stream>>> From<TTransport>(TTransport transport, string connectionString, params KeyValuePair<string, object>[] parameters)
+        public static async Task<DataProvider<Json, TreeOptions, ITransport<Stream>>> From<TTransport>(TTransport transport, CancellationToken token, string connectionString, params KeyValuePair<string, object>[] parameters)
             where TTransport : ITransport<Stream>
         {
             var provider = new DataProvider<Json, TreeOptions, ITransport<Stream>>();
-            await transport.InitializeAsync(connectionString, parameters);
-            await provider.InitializeAsync(transport);
+            await transport.InitializeAsync(connectionString, token, parameters);
+            provider.Initialize(transport);
             return provider;
         }
 

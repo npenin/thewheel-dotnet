@@ -29,26 +29,28 @@ namespace TheWheel.ETL.Providers
 
         public override async Task<IDataReader> ExecuteReaderAsync(CancellationToken token)
         {
-            var cmd = (SqlCommand)(this.command = await Transport.GetStreamAsync());
+            var cmd = (SqlCommand)(this.command = await Transport.GetStreamAsync(token));
+            if (Transport.Behavior.HasValue)
+                return await cmd.ExecuteReaderAsync(Transport.Behavior.Value, token);
             return await cmd.ExecuteReaderAsync(token);
         }
 
-        public static async Task<Sql> To(string connectionString)
+        public static async Task<Sql> To(string connectionString, CancellationToken token)
         {
             var sql = new Sql();
-            await sql.Transport.InitializeAsync(connectionString);
+            await sql.Transport.InitializeAsync(connectionString, token);
             return sql;
         }
-        public static async Task<Sql> From(string connectionString)
+        public static async Task<Sql> From(string connectionString, CancellationToken token)
         {
             var sql = new Sql();
-            await sql.Transport.InitializeAsync(connectionString);
+            await sql.Transport.InitializeAsync(connectionString, token);
             return sql;
         }
 
         public static async Task<IDataRecord> LoadSingle(string connectionString, DbQuery query, CancellationToken token)
         {
-            using (var sql = await From(connectionString))
+            using (var sql = await From(connectionString, token))
             {
                 await sql.QueryAsync(query, token);
                 using (var reader = await sql.ExecuteReaderAsync(token))
@@ -60,6 +62,7 @@ namespace TheWheel.ETL.Providers
 
         public override async Task<IDataProvider> QueryNewAsync(DbQuery query, CancellationToken token)
         {
+            // Console.WriteLine(query.Text);
             return new Sql(await Transport.QueryNewAsync(query, token));
         }
 
@@ -98,14 +101,13 @@ namespace TheWheel.ETL.Providers
             // }
         }
 
-
         public override async Task ReceiveAsync(IDataProvider provider, DbReceiveOptions query, CancellationToken token)
         {
             using (var reader = await provider.ExecuteReaderAsync(token))
             {
                 await Transport.QueryAsync(query.query, token);
 
-                var cmd = await Transport.GetStreamAsync();
+                var cmd = await Transport.GetStreamAsync(token);
 
                 if (query.mapping != null)
                 {
@@ -199,16 +201,16 @@ namespace TheWheel.ETL.Providers
 
         }
 
-        public override async Task<IDbCommand> GetStreamAsync()
+        public override async Task<IDbCommand> GetStreamAsync(CancellationToken token)
         {
-            return await ((ITransport<SqlCommand>)this).GetStreamAsync();
+            return await ((ITransport<SqlCommand>)this).GetStreamAsync(token);
         }
 
-        async Task<SqlCommand> ITransport<SqlCommand>.GetStreamAsync()
+        async Task<SqlCommand> ITransport<SqlCommand>.GetStreamAsync(CancellationToken token)
         {
             var cmd = (SqlCommand)command;
             if (cmd.Connection.State == ConnectionState.Closed)
-                await cmd.Connection.OpenAsync();
+                await cmd.Connection.OpenAsync(token);
             return cmd;
         }
 

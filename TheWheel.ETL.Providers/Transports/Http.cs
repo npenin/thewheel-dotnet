@@ -34,7 +34,7 @@ namespace TheWheel.ETL.Providers
         {
         }
 
-        public async Task InitializeAsync(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public async Task InitializeAsync(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
         {
             if (parameters != null && parameters.Length > 0)
             {
@@ -103,17 +103,17 @@ namespace TheWheel.ETL.Providers
                     switch (method.Value.ToString().ToLower())
                     {
                         case "get":
-                            query = client.GetAsync(url.Uri);
+                            query = client.GetAsync(url.Uri, token);
                             break;
                         case "post":
-                            query = client.PostAsync(url.Uri, (HttpContent)parameters.First(p => p.Key == "Body").Value);
+                            query = client.PostAsync(url.Uri, (HttpContent)parameters.First(p => p.Key == "Body").Value, token);
                             break;
                         case "put":
-                            query = client.PutAsync(url.Uri, (HttpContent)parameters.First(p => p.Key == "Body").Value);
+                            query = client.PutAsync(url.Uri, (HttpContent)parameters.First(p => p.Key == "Body").Value, token);
                             break;
 #if NET5_0
                         case "patch":
-                            query = client.PatchAsync(url.Uri, (HttpContent)parameters.First(p => p.Key == "Body").Value);
+                            query = client.PatchAsync(url.Uri, (HttpContent)parameters.First(p => p.Key == "Body").Value, token);
                             break;
 #endif
                         default:
@@ -125,21 +125,25 @@ namespace TheWheel.ETL.Providers
                 connectionString = url.ToString();
             }
 
-            await (query = client.GetAsync(connectionString));
+            await (query = client.GetAsync(connectionString, token));
 
         }
 
-        public async Task<Stream> GetStreamAsync()
+        public async Task<Stream> GetStreamAsync(CancellationToken token)
         {
-            return await (await ((ITransport<HttpContent>)this).GetStreamAsync()).ReadAsStreamAsync();
+#if NET5_0_OR_GREATER
+            return await (await ((ITransport<HttpContent>)this).GetStreamAsync(token)).ReadAsStreamAsync(token);
+#else
+            return await (await ((ITransport<HttpContent>)this).GetStreamAsync(token)).ReadAsStreamAsync();
+#endif
         }
 
-        async Task<HttpContent> ITransport<HttpContent>.GetStreamAsync()
+        async Task<HttpContent> ITransport<HttpContent>.GetStreamAsync(CancellationToken token)
         {
-            return (await ((ITransport<HttpResponseMessage>)this).GetStreamAsync()).Content;
+            return (await ((ITransport<HttpResponseMessage>)this).GetStreamAsync(token)).Content;
         }
 
-        async Task<HttpResponseMessage> ITransport<HttpResponseMessage>.GetStreamAsync()
+        async Task<HttpResponseMessage> ITransport<HttpResponseMessage>.GetStreamAsync(CancellationToken token)
         {
             var response = await query;
             try
@@ -150,10 +154,18 @@ namespace TheWheel.ETL.Providers
             {
                 if (System.Diagnostics.Debugger.IsAttached)
                 {
+#if NET5_0_OR_GREATER
+                    System.Diagnostics.Debugger.Log((int)response.StatusCode, "Http", await response.Content.ReadAsStringAsync(token));
+#else
                     System.Diagnostics.Debugger.Log((int)response.StatusCode, "Http", await response.Content.ReadAsStringAsync());
+#endif
                 }
                 else
+#if NET5_0_OR_GREATER
+                    Console.Error.WriteLine(await response.Content.ReadAsStringAsync(token));
+#else
                     Console.Error.WriteLine(await response.Content.ReadAsStringAsync());
+#endif
                 throw;
             }
             return response;

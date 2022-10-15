@@ -1,9 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Text;
 
 namespace TheWheel.ETL.Providers
 {
+    public class DbQueryBuilder
+    {
+        public int? Timeout;
+        public CommandBehavior? Behavior;
+
+        public StringBuilder Text { get; } = new StringBuilder();
+        public Dictionary<string, object> Parameters { get; } = new Dictionary<string, object>();
+
+        public static implicit operator DbQuery(DbQueryBuilder query)
+        {
+            return new DbQuery(query.Text.ToString(), query.Parameters.ToArray()) { Timeout = query.Timeout, Behavior = query.Behavior };
+        }
+    }
+
+
+
     public class DbQuery
     {
         public DbQuery(DbQuery query)
@@ -24,6 +42,8 @@ namespace TheWheel.ETL.Providers
 
         public int? Timeout;
         public string Text => query;
+
+        public CommandBehavior? Behavior;
 
         public IDbTransaction Transaction;
 

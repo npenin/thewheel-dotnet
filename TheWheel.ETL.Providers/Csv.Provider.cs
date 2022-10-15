@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.IO;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TheWheel.ETL.Contracts;
@@ -83,7 +84,7 @@ namespace TheWheel.ETL.Providers
         Pipe = '|'
     }
 
-    public class CsvOptions : IConfigurable<ITransport<Stream>, Task<CsvOptions>>, ITransportable<ITransport<Stream>>
+    public class CsvOptions : IConfigurableAsync<ITransport<Stream>, CsvOptions>, ITransportable<ITransport<Stream>>
     {
         public CsvOptions()
         {
@@ -113,7 +114,7 @@ namespace TheWheel.ETL.Providers
 
         public ITransport<Stream> Transport { get; private set; }
 
-        public Task<CsvOptions> Configure(ITransport<Stream> transport)
+        public Task<CsvOptions> Configure(ITransport<Stream> transport, CancellationToken token)
         {
             return Task.FromResult(new CsvOptions(transport, this));
         }

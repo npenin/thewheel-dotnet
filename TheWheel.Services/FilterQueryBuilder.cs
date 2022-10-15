@@ -157,14 +157,14 @@ namespace TheWheel.Services
                 if (pi.IsNullable())
                     piType = pi.GetGenericArguments()[0];
 
-                if (!string.IsNullOrEmpty(criteria.PropertyValue) && criteria.PropertyValue.Contains(";"))
+                if (criteria.PropertyValue != null)
                     criteria.IsMultiple = true;
 
                 Expression rhs = null;
 
                 if (pi.IsNullable() && !criteria.IsMultiple)
                 {
-                    if (string.IsNullOrEmpty(criteria.PropertyValue))
+                    if (criteria.PropertyValue != null)
                         rhs = Expression.Constant(null, pi);
                     else
                         if (piType.IsEnum)
@@ -172,11 +172,9 @@ namespace TheWheel.Services
                     else
                         rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, piType, CultureInfo.CurrentCulture));
                 }
-                else if (criteria.IsMultiple || @operator == FilterOperator.Contains &&
-                                criteria.PropertyValue.Contains(";") && pi.GetTypeCode() != TypeCode.String)
+                else if ((criteria.IsMultiple || @operator == FilterOperator.Contains) &&
+                    criteria.PropertyValue is System.Collections.IEnumerable values)
                 {
-                    var values = criteria.PropertyValue.Split(';');
-
                     if (lambdaStack.Count == 0)
                         lambdaStack.Push(null);
 
@@ -195,7 +193,7 @@ namespace TheWheel.Services
 
 
 
-                    foreach (var sc in values.Select(v => new FilterCriteria
+                    foreach (var sc in values.Cast<object>().Select(v => new FilterCriteria
                     {
                         PropertyName = (criteria.PropertyName.StartsWith(".") ? string.Join("", Enumerable.Range(0, propertyName.Cast<char>().Count(c => c == '.') + 1).Select(c => ".")) : "") + propertyName,
                         PropertyValue = v,
@@ -240,13 +238,16 @@ namespace TheWheel.Services
                     else if (@operator == FilterOperator.StringContains)
                         rhs = Expression.Constant(criteria.PropertyValue, typeof(string));
                     else if (piType == typeof(Guid))
-                        rhs = Expression.Constant(Guid.Parse(criteria.PropertyValue));
+                        rhs = Expression.Constant(Guid.Parse(criteria.PropertyValue.ToString()));
                     else
                         rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, pi, CultureInfo.CurrentCulture));
                 }
 
                 if (piType == typeof(DateTime))
-                    rhs = Expression.Constant(DateTime.ParseExact(criteria.PropertyValue, "u", CultureInfo.CurrentCulture), pi);
+                    if (criteria.PropertyValue is string s)
+                        rhs = Expression.Constant(DateTime.ParseExact(s, "u", CultureInfo.CurrentCulture), pi);
+                    else
+                        rhs = Expression.Constant(Convert.ToDateTime(criteria.PropertyValue, CultureInfo.CurrentCulture), pi);
 
 
                 switch ((FilterOperator)@operator)

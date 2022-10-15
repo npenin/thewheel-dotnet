@@ -9,6 +9,7 @@ using TheWheel.ETL.Fluent;
 using TheWheel.ETL.Provider.Ldap;
 using TheWheel.ETL.Providers;
 using TheWheel.Domain;
+using System.Threading;
 
 namespace TheWheel.ETL.Tests
 {
@@ -16,12 +17,12 @@ namespace TheWheel.ETL.Tests
     public class UnitTest1
     {
         [TestMethod]
-        public async Task TestCsvProvider()
+        public async Task TestCsvProvider(CancellationToken token)
         {
             var csv = await Helper
-            .FromCsv<FileRead>("../../../test.csv")
+            .FromCsv<FileRead>("../../../test.csv", token)
             .Query(new CsvOptions { SkipLines = new string[4] });
-            using (var reader = await csv.ExecuteReaderAsync(System.Threading.CancellationToken.None))
+            using (var reader = await csv.ExecuteReaderAsync(token))
             {
                 Assert.IsTrue(reader.Read());
                 Assert.AreEqual(2, reader.FieldCount);
@@ -38,13 +39,13 @@ namespace TheWheel.ETL.Tests
 
 
         [TestMethod]
-        public async Task TestXmlProvider()
+        public async Task TestXmlProvider(CancellationToken token)
         {
             var xml = await Helper
-            .FromXml<FileRead>("../../../../allitems-cvrf-year-2020.xml")
-            .Query(new TreeOptions().AddMatch("xml:///cvrfdoc/Vulnerability", "Title/text()", "CVE/text()"));
+            .FromXml<FileRead>("../../../../allitems-cvrf-year-2020.xml", token)
+            .Query(new TreeOptions().AddMatch("xml:///cvrfdoc/Vulnerability", "Title/text()", "CVE/text()"), token);
             int n = 1;
-            using (var reader = await xml.ExecuteReaderAsync(System.Threading.CancellationToken.None))
+            using (var reader = await xml.ExecuteReaderAsync(token))
             {
                 Assert.IsTrue(reader.Read());
                 Assert.AreEqual(2, reader.FieldCount);
@@ -57,47 +58,47 @@ namespace TheWheel.ETL.Tests
         }
 
         [TestMethod]
-        public async Task TestXmlToCsv()
+        public async Task TestXmlToCsv(CancellationToken token)
         {
             await Xml
-            .From<FileRead>("../../../../allitems-cvrf-year-2020.xml")
-            .Query(new TreeOptions { Root = "xml:///cvrfdoc/Vulnerability", Paths = new TreeLeaf[] { "Title/text()", "CVE/text()" } })
-            .Rename(new Dictionary<string, string> { { "xml:///cvrfdoc/Vulnerability/Title/text()", "Title" }, { "xml:///cvrfdoc/Vulnerability/CVE/text()", "CVE" } })
-            .To(Csv.To<FileWrite>("../../../testcveoutput.csv"), new CsvReceiverOptions { Separator = Separator.Colon }, System.Threading.CancellationToken.None);
+            .From<FileRead>("../../../../allitems-cvrf-year-2020.xml", token)
+            .Query(new TreeOptions { Root = "xml:///cvrfdoc/Vulnerability", Paths = new TreeLeaf[] { "Title/text()", "CVE/text()" } }, token)
+            .Rename(new Dictionary<string, string> { { "xml:///cvrfdoc/Vulnerability/Title/text()", "Title" }, { "xml:///cvrfdoc/Vulnerability/CVE/text()", "CVE" } }, token)
+            .To(Csv.To<FileWrite>("../../../testcveoutput.csv", token), new CsvReceiverOptions { Separator = Separator.Colon }, token);
         }
 
 
         [TestMethod]
-        public async Task TestIfFlow()
+        public async Task TestIfFlow(CancellationToken token)
         {
-            await Xml.From<FileRead>("../../../../allitems-cvrf-year-2020.xml")
+            await Xml.From<FileRead>("../../../../allitems-cvrf-year-2020.xml", token)
             .Query(new TreeOptions { Root = "xml:///cvrfdoc/Vulnerability", Paths = new TreeLeaf[] { "Title/text()", "CVE/text()" } })
-            .If(reader => reader.GetString(reader.GetOrdinal("xml:///cvrfdoc/Vulnerability/Title/text()")) == reader.GetString(reader.GetOrdinal("xml:///cvrfdoc/Vulnerability/CVE/text()")), System.Threading.CancellationToken.None)
-            .Then(Csv.To<FileWrite>("../../../testcveoutput.csv"),
-                new CsvReceiverOptions { Separator = Separator.Colon }, System.Threading.CancellationToken.None);
+            .If(reader => reader.GetString(reader.GetOrdinal("xml:///cvrfdoc/Vulnerability/Title/text()")) == reader.GetString(reader.GetOrdinal("xml:///cvrfdoc/Vulnerability/CVE/text()")), token)
+            .Then(Csv.To<FileWrite>("../../../testcveoutput.csv", token),
+                new CsvReceiverOptions { Separator = Separator.Colon }, token);
         }
 
         [TestMethod]
-        public async Task TestLookup()
+        public async Task TestLookup(CancellationToken token)
         {
-            await Xml.From<FileRead>("../../../../allitems-cvrf-year-2020.xml")
+            await Xml.From<FileRead>("../../../../allitems-cvrf-year-2020.xml", token)
             .Query(new TreeOptions { Root = "xml:///cvrfdoc/Vulnerability", Paths = new TreeLeaf[] { "Title/text()", "CVE/text()" } })
-            .Lookup(Csv.From<FileRead>("../../../testcveoutput.csv").Query(new CsvOptions()).Cache(System.Threading.CancellationToken.None), record => record.GetString(record.GetOrdinal("CVE/text()")), System.Threading.CancellationToken.None)
+            .Lookup(Csv.From<FileRead>("../../../testcveoutput.csv", token).Query(new CsvOptions(), token).Cache(token), record => record.GetString(record.GetOrdinal("CVE/text()")), token)
             .WhenMatches(
-                Csv.To<FileWrite>("../../../testcveoutput1.csv"),
-                new CsvReceiverOptions { Separator = Separator.Colon }, System.Threading.CancellationToken.None)
+                Csv.To<FileWrite>("../../../testcveoutput1.csv", token),
+                new CsvReceiverOptions { Separator = Separator.Colon }, token)
                 .WhenNotMatches(
-                Csv.To<FileWrite>("../../../testcveoutput2.csv"),
-                new CsvReceiverOptions { Separator = Separator.Colon }, System.Threading.CancellationToken.None);
+                Csv.To<FileWrite>("../../../testcveoutput2.csv", token),
+                new CsvReceiverOptions { Separator = Separator.Colon }, token);
         }
 
         [TestMethod]
-        public async Task TestJson()
+        public async Task TestJson(CancellationToken token)
         {
             var json = await Json
-            .From<FileRead>("../../../test.json")
-            .Query(new TreeOptions { Root = "json:///results/", Paths = new TreeLeaf[] { "column1/text()", "column2/text()" } });
-            using (var reader = await json.ExecuteReaderAsync(System.Threading.CancellationToken.None))
+            .From<FileRead>("../../../test.json", token)
+            .Query(new TreeOptions { Root = "json:///results/", Paths = new TreeLeaf[] { "column1/text()", "column2/text()" } }, token);
+            using (var reader = await json.ExecuteReaderAsync(token))
             {
                 Assert.IsTrue(reader.Read());
                 Assert.AreEqual(2, reader.FieldCount);
@@ -113,83 +114,83 @@ namespace TheWheel.ETL.Tests
         }
 
         [TestMethod]
-        public async Task TestCsvReceiver()
+        public async Task TestCsvReceiver(CancellationToken token)
         {
-            await Csv.To<FileWrite>("../../../testOutput.csv")
+            await Csv.To<FileWrite>("../../../testOutput.csv", token)
             .Receive(new CsvReceiverOptions { SkipLines = new string[] { "my first line header", "my second line header", "" }, Separator = Separator.Colon },
              await Json
-             .From<FileRead>("../../../test.json")
+             .From<FileRead>("../../../test.json", token)
             .Query(new TreeOptions { Root = "json:///results/", Paths = new TreeLeaf[] { "column1/text()", "column2/text()" } })
             .Rename(new Dictionary<string, string> { { "json:///results//column1/text()", "column1" }, { "json:///results//column2/text()", "column3" } }));
         }
 
 
         [TestMethod]
-        public async Task TestJsonReceiver()
+        public async Task TestJsonReceiver(CancellationToken token)
         {
-            await Json.To<FileWrite>("../../../testOutput.json")
+            await Json.To<FileWrite>("../../../testOutput.json", token)
             .Receive(new TreeOptions { Root = "json:///results/", Paths = new TreeLeaf[] { "column1/text()", "column2/text()" } },
                 await Json
-                .From<FileRead>("../../../test.json")
-                .Query(new TreeOptions { Root = "json:///results/", Paths = new TreeLeaf[] { "column1/text()", "column2/text()" } }));
+                .From<FileRead>("../../../test.json", token)
+                .Query(new TreeOptions { Root = "json:///results/", Paths = new TreeLeaf[] { "column1/text()", "column2/text()" } }, token));
         }
 
         [TestMethod]
-        public async Task TestCsvReceiver2()
+        public async Task TestCsvReceiver2(CancellationToken token)
         {
             var csvHeader = new string[4];
-            await Csv.To<FileWrite>("../../../testOutput.csv")
+            await Csv.To<FileWrite>("../../../testOutput.csv", token)
             .Receive(new CsvReceiverOptions { SkipLines = csvHeader, Separator = Separator.Colon },
                 await Csv
-                .From<FileRead>("../../../test.csv")
-                .Query(new CsvOptions { SkipLines = csvHeader }));
+                .From<FileRead>("../../../test.csv", token)
+                .Query(new CsvOptions { SkipLines = csvHeader }, token));
 
             Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
         }
 
         [TestMethod]
-        public async Task TestPaged()
+        public async Task TestPaged(CancellationToken token)
         {
-            var json = await Json.From(new PagedTransport<Http, Stream>("offset", "limit"), "https://neurovault.org/api/nidm_results/", new("limit", 100), new("offset", 0), new("_Content-Type", "application/json; utf-8"));
-            await json.QueryAsync(new TreeOptions { TotalPath = "json:///count/text()" }.AddMatch("json:///results/", "id/text()", "name/text()").AddMatch("json:///count/text()"), System.Threading.CancellationToken.None);
-            await Csv.To<FileWrite>("../../../testOutput.csv")
+            var json = await Json.From(new PagedTransport<Http, Stream>("offset", "limit"), token, "https://neurovault.org/api/nidm_results/", new("limit", 100), new("offset", 0), new("_Content-Type", "application/json; utf-8"));
+            await json.QueryAsync(new TreeOptions { TotalPath = "json:///count/text()" }.AddMatch("json:///results/", "id/text()", "name/text()").AddMatch("json:///count/text()"), token);
+            await Csv.To<FileWrite>("../../../testOutput.csv", token)
             .Receive(new CsvReceiverOptions { Separator = Separator.Colon },
                 json);
         }
 
         [TestMethod]
-        public async Task TestJsonReceiver2()
+        public async Task TestJsonReceiver2(CancellationToken token)
         {
-            await Json.To<FileWrite>("../../../testOutput.json")
+            await Json.To<FileWrite>("../../../testOutput.json", token)
             .Receive(new TreeOptions { Root = "json:///results/", Paths = new TreeLeaf[] { "column1/text()", "column2/text()" } },
-            await Csv.From<FileRead>("../../../test.csv")
+            await Csv.From<FileRead>("../../../test.csv", token)
             .Query(new CsvOptions { SkipLines = new string[4] })
             .Rename(new Dictionary<string, string> { { "column1", "json:///results//column1/text()" }, { "column2", "json:///results//column2/text()" } })
             );
         }
         [TestMethod]
-        public async Task TestJsonReceiver3()
+        public async Task TestJsonReceiver3(CancellationToken token)
         {
-            await Json.To<FileWrite>("../../../testOutput.json")
+            await Json.To<FileWrite>("../../../testOutput.json", token)
            .Receive(new TreeOptions { Root = "json:///results/", Paths = new TreeLeaf[] { "column1/text()", "column2/text()" } },
-           await Csv.From<FileRead>("../../../test.csv")
+           await Csv.From<FileRead>("../../../test.csv", token)
            .Query(new CsvOptions { SkipLines = new string[4] })
            );
         }
 
         [TestMethod]
-        public async Task TestSimpleTransformation()
+        public async Task TestSimpleTransformation(CancellationToken token)
         {
             var csvHeader = new string[4];
-            await Csv.To<FileWrite>("../../../testOutput.csv")
+            await Csv.To<FileWrite>("../../../testOutput.csv", token)
             .Receive(
                 new CsvReceiverOptions { SkipLines = csvHeader, Separator = Separator.Colon },
-                await Csv.From<FileRead>("../../../test.csv")
+                await Csv.From<FileRead>("../../../test.csv", token)
                 .Query(new CsvOptions { SkipLines = csvHeader })
                 .Transform("column1", (valueGetter) =>
                 {
                     return valueGetter() + " pwic";
-                }, System.Threading.CancellationToken.None)
+                }, token)
             );
 
             Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);

@@ -4,19 +4,20 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
 
 namespace TheWheel.ETL.Providers
 {
-    public partial class Csv : DataReader, IConfigurable<CsvOptions, Task<IDataReader>>
+    public partial class Csv : DataReader, IConfigurableAsync<CsvOptions, IDataReader>
     {
-        public static async Task<DataProvider<Csv, CsvOptions, ITransport<Stream>>> From<TTransport>(string connectionString, params KeyValuePair<string, object>[] parameters)
+        public static async Task<DataProvider<Csv, CsvOptions, ITransport<Stream>>> From<TTransport>(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
             where TTransport : ITransport<Stream>, new()
         {
             var provider = new DataProvider<Csv, CsvOptions, ITransport<Stream>>();
-            await provider.InitializeAsync(new TTransport());
-            await provider.Transport.InitializeAsync(connectionString, parameters);
+            provider.Initialize(new TTransport());
+            await provider.Transport.InitializeAsync(connectionString, token, parameters);
             return provider;
         }
 
@@ -28,12 +29,12 @@ namespace TheWheel.ETL.Providers
         {
         }
 
-        public async Task<IDataReader> Configure(CsvOptions options)
+        public async Task<IDataReader> Configure(CsvOptions options, CancellationToken token)
         {
             buffer = new char[options.BufferSize];
 
             this.options = options;
-            this.BaseStream = new StreamReader(await options.Transport.GetStreamAsync());
+            this.BaseStream = new StreamReader(await options.Transport.GetStreamAsync(token));
             return this;
         }
 

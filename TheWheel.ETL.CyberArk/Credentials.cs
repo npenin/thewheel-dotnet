@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Security;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TheWheel.ETL.Contracts;
@@ -24,9 +25,10 @@ namespace TheWheel.ETL.CyberArk
         {
         }
 
-        public async Task<ICredentials> Use(string userName, string safe)
+        public async Task<ICredentials> Use(string userName, string safe, CancellationToken token = default(CancellationToken))
         {
             var provider = await Json.From<Http>(endpoint.ToString(),
+            token,
             new System.Collections.Generic.KeyValuePair<string, object>("safe", safe),
             new System.Collections.Generic.KeyValuePair<string, object>("appId", applicationId),
             new System.Collections.Generic.KeyValuePair<string, object>("UserName", userName));
@@ -41,9 +43,10 @@ namespace TheWheel.ETL.CyberArk
         }
 
 
-        public async Task<ICredentials> Use(string userName)
+        public async Task<ICredentials> Use(string userName, CancellationToken token)
         {
             var provider = await Json.From<Http>(endpoint.ToString(),
+            token,
             new System.Collections.Generic.KeyValuePair<string, object>("appId", applicationId),
             new System.Collections.Generic.KeyValuePair<string, object>("UserName", userName));
             await provider.QueryAsync(new TreeOptions().AddMatch(

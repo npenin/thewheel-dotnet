@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Owin" Version="4.1.1" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
@@ -19,6 +19,8 @@
     <ProjectReference Include="..\TheWheel.ETL.Contracts\TheWheel.ETL.Contracts.csproj" />
     <ProjectReference Include="..\TheWheel.ETL.Providers\TheWheel.ETL.Providers.csproj" />
     <ProjectReference Include="..\TheWheel.Domain\TheWheel.Domain.csproj" />
+    <ProjectReference Include="..\TheWheel.Services\TheWheel.Services.csproj" />
+    <ProjectReference Include="..\TheWheel.ETL.DacPac\TheWheel.ETL.DacPac.csproj" />
   </ItemGroup>
 
 </Project>
