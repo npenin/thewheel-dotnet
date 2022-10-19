@@ -1,5 +1,5 @@
 using Parlot.Fluent;
-using static Parlot.Fluent.Parsers<TheWheel.ETL.Parlot.Context>;
+using static Parlot.Fluent.Char.Parsers<TheWheel.ETL.Parlot.Context>;
 using System.Linq.Expressions;
 using Expressions = System.Linq.Expressions.Expression;
 using System;
@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
 using TheWheel.ETL.Fluent;
 using System.Data;
+using Parlot.Fluent.Char;
 
 namespace TheWheel.ETL.Parlot
 {
@@ -129,7 +130,7 @@ namespace TheWheel.ETL.Parlot
                 .And(invoke)
                 .Then<(Expression, List<Expression>)>(t => new(Expressions.Call(t.Item1, t.Item2[0], noParams), t.Item2));
 
-            var escapeSequence = openBracket.SkipAnd(new UntilEndParser<char>(closeBracket));
+            var escapeSequence = openBracket.SkipAnd(new UntilEndParser(closeBracket));
             var escapeOrNonEscapedSequence = escapeSequence.Or(Terms.Identifier());
             var referenceAssemblyStatement = reference.SkipAnd(assembly).SkipAnd(escapeOrNonEscapedSequence).Then(t =>
             {

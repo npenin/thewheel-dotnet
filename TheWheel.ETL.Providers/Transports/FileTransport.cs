@@ -39,7 +39,7 @@ namespace TheWheel.ETL.Providers
                 var fi = new FileInfo(configuration.ArchivePath);
                 if (fi.Exists)
                     if (fi.Attributes.HasFlag(FileAttributes.Directory))
-#if NET5_0
+#if NET5_0_OR_GREATER
                         archivePath = Path.Join(configuration.ArchivePath, Path.GetFileNameWithoutExtension(path) + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + Path.GetExtension(path));
 #else
                         archivePath = Path.Combine(configuration.ArchivePath, Path.GetFileNameWithoutExtension(path) + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + Path.GetExtension(path));

@@ -67,7 +67,15 @@ namespace TheWheel.ETL.Provider.Mail
             foreach (var subFolder in currentFolder.Item1.GetSubfolders())
                 folders.Enqueue((subFolder, currentFolder.Item2 + 1));
 
+#if NET5_0_OR_GREATER
             return folders.TryDequeue(out currentFolder);
+#else
+            if(folders.Count==0)
+                return false;
+
+            currentFolder = folders.Dequeue(); 
+            return true;
+#endif
         }
 
         public override bool Read()

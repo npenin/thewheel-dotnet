@@ -46,7 +46,7 @@ namespace TheWheel.ETL.Owin
 
                 return reader;
             }
-            catch (SqlException ex)
+            catch (SqlException)
             {
                 query.Connection.Close();
                 query.Connection.Dispose();

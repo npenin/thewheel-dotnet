@@ -31,10 +31,11 @@ namespace TheWheel.ETL.Azure
 
         public async Task<IDataReader> Configure(TableQuery options, CancellationToken token)
         {
-            var provider = new PagedTransport<,>();
-            provider.Initialize(options.Transport);
-            var stream = await options.Transport.GetStreamAsync(token);
-            Json.Extract()
+            throw new NotImplementedException();
+            // var provider = new PagedTransport<,>();
+            // provider.Initialize(options.Transport);
+            // var stream = await options.Transport.GetStreamAsync(token);
+            // Json.Extract()
         }
 
         public override DataTable GetSchemaTable()

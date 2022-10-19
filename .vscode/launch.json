@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/TheWheel.ETL.DacPac/bin/Debug/net5.0/TheWheel.ETL.DacPac.exe",
+            "program": "${workspaceFolder}/TheWheel.ETL.DacPac/bin/Debug/net6.0/TheWheel.ETL.DacPac.exe",
             "args": [
                 "DB.Notification.dacpac" // path to dacpac file
             ],
@@ -23,7 +23,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // "justMyCode": false,
-            "program": "${workspaceFolder}/TheWheel.ETL/bin/Debug/net5.0/TheWheel.ETL.dll",
+            "program": "${workspaceFolder}/TheWheel.ETL/bin/Debug/net6.0/TheWheel.ETL.dll",
             "args": [
                 "Policies.Postures",
                 "D:\\NPN\\tmp\\NVS-WIP-AGENTSTATUS.xml",
@@ -44,7 +44,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // "justMyCode": false,
-            "program": "${workspaceFolder}/TheWheel.ETL.Parlot/bin/Debug/net5.0/TheWheel.ETL.Parlot.dll",
+            "program": "${workspaceFolder}/TheWheel.ETL.Parlot/bin/Debug/net6.0/TheWheel.ETL.Parlot.dll",
             "args": [
                 "${workspaceFolder}/TheWheel.ETL.Parlot/test-api.sql"
             ],

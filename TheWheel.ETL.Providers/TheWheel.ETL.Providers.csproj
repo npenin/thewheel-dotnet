@@ -24,11 +24,11 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net4.8</TargetFrameworks>
+    <TargetFrameworks>net6.0;net4.8</TargetFrameworks>
   </PropertyGroup>
-
+  <!-- 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
     <DefineConstants>$(DefineConstants);NET5_0;SUPPORTS_CODENALYSIS</DefineConstants>
-  </PropertyGroup>
+  </PropertyGroup> -->
 
 </Project>

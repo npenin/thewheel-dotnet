@@ -173,7 +173,7 @@ namespace TheWheel.ETL.Providers
                 if (!escaped && (i == line.Length || line[i] == separatorChar))
                 {
                     columns.Add(new string(value, 0, offset));
-#if NET5_0
+#if NET5_0_OR_GREATER
                     Array.Fill(value, '\0', 0, offset + 1);
 #else
                     for (int j = 0; j < offset + 1; j++)

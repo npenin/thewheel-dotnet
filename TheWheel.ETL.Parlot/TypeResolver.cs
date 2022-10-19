@@ -45,11 +45,16 @@ namespace TheWheel.ETL.Parlot
             });
         }
 
+        public Type Get(ReadOnlySpan<char> v)
+        {
+            return Get(new string(v));
+        }
+
         public Type Get(string v)
         {
             foreach (var resolver in resolvers)
             {
-                var type = resolver(v);
+                var type = resolver(new string(v));
                 if (type != null)
                     return type;
             }

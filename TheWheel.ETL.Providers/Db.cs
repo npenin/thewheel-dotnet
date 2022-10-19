@@ -94,7 +94,7 @@ namespace TheWheel.ETL.Providers
             query = new DbQuery(query, query.Text + "; SELECT SCOPE_IDENTITY()");
 
             IDbCommand command = await Transport.QueryAsyncInternal(query, token);
-            // #if NET5_0
+            // #if NET5_0_OR_GREATER
             trace.LogTrace("{0} ExecuteNonQuery", "Start");
             // #else
             //             trace.TraceEvent(TraceEventType.Start, 0, "ExecuteNonQuery");
@@ -106,7 +106,7 @@ namespace TheWheel.ETL.Providers
                     return 0;
                 return Convert.ToInt32(value);
             });
-            // #if NET5_0
+            // #if NET5_0_OR_GREATER
             trace.LogTrace("{0} ExecuteNonQuery", "Stop");
             // #else
             //             trace.TraceEvent(TraceEventType.Stop, 0, "ExecuteNonQuery");
@@ -168,7 +168,7 @@ namespace TheWheel.ETL.Providers
                                 ((IDbDataParameter)cmd.Parameters["__p" + i]).Value = reader.GetValue(reader.GetOrdinal(query.mapping[i].SourceColumn)) ?? DBNull.Value;
                         }
 
-                    // #if NET5_0
+                    // #if NET5_0_OR_GREATER
                     trace.LogInformation(cmd.CommandText);
                     if (trace.IsEnabled(LogLevel.Debug))
                     {

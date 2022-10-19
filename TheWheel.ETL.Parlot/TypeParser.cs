@@ -4,24 +4,28 @@ using Parlot.Fluent;
 
 namespace TheWheel.ETL.Parlot
 {
-    public class TypeParser : Parser<Type, Context>
+    public class TypeParser : Parser<Type, Context, char>
     {
         private Parser<char, Context> separator;
-        private Parser<TextSpan, Context> identifier;
+        private Parser<BufferSpan<char>, Context> identifier;
         private TypeResolver resolver;
 
-        public TypeParser(Parser<char, Context> separator, Parser<TextSpan, Context> identifier, TypeResolver resolver)
+        public TypeParser(Parser<char, Context> separator, Parser<BufferSpan<char>, Context> identifier, TypeResolver resolver)
         {
             this.separator = separator;
             this.identifier = identifier;
             this.resolver = resolver;
         }
 
+        public override bool Serializable => true;
+
+        public override bool SerializableWithoutValue => false;
+
         public override bool Parse(Context context, ref ParseResult<Type> result)
         {
             context.EnterParser(this);
 
-            var span = new ParseResult<TextSpan>();
+            var span = new ParseResult<BufferSpan<char>>();
             var separatorResult = new ParseResult<char>();
             if (!identifier.Parse(context, ref span))
                 return false;
@@ -40,7 +44,7 @@ namespace TheWheel.ETL.Parlot
                     return false;
 
 
-                type = resolver.Get(context.Scanner.Buffer.Substring(start, span.End - start));
+                type = resolver.Get(context.Scanner.Buffer.AsSpan(start, span.End - start));
             }
 
             if (type != null)
@@ -50,6 +54,12 @@ namespace TheWheel.ETL.Parlot
             }
 
             return false;
+        }
+
+        public override bool Serialize(BufferSpanBuilder<char> sb, Type value)
+        {
+            sb.Append(value.FullName.AsSpan());
+            return true;
         }
     }
 }

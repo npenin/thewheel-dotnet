@@ -5,7 +5,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
-// #if NET5_0
+// #if NET5_0_OR_GREATER
 using Microsoft.Extensions.Logging;
 using System.Threading;
 // #else
@@ -129,7 +129,7 @@ namespace TheWheel.ETL.Providers
                             else
                                 ((IDbDataParameter)cmd.Parameters["__p" + i]).Value = reader.GetValue(reader.GetOrdinal(query.mapping[i].SourceColumn)) ?? DBNull.Value;
                         }
-                    // #if NET5_0
+                    // #if NET5_0_OR_GREATER
                     trace.LogInformation(cmd.CommandText);
                     if (trace.IsEnabled(LogLevel.Debug))
                     {

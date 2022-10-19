@@ -6,17 +6,17 @@ using Parlot.Fluent;
 
 namespace TheWheel.ETL.Parlot
 {
-    public class Context : ScopeParseContext<Context>
+    public class Context : ScopeParseContext<char, Context>
     {
         private IDictionary<string, ParameterExpression> variables = new Dictionary<string, ParameterExpression>();
 
-        public Context(Context parent)
-        : base(parent)
+        public Context(Context parent, Scanner<char> newScanner = null)
+        : base(parent, newScanner)
         {
 
         }
 
-        public Context(Scanner scanner, bool useNewLines = false) : base(scanner, useNewLines)
+        public Context(Scanner<char> scanner, bool useNewLines = false) : base(scanner, useNewLines)
         {
         }
 
@@ -42,9 +42,11 @@ namespace TheWheel.ETL.Parlot
             return variables.Values;
         }
 
-        public override Context Scope()
+        public override Context Scope(BufferSpan<char> buffer = default)
         {
-            return new Context(this);
+            if (buffer.Buffer == null)
+                return new Context(this);
+            return new Context(this, new Scanner<char>(buffer));
         }
     }
 }

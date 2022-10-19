@@ -11,20 +11,27 @@ namespace TheWheel.ETL.Provider.Ldap
     {
         private LdapConnection ldapConnection;
 
-        public Task InitializeAsync(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
+        public async Task InitializeAsync(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
         {
-            var id = new LdapDirectoryIdentifier(connectionString);
+            var id = new LdapDirectoryIdentifier(connectionString, true, false);
             if (parameters != null)
             {
                 var creds = parameters.FirstOrDefault(p => p.Key == "Credentials").Value as NetworkCredential;
                 if (creds != null)
                 {
-                    this.ldapConnection = new LdapConnection(id, creds);
-                    return Task.CompletedTask;
+                    var authType = (AuthType)parameters.FirstOrDefault(p => p.Key == "AuthType").Value;
+                    if (authType == AuthType.Anonymous)
+                        this.ldapConnection = new LdapConnection(id, creds);
+                    else
+                        this.ldapConnection = new LdapConnection(id, creds, authType);
                 }
             }
-            this.ldapConnection = new LdapConnection(id);
-            return Task.CompletedTask;
+            if (this.ldapConnection == null)
+                this.ldapConnection = new LdapConnection(id);
+
+            ldapConnection.SessionOptions.ProtocolVersion = 3;
+
+            await Task.Run(this.ldapConnection.Bind, token);
         }
 
         public Task<LdapConnection> GetStreamAsync(CancellationToken token)

@@ -30,7 +30,7 @@ namespace TheWheel.ETL.Parlot
                 FluentParser.TypeResolver.Register("PagedTransport", typeof(Providers.PagedTransport<,>));
                 FluentParser.TypeResolver.Register("Parameter", typeof(KeyValuePair<string, object>));
                 FluentParser.TypeResolver.Using("TheWheel.ETL.Providers");
-                if (!FluentParser.Expression.TryParse(new Context(new Scanner(script)), out var result, out var error))
+                if (!FluentParser.Expression.TryParse(new Context(new Scanner<char>(script)), out var result, out var error))
                 {
                     if (error != null)
                     {

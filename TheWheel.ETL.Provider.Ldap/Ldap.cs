@@ -25,13 +25,15 @@ namespace TheWheel.ETL.Provider.Ldap
 
     public class Ldap : DataProvider<LdapReader, LdapOptions, LdapTransport>
     {
-        public static async Task<IAsyncQueryable<LdapOptions>> From(string connectionString, CancellationToken token, NetworkCredential creds = null)
+        public static async Task<IAsyncQueryable<LdapOptions>> From(string connectionString, CancellationToken token, NetworkCredential creds = null, AuthType authType = AuthType.Anonymous)
         {
             var transport = new LdapTransport();
             if (creds == null)
                 await transport.InitializeAsync(connectionString, token);
             else
-                await transport.InitializeAsync(connectionString, token, new KeyValuePair<string, object>("Credentials", creds));
+                await transport.InitializeAsync(connectionString, token,
+                    new KeyValuePair<string, object>("Credentials", creds),
+                    new KeyValuePair<string, object>("AuthType", authType));
             var result = new Ldap();
             result.Initialize(transport);
             return result;
@@ -40,13 +42,17 @@ namespace TheWheel.ETL.Provider.Ldap
 
     public class LdapOptions : IConfigurableAsync<LdapTransport, LdapOptions>, ITransportable<LdapTransport>
     {
+        public int? PageSize;
+
         public LdapTransport Transport { get; set; }
 
-        public SearchRequest Request { get; set; }
+        public SearchRequest Request;
 
-        public TimeSpan? Timeout { get; set; }
+        public TimeSpan? Timeout;
 
-        public CancellationToken Token { get; set; }
+        public CancellationToken Token;
+
+        public bool IgnoreCountCheck;
 
         public Task<LdapOptions> Configure(LdapTransport transport, CancellationToken token)
         {

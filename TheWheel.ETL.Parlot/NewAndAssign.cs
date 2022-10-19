@@ -5,16 +5,17 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Parlot;
 using Parlot.Fluent;
+using Parlot.Fluent.Char;
 using TContext = TheWheel.ETL.Parlot.Context;
 
 namespace TheWheel.ETL.Parlot
 {
-    public class NewAndAssign : Parser<Expression, TContext>
+    public class NewAndAssign : Parser<Expression, TContext, char>
     {
         Parser<Type, TContext> type;
         Parser<char, TContext> memberInitOpen;
         Parser<char, TContext> memberInitClose;
-        Parser<TextSpan, TContext> memberIdentifier;
+        Parser<BufferSpan<char>, TContext> memberIdentifier;
         private Parser<char, TContext> assignParser;
         private Parser<char, TContext> memberSeparatorParser;
         private Parser<Expression, TContext> expressionParser;
@@ -31,6 +32,10 @@ namespace TheWheel.ETL.Parlot
             this.expressionParser = expressionParser;
             this.ctorArgs = ctorArgs;
         }
+
+        public override bool Serializable => throw new NotImplementedException();
+
+        public override bool SerializableWithoutValue => throw new NotImplementedException();
 
         public override bool Parse(TContext context, ref ParseResult<Expression> result)
         {
@@ -97,7 +102,7 @@ namespace TheWheel.ETL.Parlot
 
             do
             {
-                var span = new ParseResult<TextSpan>();
+                var span = new ParseResult<BufferSpan<char>>();
                 if (!memberIdentifier.Parse(context, ref span))
                     return false;
 
@@ -134,6 +139,11 @@ namespace TheWheel.ETL.Parlot
             }
 
             return false;
+        }
+
+        public override bool Serialize(BufferSpanBuilder<char> sb, Expression value)
+        {
+            throw new NotImplementedException();
         }
     }
 }

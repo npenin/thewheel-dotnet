@@ -1,5 +1,6 @@
+using Parlot.Fluent.Char;
 using Parlot.Fluent;
-using static Parlot.Fluent.Parsers<TheWheel.ETL.Parlot.Context>;
+using static Parlot.Fluent.Char.Parsers<TheWheel.ETL.Parlot.Context>;
 using System.Linq.Expressions;
 using Expressions = System.Linq.Expressions.Expression;
 using System;
@@ -73,14 +74,14 @@ namespace TheWheel.ETL.Parlot
         {
             return name;
         }
-        public static readonly Parser<Expressions, Context> Expression;
+        public static readonly Parser<Expressions, Context, char> Expression;
 
         public static readonly TypeResolver TypeResolver = new TypeResolver();
-        private static readonly Parser<Expressions, Context> DeclareStatement;
+        private static readonly Parser<Expressions, Context, char> DeclareStatement;
 
-        private static readonly Parser<Expressions, Context> ImportAssembly;
+        private static readonly Parser<Expressions, Context, char> ImportAssembly;
 
-        public static Parser<LambdaExpression, Context> SelectStatement { get; }
+        public static Parser<LambdaExpression, Context, char> SelectStatement { get; }
 
         static FluentParser()
         {
@@ -238,7 +239,7 @@ namespace TheWheel.ETL.Parlot
                     }
                 );
 
-            var escapeSequence = openBracket.SkipAnd(new UntilEndParser<char>(closeBracket));
+            var escapeSequence = openBracket.SkipAnd(new UntilEndParser(closeBracket));
             var escapeOrNonEscapedSequence = escapeSequence.Or(Terms.Identifier());
 
             DeclareStatement = declare.And(at).And(Literals.Identifier()).And(classFullName).And(ZeroOrOne(assign.SkipAnd(primitiveExpression)))
