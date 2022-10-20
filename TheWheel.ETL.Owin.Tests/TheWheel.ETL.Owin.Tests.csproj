@@ -7,7 +7,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="6.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="6.0.10" />
   </ItemGroup>
 
   <PropertyGroup>
