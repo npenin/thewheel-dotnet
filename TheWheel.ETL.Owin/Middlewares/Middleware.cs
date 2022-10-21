@@ -110,7 +110,13 @@ INNER JOIN sys.types types ON p.user_type_id=types.user_type_id
 
         public Task Model(HttpContext context, CancellationToken token)
         {
-            return Format(context, new EnumerableDataProvider<TableModel>(EnsureModels(provider, token).ContinueWith(t => policyProvider.AllowedAsync(dbModels.Values)).Unwrap()));
+            return Format(context, new EnumerableDataProvider<TableModel>(EnsureModels(provider, token).ContinueWith(t =>
+            {
+                if (t.Status == TaskStatus.RanToCompletion)
+                    return policyProvider.AllowedAsync(dbModels.Values);
+                else
+                    throw t.Exception;
+            }).Unwrap()));
         }
 
         private static string FormatOperator(FilterOperator filterOperator)
