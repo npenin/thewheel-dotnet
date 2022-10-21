@@ -2,36 +2,35 @@ name: .NET
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.101
-    - name: Restore dependencies
-      run: dotnet restore TheWheel.sln
-    - name: Build
-      run: dotnet build --no-restore  TheWheel.sln
-    - name: retrieve test file
-      run: wget https://cve.mitre.org/data/downloads/allitems-cvrf-year-2020.xml
-    - name: debug
-      run: ls -l
-    - name: Test
-      run: dotnet test --no-build --verbosity normal TheWheel.sln
-    - name: Git Version
-      uses: codacy/git-version@2.4.0
-      with:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.10
+      - name: Restore dependencies
+        run: dotnet restore TheWheel.sln
+      - name: Build
+        run: dotnet build --no-restore  TheWheel.sln
+      - name: retrieve test file
+        run: wget https://cve.mitre.org/data/downloads/allitems-cvrf-year-2020.xml
+      - name: debug
+        run: ls -l
+      - name: Test
+        run: dotnet test --no-build --verbosity normal TheWheel.sln
+      - name: Git Version
+        uses: codacy/git-version@2.4.0
+        with:
           # The name of the release branch
-        release-branch: main # default is master 
+          release-branch: main # default is master
     #- name: pack
     #  run: >-
     #    nuget pack TheWeel.Lambda\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
@@ -51,5 +50,3 @@ jobs:
     #    dotnet nuget pack TheWheel.ETL.Fluent -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
     #    dotnet nuget pack TheWheel.ETL.DacPac -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
     #    dotnet nuget pack TheWheel.ETL.CyberArk -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
-        
-    
