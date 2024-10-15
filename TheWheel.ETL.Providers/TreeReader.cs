@@ -59,7 +59,7 @@ namespace TheWheel.ETL.Providers
             t.Wait();
             return t.Result;
         }
-        public async Task<bool> NextResultAsync(CancellationToken token)
+        public virtual async Task<bool> NextResultAsync(CancellationToken token)
         {
             if (Read(token))
                 return true;

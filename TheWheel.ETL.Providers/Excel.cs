@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
 using TheWheel.Domain;
+using DocumentFormat.OpenXml;
 
 namespace TheWheel.ETL.Providers
 {
@@ -97,7 +98,7 @@ namespace TheWheel.ETL.Providers
         {
             if (this.doc != null)
             {
-                this.doc.Close();
+                //this.doc.Close();
                 this.doc.Dispose();
             }
             if (this.stream != null)
@@ -117,7 +118,7 @@ namespace TheWheel.ETL.Providers
         public void Close()
         {
             if (this.doc != null)
-                this.doc.Close();
+                this.doc.Dispose();
             this.doc = null;
         }
 
@@ -212,19 +213,19 @@ namespace TheWheel.ETL.Providers
         public TypeCode GetFieldTypeCode(string reference)
         {
             var cell = GetCell(reference);
-            switch (cell.DataType.Value)
+            switch (((IEnumValue)cell.DataType.Value).Value)
             {
-                case CellValues.Boolean:
+                case "b":
                     return TypeCode.Boolean;
-                case CellValues.Date:
+                case "d":
                     return TypeCode.DateTime;
-                case CellValues.Error:
+                case "e":
                     return TypeCode.Empty;
-                case CellValues.Number:
+                case "n":
                     return TypeCode.Double;
-                case CellValues.InlineString:
-                case CellValues.String:
-                case CellValues.SharedString:
+                case "inlineStr":
+                case "str":
+                case "s":
                     return TypeCode.String;
             }
             return TypeCode.DBNull;
@@ -233,19 +234,19 @@ namespace TheWheel.ETL.Providers
         public Type GetFieldType(int i)
         {
             var cell = GetCell(i);
-            switch (cell.DataType.Value)
+            switch (((IEnumValue)cell.DataType.Value).Value)
             {
-                case CellValues.Boolean:
+                case "b":
                     return typeof(bool);
-                case CellValues.Date:
+                case "d":
                     return typeof(DateTime);
-                case CellValues.Error:
+                case "e":
                     return null;
-                case CellValues.Number:
+                case "n":
                     return typeof(double);
-                case CellValues.InlineString:
-                case CellValues.String:
-                case CellValues.SharedString:
+                case "inlineStr":
+                case "str":
+                case "s":
                     return typeof(string);
             }
             return typeof(DBNull);

@@ -6,6 +6,8 @@
 *.user
 *.sln.docstates
 allitems-cvrf-year-2020.xml
+.vs/
+.vscode/
 
 # Build results
 

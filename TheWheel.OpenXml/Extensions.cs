@@ -126,7 +126,7 @@ namespace TheWheel.OpenXml
             worksheetPart.Worksheet.AppendChild(data);
             worksheetPart.Worksheet.AppendChild(tableParts);
             doc.WorkbookPart.Workbook.Save();
-            doc.Close();
+            doc.Dispose();
         }
 
 
@@ -222,7 +222,7 @@ namespace TheWheel.OpenXml
             worksheetPart.Worksheet.AppendChild(data);
             worksheetPart.Worksheet.AppendChild(tableParts);
             doc.WorkbookPart.Workbook.Save();
-            doc.Close();
+            doc.Dispose();
         }
 
 
