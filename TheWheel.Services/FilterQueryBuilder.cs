@@ -82,7 +82,6 @@ namespace TheWheel.Services
                 overallConstraint = constraint;
             else
                 overallConstraint = binaryDefaultOperation(overallConstraint, constraint);
-
             if (overallConstraint != null)
                 query = query.Where(item.Type, overallConstraint.ToLambda(item));
         }
@@ -121,7 +120,7 @@ namespace TheWheel.Services
                 }
             }
 
-            FilterOperator @operator = (FilterOperator)criteria.FilterOperator;
+            FilterOperator @operator = criteria.FilterOperator;
 
             if (@operator != FilterOperator.Or && propertyName != null)
             {
@@ -172,7 +171,7 @@ namespace TheWheel.Services
                     else
                         rhs = Expression.Constant(Convert.ChangeType(criteria.PropertyValue, piType, CultureInfo.CurrentCulture));
                 }
-                else if ((criteria.IsMultiple || @operator == FilterOperator.Contains) &&
+                else if ((criteria.IsMultiple || @operator == FilterOperator.Contains) && !(criteria.PropertyValue is string) &&
                     criteria.PropertyValue is System.Collections.IEnumerable values)
                 {
                     if (lambdaStack.Count == 0)
