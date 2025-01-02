@@ -210,6 +210,8 @@ namespace TheWheel.ETL.Contracts
 
         public static IDataRecord From<T>(T current)
         {
+            if (current is IDataRecord dr)
+                return dr;
             return new ObjectDataRecord<T>(current);
         }
 
