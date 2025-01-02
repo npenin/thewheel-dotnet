@@ -8,6 +8,13 @@ namespace TheWheel.ETL.Providers
 {
     public class StreamTransport : ITransport<Stream>, IConfigurable<Stream, StreamTransport>
     {
+        public StreamTransport() { }
+
+        public StreamTransport(Stream options)
+        {
+            this.stream = options;
+        }
+
         private Stream stream;
 
         public StreamTransport Configure(Stream options)
