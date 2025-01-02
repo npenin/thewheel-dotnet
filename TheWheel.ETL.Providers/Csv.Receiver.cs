@@ -150,7 +150,21 @@ namespace TheWheel.ETL.Providers
 
         }
 
+        public CsvReceiverOptions(CsvOptions options)
+      : base(options)
+        {
+        }
+        public CsvReceiverOptions(ITransport<Stream> transport, CsvOptions options)
+      : base(transport, options)
+        {
+        }
+
         public Func<object, string>[] formatters;
+
+        public new Task<CsvReceiverOptions> Configure(ITransport<Stream> transport, CancellationToken token)
+        {
+            return Task.FromResult(new CsvReceiverOptions(transport, this));
+        }
 
         async Task<CsvReceiverOptions> IConfigurableAsync<ITransport<Stream>, CsvReceiverOptions>.Configure(ITransport<Stream> options, CancellationToken token)
         {

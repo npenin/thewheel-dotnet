@@ -17,7 +17,7 @@ namespace TheWheel.ETL.Contracts
 
         public DataReader(string traceName)
         {
-            trace = TheWheel.ETL.Logging.factory.CreateLogger("TheWheel.ETL." + traceName);
+            trace = TheWheel.ETL.Logging.factory.CreateLogger(traceName);
             verbose = trace.IsEnabled(LogLevel.Debug);
         }
 
