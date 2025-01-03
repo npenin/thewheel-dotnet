@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -104,6 +105,7 @@ namespace TheWheel.ETL.Providers
             this.Header = other.Header;
             this.BufferSize = other.BufferSize;
             this.Transport = transport;
+            this.Encoding = other.Encoding;
         }
         public Separator Separator = Separator.Guess;
         public string[] SkipLines;
@@ -111,6 +113,8 @@ namespace TheWheel.ETL.Providers
         public string[] Header;
 
         public int BufferSize = 2048;
+
+        public Encoding Encoding = Encoding.UTF8;
 
         public ITransport<Stream> Transport { get; private set; }
 

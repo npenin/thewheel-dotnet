@@ -42,7 +42,7 @@ namespace TheWheel.ETL.Providers
             {
                 using (var targetStream = await receiverTransport.GetStreamAsync(token))
                 {
-                    using (var writer = new StreamWriter(targetStream))
+                    using (var writer = new StreamWriter(targetStream, options.Encoding ?? Encoding.UTF8))
                     {
                         var hasRecord = reader.Read();
                         if (options.SkipLines != null)

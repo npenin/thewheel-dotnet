@@ -34,7 +34,10 @@ namespace TheWheel.ETL.Providers
             buffer = new char[options.BufferSize];
 
             this.options = options;
-            this.BaseStream = new StreamReader(await options.Transport.GetStreamAsync(token));
+            if (options.Encoding != null)
+                this.BaseStream = new StreamReader(await options.Transport.GetStreamAsync(token), options.Encoding, true);
+            else
+                this.BaseStream = new StreamReader(await options.Transport.GetStreamAsync(token));
             return this;
         }
 
