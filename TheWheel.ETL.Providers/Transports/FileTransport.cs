@@ -153,5 +153,12 @@ namespace TheWheel.ETL.Providers
             return Task.FromResult<Stream>(System.IO.File.Open(path, FileMode.Create, FileAccess.Write, FileShare.Read));
         }
     }
+    public class FileWriteWithRead : File
+    {
+        public override Task<Stream> GetStreamAsync(CancellationToken token)
+        {
+            return Task.FromResult<Stream>(System.IO.File.Open(path, FileMode.Create, FileAccess.ReadWrite, FileShare.Read));
+        }
+    }
 
 }

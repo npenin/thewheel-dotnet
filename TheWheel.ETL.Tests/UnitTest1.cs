@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.DirectoryServices.Protocols;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TheWheel.ETL.Contracts;
 using TheWheel.ETL.Fluent;
 using TheWheel.ETL.Provider.Ldap;
@@ -11,6 +10,7 @@ using TheWheel.ETL.Providers;
 using TheWheel.Domain;
 using System.Linq;
 using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TheWheel.ETL.Tests
 {
@@ -174,6 +174,18 @@ namespace TheWheel.ETL.Tests
         {
             await Csv.To<FileWrite>("../../../testOutput.csv", TestContext.CancellationTokenSource.Token)
             .Receive(new CsvReceiverOptions { SkipLines = new string[] { "my first line header", "my second line header", "" }, Separator = Separator.Colon },
+             await Json
+             .From<FileRead>("../../../test.json", TestContext.CancellationTokenSource.Token)
+            .Query(new TreeOptions { Root = "json:///results/", Paths = new TreeLeaf[] { "column1/text()", "column2/text()" } })
+            .Rename(new Dictionary<string, string> { { "json:///results//column1/text()", "column1" }, { "json:///results//column2/text()", "column3" } }));
+        }
+
+
+        [TestMethod]
+        public async Task TestExcelReceiver()
+        {
+            await Excel.To<FileWriteWithRead>("../../../testOutput.xlsx", TestContext.CancellationTokenSource.Token)
+            .Receive(new ExcelReceiverOptions { SpreadsheetName = "MySheet", TableName = "My_Table" },
              await Json
              .From<FileRead>("../../../test.json", TestContext.CancellationTokenSource.Token)
             .Query(new TreeOptions { Root = "json:///results/", Paths = new TreeLeaf[] { "column1/text()", "column2/text()" } })

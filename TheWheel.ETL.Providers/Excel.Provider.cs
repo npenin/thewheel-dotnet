@@ -13,7 +13,7 @@ using DocumentFormat.OpenXml;
 
 namespace TheWheel.ETL.Providers
 {
-    public class Excel : IDataReader//, IConfigurable<CsvOptions, Task<IDataReader>>
+    public partial class Excel : IDataReader//, IConfigurable<CsvOptions, Task<IDataReader>>
     {
         public Excel()
         {
@@ -131,7 +131,8 @@ namespace TheWheel.ETL.Providers
         {
             return false;
         }
-        private string GetColumn(int i)
+
+        private static string GetColumn(int i)
         {
             var length = (int)Math.Ceiling(i / (decimal)columns.Length);
             var column = new char[length];
@@ -139,6 +140,18 @@ namespace TheWheel.ETL.Providers
             {
                 column[j] = columns[i % columns.Length];
                 i = (i - columns[j]) / columns.Length;
+            }
+            return new string(column);
+        }
+
+        private static string GetColumn(uint i)
+        {
+            var length = (int)Math.Ceiling(i / (decimal)columns.Length);
+            var column = new char[length];
+            for (int j = 0; j < length; j++)
+            {
+                column[j] = columns[(int)(i % columns.Length)];
+                i = (uint)((i - columns[j]) / columns.Length);
             }
             return new string(column);
         }
