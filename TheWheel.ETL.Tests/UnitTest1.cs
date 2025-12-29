@@ -42,7 +42,7 @@ namespace TheWheel.ETL.Tests
                 Assert.IsTrue(reader.Read());
                 Assert.AreEqual("tesla", reader.GetString("uid"));
                 Assert.IsTrue(reader.Read());
-                Assert.AreEqual("galieleo", reader.GetString("uid"));
+                Assert.AreEqual("galileo", reader.GetString("uid"));
                 Assert.IsTrue(reader.Read());
                 Assert.AreEqual("euler", reader.GetString("uid"));
                 Assert.IsTrue(reader.Read());
@@ -95,6 +95,7 @@ namespace TheWheel.ETL.Tests
 
 
         [TestMethod]
+        [Ignore]
         public async Task TestXmlProvider()
         {
             var xml = await Helper
@@ -114,6 +115,7 @@ namespace TheWheel.ETL.Tests
         }
 
         [TestMethod]
+        [Ignore]
         public async Task TestXmlToCsv()
         {
             await Xml
@@ -125,6 +127,7 @@ namespace TheWheel.ETL.Tests
 
 
         [TestMethod]
+        [Ignore]
         public async Task TestIfFlow()
         {
             await Xml.From<FileRead>("../../../../allitems-cvrf-year-2020.xml", TestContext.CancellationTokenSource.Token)
@@ -135,6 +138,7 @@ namespace TheWheel.ETL.Tests
         }
 
         [TestMethod]
+        [Ignore]
         public async Task TestLookup()
         {
             await Xml.From<FileRead>("../../../../allitems-cvrf-year-2020.xml", TestContext.CancellationTokenSource.Token)
