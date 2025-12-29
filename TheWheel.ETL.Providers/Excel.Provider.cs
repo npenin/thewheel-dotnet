@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using TheWheel.ETL.Contracts;
 using TheWheel.Domain;
 using DocumentFormat.OpenXml;
+using System.Threading;
+using System.IO;
 
 namespace TheWheel.ETL.Providers
 {
@@ -17,6 +19,35 @@ namespace TheWheel.ETL.Providers
     {
         public Excel()
         {
+        }
+
+        public Task<IDataReader> Configure(string workSheetNameOrIndex, CancellationToken token)
+        {
+            QueryInternal(workSheetNameOrIndex);
+            return System.Threading.Tasks.Task.FromResult<IDataReader>(this);
+
+        }
+
+        public async Task<IDataReader> Configure(ReadOptions options, CancellationToken token)
+        {
+            this.Initialize(await options.Transport.GetStreamAsync(token));
+            this.QueryInternal(options.WorkSheetNameOrIndex);
+            return this;
+        }
+
+        public class ReadOptions(string workSheetNameOrIndex) : ITransportable<ITransport<Stream>>, IConfigurableAsync<ITransport<Stream>, ReadOptions>
+        {
+            public readonly string WorkSheetNameOrIndex = workSheetNameOrIndex;
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+            public ITransport<Stream> Transport { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+
+            public Task<ReadOptions> Configure(ITransport<Stream> options, CancellationToken token)
+            {
+                Transport = options;
+                return System.Threading.Tasks.Task.FromResult(this);
+            }
         }
 
         private SpreadsheetDocument doc;
@@ -34,11 +65,11 @@ namespace TheWheel.ETL.Providers
 
         public int RecordsAffected => -1;
 
-        public int FieldCount => throw new NotImplementedException();
+        public int FieldCount => headerNames?.Count ?? 0;
 
-        public object this[string name] => throw new NotImplementedException();
+        public object this[string name] => this[GetOrdinal(name)];
 
-        public object this[int i] => throw new NotImplementedException();
+        public object this[int i] => GetValue(i);
 
 
         private static WorksheetPart GetWorksheetPartByName(SpreadsheetDocument document, string sheetName)
@@ -98,7 +129,6 @@ namespace TheWheel.ETL.Providers
         {
             if (this.doc != null)
             {
-                //this.doc.Close();
                 this.doc.Dispose();
             }
             if (this.stream != null)
@@ -314,25 +344,45 @@ namespace TheWheel.ETL.Providers
             }
             return ordinal;
         }
-
         public string GetString(int i)
         {
-            throw new NotImplementedException();
+            Cell cell = GetCell(i);
+            if (cell == null)
+                return null;
+
+            if (cell.DataType != null && cell.DataType.Value == CellValues.SharedString)
+            {
+                int stringIndex = int.Parse(cell.CellValue.Text);
+                if (strings != null && strings.SharedStringTable != null)
+                {
+                    return strings.SharedStringTable.ElementAt(stringIndex).InnerText;
+                }
+            }
+
+            return cell.CellValue?.Text;
         }
 
         public object GetValue(int i)
         {
-            throw new NotImplementedException();
+            var cell = GetCell(i);
+            return cell.CellValue;
+
         }
 
         public int GetValues(object[] values)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (i > this.FieldCount)
+                    return this.FieldCount;
+                values[i] = GetValue(i);
+            }
+            return values.Length;
         }
 
         public bool IsDBNull(int i)
         {
-            throw new NotImplementedException();
+            return GetCell(i)?.HasChildren ?? true;
         }
     }
 }
