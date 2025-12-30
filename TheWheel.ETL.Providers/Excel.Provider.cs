@@ -108,7 +108,7 @@ namespace TheWheel.ETL.Providers
             {
                 var thead = this.data.Current.Elements<Cell>().ToArray();
                 this.header = new Bag<string, string>(thead.Length);
-                for (int i = 0; i < thead.Length; i++)
+                for (int i = 1; i <= thead.Length; i++)
                 {
                     var text = GetString(i);
                     if (text != null)
