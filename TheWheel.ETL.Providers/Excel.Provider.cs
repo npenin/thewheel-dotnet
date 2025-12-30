@@ -188,7 +188,8 @@ namespace TheWheel.ETL.Providers
 
         private Cell GetCell(string column)
         {
-            return data.Current.Elements<Cell>().FirstOrDefault(c => c.CellReference == column + data.Current.RowIndex);
+            var reference = column + data.Current.RowIndex;
+            return data.Current.Elements<Cell>().FirstOrDefault(c => c.CellReference == reference);
         }
         private Cell GetCell(int i)
         {
