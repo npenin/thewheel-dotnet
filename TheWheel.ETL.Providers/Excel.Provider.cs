@@ -192,7 +192,7 @@ namespace TheWheel.ETL.Providers
         }
         private Cell GetCell(int i)
         {
-            return GetCell(GetColumn(i) + data.Current.RowIndex);
+            return GetCell(GetColumn(i));
         }
 
         const string columns = "$ABCDEFGHIJKLMNOPQRSTUVWYZ";
