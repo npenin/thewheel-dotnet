@@ -27,7 +27,7 @@ jobs:
       - name: Test
         run: dotnet test --no-build --verbosity normal TheWheel.sln
       - name: Git Version
-        uses: codacy/git-version@2.4.0
+        uses: codacy/git-version@2.8.6
         with:
           # The name of the release branch
           release-branch: main # default is master
