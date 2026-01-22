@@ -23,7 +23,7 @@
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.10" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.6.0" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.26.100" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
     <PackageReference Include="System.Data.SQlclient" Version="4.8.6" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
