@@ -1,17 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageId>TheWheel.ETL.Cyberark</PackageId>
     <Authors>Nicolas Penin</Authors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TheWheel.ETL.Providers\TheWheel.ETL.Providers.csproj" />
     <ProjectReference Include="..\TheWheel.ETL.Contracts\TheWheel.ETL.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

@@ -2,15 +2,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <FrameworkReference Condition="'$(TargetFramework)' != 'net48'" Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TheWheel.Domain\TheWheel.Domain.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageId>TheWheel.ETL.Contracts</PackageId>
     <Authors>Nicolas Penin</Authors>
     <PackageProjectUrl>https://github.com/npenin/thewheel-dotnet</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,4 +24,8 @@
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>

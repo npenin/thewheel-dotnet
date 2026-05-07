@@ -7,10 +7,12 @@
 		<owners>Nicolas</owners>
 		<projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<readme>README.md</readme>
 		<description>Easily use lambda expressions</description>
 		<copyright>Copyright 2022</copyright>
 	</metadata>
 	<files>
+		<file src="README.md" target="" />
 		<file src="bin\$configuration$\netstandard2.0\TheWheel.Lambda.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Lambda.dll" />
 		<file src="bin\$configuration$\netstandard2.0\TheWheel.Lambda.dll" target="lib\netstandard1.0\TheWheel.Lambda.dll" />
 		<file src="bin\$configuration$\netstandard2.0\TheWheel.Lambda.dll" target="lib\netstandard1.1\TheWheel.Lambda.dll" />

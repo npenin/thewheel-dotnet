@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+#if NET48
+using System.Web.Mvc;
+#else
 using Microsoft.AspNetCore.Mvc;
+#endif
 using TheWheel.Domain;
 
 namespace TheWheel.WebApi

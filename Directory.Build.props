@@ -1,0 +1,12 @@
+<Project>
+
+  <PropertyGroup>
+    <Version>{version}</Version>
+    <AssemblyVersion>{version}</AssemblyVersion>
+    <FileVersion>{version}</FileVersion>
+    <Version Condition="'$(Version)' == '' or '$(Version)' == '{version}'">0.0.0-local</Version>
+    <AssemblyVersion Condition="'$(AssemblyVersion)' == '' or '$(AssemblyVersion)' == '{version}'">0.0.0.0</AssemblyVersion>
+    <FileVersion Condition="'$(FileVersion)' == '' or '$(FileVersion)' == '{version}'">0.0.0.0</FileVersion>
+  </PropertyGroup>
+
+</Project>
