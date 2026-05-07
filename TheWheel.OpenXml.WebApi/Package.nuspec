@@ -7,6 +7,7 @@
     <owners>Nicolas</owners>
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <readme>README.md</readme>
     <description>Adds a new web api formatter to handle rendering in xslx</description>
     <copyright>Copyright 2022</copyright>
     <dependencies>
@@ -15,6 +16,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="README.md" target="" />
     <file src="bin\$configuration$\net8.0\TheWheel.OpenXml.WebApi.dll" target="lib\net8.0\TheWheel.OpenXml.WebApi.dll" />
     <file src="bin\$configuration$\net8.0\TheWheel.OpenXml.WebApi.pdb" target="lib\net8.0\TheWheel.OpenXml.WebApi.pdb" />
     <file src="**.cs" target="src" />

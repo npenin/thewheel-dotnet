@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageId>TheWheel.ETL.Owin</PackageId>
     <Authors>Nicolas Penin</Authors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +22,10 @@
     <ProjectReference Include="..\TheWheel.Domain\TheWheel.Domain.csproj" />
     <ProjectReference Include="..\TheWheel.Services\TheWheel.Services.csproj" />
     <ProjectReference Include="..\TheWheel.ETL.DacPac\TheWheel.ETL.DacPac.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

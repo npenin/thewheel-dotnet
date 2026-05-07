@@ -7,6 +7,7 @@
     <owners>Nicolas</owners>
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <readme>README.md</readme>
     <description>Package description</description>
     <copyright>Copyright 2014</copyright>
     <dependencies>
@@ -14,6 +15,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="README.md" target="" />
     <file src="bin\$configuration$\net8.0\TheWheel.WebApi.dll" target="lib\net8.0\TheWheel.WebApi.dll" />
     <file src="bin\$configuration$\net8.0\TheWheel.WebApi.pdb" target="lib\net8.0\TheWheel.WebApi.pdb" />
     <file src="**.cs" target="src" />

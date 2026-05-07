@@ -7,10 +7,12 @@
     <owners>Nicolas</owners>
     <projectUrl>http://github.com/npenin/thewheel-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <readme>README.md</readme>
     <description>Contains helper for integration with client side table view</description>
     <copyright>Copyright 2022</copyright>
   </metadata>
   <files>
+    <file src="README.md" target="" />
     <file src="bin\$configuration$\netstandard2.0\TheWheel.Dto.dll" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Dto.dll" />
     <file src="bin\$configuration$\netstandard2.0\TheWheel.Dto.dll" target="lib\netstandard2.0\TheWheel.Dto.dll" />
     <file src="bin\$configuration$\netstandard2.0\TheWheel.Dto.pdb" target="lib\portable-net4+sl5+wp8+win8\TheWheel.Dto.pdb" />
