@@ -1,0 +1,9 @@
+<Project>
+
+  <PropertyGroup>
+    <Version>{version}</Version>
+    <AssemblyVersion>{version}</AssemblyVersion>
+    <FileVersion>{version}</FileVersion>
+  </PropertyGroup>
+
+</Project>
