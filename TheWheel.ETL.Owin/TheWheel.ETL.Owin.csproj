@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <FrameworkReference Condition="'$(TargetFramework)' != 'net48'" Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
 
