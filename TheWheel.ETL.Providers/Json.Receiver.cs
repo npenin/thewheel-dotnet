@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -36,7 +37,7 @@ namespace TheWheel.ETL.Providers
                 receiverTransport = query.Transport;
             EnsureValidForReception(query);
             var stream = await receiverTransport.GetStreamAsync(token);
-            var streamWriter = new StreamWriter(stream, null, -1, leaveOpen: true);
+            var streamWriter = new StreamWriter(stream, Encoding.UTF8, -1, leaveOpen: true);
             using (var writer = new JsonTextWriter(streamWriter) { CloseOutput = false })
             {
                 try
