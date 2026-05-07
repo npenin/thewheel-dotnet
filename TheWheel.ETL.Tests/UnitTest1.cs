@@ -223,7 +223,7 @@ namespace TheWheel.ETL.Tests
         [TestMethod]
         public async Task TestPaged()
         {
-            var json = await Json.From(new PagedTransport<Http, Stream>("offset", "limit"), TestContext.CancellationTokenSource.Token, "https://neurovault.org/api/nidm_results/", new("limit", 100), new("offset", 0), new("_Content-Type", "application/json; utf-8"));
+            var json = await Json.From(new PagedTransport<Http, Stream>("offset", "limit"), TestContext.CancellationTokenSource.Token, "https://neurovault.org/api/nidm_results/", new KeyValuePair<string, object>("limit", 100), new KeyValuePair<string, object>("offset", 0), new KeyValuePair<string, object>("_Content-Type", "application/json; utf-8"));
             await json.QueryAsync(new TreeOptions { TotalPath = "json:///count/text()" }.AddMatch("json:///results/", "id/text()", "name/text()").AddMatch("json:///count/text()"), TestContext.CancellationTokenSource.Token);
             await Csv.To<FileWrite>("../../../testOutput.csv", TestContext.CancellationTokenSource.Token)
             .Receive(new CsvReceiverOptions { Separator = Separator.Colon },

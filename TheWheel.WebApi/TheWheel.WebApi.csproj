@@ -9,6 +9,10 @@
     <FrameworkReference Condition="'$(TargetFramework)' != 'net48'" Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\TheWheel.Domain\TheWheel.Domain.csproj" />
   </ItemGroup>

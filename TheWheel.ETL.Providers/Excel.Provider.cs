@@ -35,9 +35,14 @@ namespace TheWheel.ETL.Providers
             return this;
         }
 
-        public class ReadOptions(string workSheetNameOrIndex) : ITransportable<ITransport<Stream>>, IConfigurableAsync<ITransport<Stream>, ReadOptions>
+        public class ReadOptions : ITransportable<ITransport<Stream>>, IConfigurableAsync<ITransport<Stream>, ReadOptions>
         {
-            public readonly string WorkSheetNameOrIndex = workSheetNameOrIndex;
+            public readonly string WorkSheetNameOrIndex;
+
+            public ReadOptions(string workSheetNameOrIndex)
+            {
+                WorkSheetNameOrIndex = workSheetNameOrIndex;
+            }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
             public ITransport<Stream> Transport { get; set; }

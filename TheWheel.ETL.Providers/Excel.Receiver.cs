@@ -37,7 +37,8 @@ namespace TheWheel.ETL.Providers
         {
             if (options.Transport != null)
                 receiverTransport = options.Transport;
-            ArgumentNullException.ThrowIfNull(receiverTransport, nameof(options.Transport));
+            if (receiverTransport == null)
+                throw new ArgumentNullException(nameof(options.Transport));
 
             using (var stream = await receiverTransport.GetStreamAsync(token))
             using (this.doc = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
@@ -69,7 +70,7 @@ namespace TheWheel.ETL.Providers
                 var reader = await provider.ExecuteReaderAsync(token);
                 uint rowIndex = 0;
                 uint maxCols = 0;
-                List<string> headers = new();
+                List<string> headers = new List<string>();
 
                 if (reader.Read())
                 {
