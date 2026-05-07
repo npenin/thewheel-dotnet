@@ -3,6 +3,7 @@ name: .NET
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
     branches: [main]
 
@@ -11,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "7.0"
+          dotnet-version: "8.0"
       - name: Restore dependencies
         run: dotnet restore TheWheel.sln
       - name: Build
@@ -29,24 +30,46 @@ jobs:
       - name: Git Version
         uses: codacy/git-version@2.4.0
         with:
-          # The name of the release branch
-          release-branch: main # default is master
-    #- name: pack
-    #  run: >-
-    #    nuget pack TheWeel.Lambda\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
-    #    nuget pack TheWheel.Domain\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
-    #    nuget pack TheWheel.WebApi\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
-    #    nuget pack TheWheel.Services\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
-    #    nuget pack TheWheel.Dto\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
-    #    nuget pack TheWheel.OpenXml\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
-    #    nuget pack TheWheel.OpenXml.WebApi\Package.nuspec -Version $env:APPVEYOR_BUILD_VERSION -Properties Configuration=$env:CONFIGURATION -Symbols
-    #    dotnet nuget pack TheWheel.ETL.Contracts -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
-    #    dotnet nuget pack TheWheel.ETL.ControlFlow -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
-    #    dotnet nuget pack TheWheel.ETL.Providers -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
-    #    dotnet nuget pack TheWheel.ETL.Providers.Ldap -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
-    #    dotnet nuget pack TheWheel.ETL.Providers.Mail -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
-    #    dotnet nuget pack TheWheel.ETL.Snow -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
-    #    dotnet nuget pack TheWheel.ETL.Jira -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
-    #    dotnet nuget pack TheWheel.ETL.Fluent -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
-    #    dotnet nuget pack TheWheel.ETL.DacPac -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
-    #    dotnet nuget pack TheWheel.ETL.CyberArk -p:PackageVersion $env:APPVEYOR_BUILD_VERSION -configuration=$env:CONFIGURATION -Symbols
+          release-branch: main
+        id: version
+      - name: Pack nuspec packages
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          nuget pack TheWheel.Lambda/Package.nuspec -Version ${{ steps.version.outputs.version }} -Properties Configuration=Release -Symbols
+          nuget pack TheWheel.Domain/Package.nuspec -Version ${{ steps.version.outputs.version }} -Properties Configuration=Release -Symbols
+          nuget pack TheWheel.WebApi/Package.nuspec -Version ${{ steps.version.outputs.version }} -Properties Configuration=Release -Symbols
+          nuget pack TheWheel.Services/Package.nuspec -Version ${{ steps.version.outputs.version }} -Properties Configuration=Release -Symbols
+          nuget pack TheWheel.Dto/Package.nuspec -Version ${{ steps.version.outputs.version }} -Properties Configuration=Release -Symbols
+          nuget pack TheWheel.OpenXml/Package.nuspec -Version ${{ steps.version.outputs.version }} -Properties Configuration=Release -Symbols
+          nuget pack TheWheel.OpenXml.WebApi/Package.nuspec -Version ${{ steps.version.outputs.version }} -Properties Configuration=Release -Symbols
+          nuget pack TheWheel.ServiceBus/Package.nuspec -Version ${{ steps.version.outputs.version }} -Properties Configuration=Release -Symbols
+      - name: Pack dotnet projects
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          dotnet pack TheWheel.ETL.Contracts -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.ControlFlow -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Providers -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Provider.Ldap -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Provider.Mail -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Snow -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Jira -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Fluent -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.DacPac -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.CyberArk -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Azure -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Parlot -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.Mail -p:PackageVersion=${{ steps.version.outputs.version }} --configuration Release --include-symbols --include-source
+      - name: Upload packages
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: |
+            *.nupkg
+            *.snupkg
+      - name: Publish to NuGet
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
