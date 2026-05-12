@@ -17,12 +17,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0"
-      - name: Restore dependencies
-        run: dotnet restore TheWheel.sln
-      - name: Build
-        run: dotnet build --no-restore  TheWheel.sln
-      - name: retrieve test file
-        run: wget https://cve.mitre.org/data/downloads/allitems-cvrf-year-2020.xml
       - name: install mono
         run: |
           sudo apt install ca-certificates gnupg
@@ -31,6 +25,12 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
           sudo apt update
           sudo apt install mono-devel
+      - name: Restore dependencies
+        run: dotnet restore TheWheel.sln
+      - name: Build
+        run: dotnet build --no-restore  TheWheel.sln
+      - name: retrieve test file
+        run: wget https://cve.mitre.org/data/downloads/allitems-cvrf-year-2020.xml
       - name: Test
         run: dotnet test --no-build --framework net8.0 --verbosity normal TheWheel.sln
       - name: Git Version
