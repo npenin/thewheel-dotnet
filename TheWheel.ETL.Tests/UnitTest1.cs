@@ -11,6 +11,7 @@ using TheWheel.Domain;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Runtime.InteropServices;
 
 namespace TheWheel.ETL.Tests
 {
@@ -254,6 +255,7 @@ namespace TheWheel.ETL.Tests
         public async Task TestSimpleTransformation()
         {
             var csvHeader = new string[4];
+
             await Csv.To<FileWrite>("../../../testOutput.csv", TestContext.CancellationTokenSource.Token)
             .Receive(
                 new CsvReceiverOptions { SkipLines = csvHeader, Separator = Separator.Colon },
@@ -265,7 +267,10 @@ namespace TheWheel.ETL.Tests
                 }, TestContext.CancellationTokenSource.Token)
             );
 
-            Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+            else
+                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length - 6, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
         }
     }
 }
