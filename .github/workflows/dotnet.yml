@@ -22,10 +22,7 @@ jobs:
       - name: Build
         run: dotnet build --no-restore  TheWheel.sln
       - name: retrieve test file
-        run: wget https://cve.mitre.org/data/downloads/allitems-cvrf-year-2020.xml
-        shell: gitbash.exe
-      - name: debug
-        run: ls -l
+        run: Invoke-WebRequest -Uri https://cve.mitre.org/data/downloads/allitems-cvrf-year-2020.xml -OutFile .\allitems-cvrf-year-2020.xml
       - name: Test
         run: dotnet test --no-build --framework net8.0 --verbosity normal TheWheel.sln
       - name: Git Version
