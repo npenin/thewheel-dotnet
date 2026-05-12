@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +22,15 @@ jobs:
       - name: Build
         run: dotnet build --no-restore  TheWheel.sln
       - name: retrieve test file
-        run: Invoke-WebRequest -Uri https://cve.mitre.org/data/downloads/allitems-cvrf-year-2020.xml -OutFile .\allitems-cvrf-year-2020.xml
+        run: wget https://cve.mitre.org/data/downloads/allitems-cvrf-year-2020.xml
+      - name: install mono
+        run: |
+          sudo apt install ca-certificates gnupg
+          sudo gpg --homedir /tmp --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+          sudo chmod +r /usr/share/keyrings/mono-official-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+          sudo apt update
+          sudo apt install mono-devel
       - name: Test
         run: dotnet test --no-build --framework net8.0 --verbosity normal TheWheel.sln
       - name: Git Version
