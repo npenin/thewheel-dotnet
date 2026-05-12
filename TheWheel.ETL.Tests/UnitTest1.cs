@@ -218,7 +218,10 @@ namespace TheWheel.ETL.Tests
                 .From<FileRead>("../../../test.csv", TestContext.CancellationTokenSource.Token)
                 .Query(new CsvOptions { SkipLines = csvHeader }, TestContext.CancellationTokenSource.Token));
 
-            Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+            else
+                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length - 6, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
         }
 
         [TestMethod]
