@@ -106,8 +106,8 @@ namespace TheWheel.ETL.Providers
                     await streamWriter.DisposeAsync();
                     await stream.DisposeAsync();
 #else
-                    stream.Close();
                     streamWriter.Dispose();
+                    stream.Close();
                     stream.Dispose();
 #endif
                 }
