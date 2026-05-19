@@ -99,7 +99,6 @@ namespace TheWheel.ETL.Providers
                     }
 
                     await writer.CloseAsync(token);
-                    stream.Close();
                 }
                 finally
                 {
@@ -107,6 +106,7 @@ namespace TheWheel.ETL.Providers
                     await streamWriter.DisposeAsync();
                     await stream.DisposeAsync();
 #else
+                    stream.Close();
                     streamWriter.Dispose();
                     stream.Dispose();
 #endif
