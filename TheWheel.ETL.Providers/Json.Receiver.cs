@@ -99,6 +99,7 @@ namespace TheWheel.ETL.Providers
                     }
 
                     await writer.CloseAsync(token);
+                    stream.Close();
                 }
                 finally
                 {
