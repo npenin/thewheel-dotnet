@@ -20,8 +20,6 @@ namespace TheWheel.ETL.Providers
         }
     }
 
-
-
     public class DbQuery
     {
         public DbQuery(DbQuery query)

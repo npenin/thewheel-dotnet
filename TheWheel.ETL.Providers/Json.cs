@@ -215,5 +215,10 @@ namespace TheWheel.ETL.Providers
             }
 
         }
+
+        public static Task<DataProvider<Json, TreeOptions, ITransport<Stream>>> FromString(string v, CancellationToken token)
+        {
+            return From(new StringStreamTransport(), token, v);
+        }
     }
 }

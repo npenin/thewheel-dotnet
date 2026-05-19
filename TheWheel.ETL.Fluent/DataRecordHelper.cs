@@ -12,6 +12,14 @@ namespace TheWheel.ETL.Fluent
 
     public static partial class Helper
     {
+        public static string[] GetNames(this IDataRecord record)
+        {
+            var names = new string[record.FieldCount];
+            for (int i = 0; i < record.FieldCount; i++)
+                names[i] = record.GetName(i);
+            return names;
+        }
+
         public static bool GetBoolean(this IDataRecord record, string fieldName)
         {
             return record.GetBoolean(record.GetOrdinal(fieldName));

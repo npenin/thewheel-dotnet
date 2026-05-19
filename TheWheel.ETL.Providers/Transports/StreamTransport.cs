@@ -15,7 +15,7 @@ namespace TheWheel.ETL.Providers
             this.stream = options;
         }
 
-        private Stream stream;
+        protected Stream stream;
 
         public StreamTransport Configure(Stream options)
         {
@@ -23,18 +23,18 @@ namespace TheWheel.ETL.Providers
             return this;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (this.stream != null)
                 this.stream.Dispose();
         }
 
-        public Task<Stream> GetStreamAsync(CancellationToken token)
+        public virtual Task<Stream> GetStreamAsync(CancellationToken token)
         {
             return Task.FromResult(this.stream);
         }
 
-        public Task InitializeAsync(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
+        public virtual Task InitializeAsync(string connectionString, CancellationToken token, params KeyValuePair<string, object>[] parameters)
         {
             return Task.CompletedTask;
         }

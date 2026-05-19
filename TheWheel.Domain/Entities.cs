@@ -60,5 +60,6 @@ namespace TheWheel.Domain
         StartsWith = 8,
         EndsWith = 9,
         StringContains = 10,
+        And = 11
     }
 }

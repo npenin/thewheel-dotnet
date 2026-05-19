@@ -249,13 +249,21 @@ namespace TheWheel.ETL.Fluent
         public static async Task<IDataReceiver<TReceiveOptions>> To<TReceiveOptions>(this Task<IDataProvider> provider, Task<IDataReceiver<TReceiveOptions>> destination, TReceiveOptions options, CancellationToken token)
         {
             return await destination.Receive(options, await provider, token);
-
         }
+
+        public static async Task<TReceiver> To<TReceiveOptions, TReceiver>(this Task<IDataProvider> provider, Task<TReceiver> destination, TReceiveOptions options, CancellationToken token)
+        where TReceiver : IDataReceiver<TReceiveOptions>
+        {
+            return await destination.Receive(options, await provider, token);
+        }
+
         public static async Task<IDataProvider> To<TTransformer, TReceiveOptions>(this Task<IDataProvider> provider, Task<TTransformer> destination, TReceiveOptions options, CancellationToken token)
         where TTransformer : IDataReceiver<TReceiveOptions>, IDataProvider
         {
             return await destination.Receive(options, await provider, token);
         }
+
+
 
         // public static Task<TProvider> Query<TProvider, TQuery>(this Task<TProvider> providerTask, TQuery query)
         // where TProvider : IDataProviderByQuery<TQuery>

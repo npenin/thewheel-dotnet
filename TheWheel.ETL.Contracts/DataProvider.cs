@@ -27,6 +27,13 @@ namespace TheWheel.ETL.Contracts
                 return options.Configure(this.Transport, token).ContinueWith(t => this.options = t.Result, token);
             return Task.FromResult(this);
         }
+
+        public async Task<IList<T>> To<T>(Func<IDataRecord, T> map, CancellationToken token)
+        {
+            var receiver = new EnumerableDataReceiver<T>();
+            await receiver.ReceiveAsync(this, map, token);
+            return receiver.Values;
+        }
     }
 
     public abstract class DataProvider<TTransport> : ITransportable<TTransport>
@@ -75,6 +82,46 @@ namespace TheWheel.ETL.Contracts
         {
             return DataReader.From(await source, token);
         }
+    }
+    public class EnumerableDataReceiver<T> : IDataReceiver<Func<IDataRecord, T>>
+    {
+        public async Task ReceiveAsync(IDataProvider provider, Func<IDataRecord, T> query, CancellationToken token)
+        {
+            var reader = await provider.ExecuteReaderAsync(token);
+            Values = new List<T>();
+            if (query == null)
+                query = record =>
+                {
+                    var result = Activator.CreateInstance<T>();
+                    for (int i = 0; i < record.FieldCount; i++)
+                    {
+                        var member = typeof(T).GetMember(record.GetName(i));
+                        if (member != null)
+                        {
+                            switch (member[0])
+                            {
+                                case System.Reflection.PropertyInfo property:
+                                    if (property.CanWrite)
+                                        property.SetValue(result, record.GetValue(i));
+                                    break;
+                                case System.Reflection.FieldInfo field:
+                                    field.SetValue(result, record.GetValue(i));
+                                    break;
+                            }
+                        }
+                    }
+                    return result;
+                };
+
+            while (reader.Read())
+            {
+                if (token.IsCancellationRequested)
+                    break;
+                Values.Add(query(reader));
+            }
+        }
+
+        public IList<T> Values { get; private set; }
     }
 
     public class SimpleDataProvider : IDataProvider

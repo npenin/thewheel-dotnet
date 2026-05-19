@@ -69,6 +69,16 @@ namespace TheWheel.ETL.Owin
         {
             return Task.FromResult(IsAllowed(model));
         }
+
+        public Task<IEnumerable<TableModel>> AllowedAsync(IEnumerable<TableModel> model, OperationType operation = OperationType.Read)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsAllowedAsync(TableModel model, OperationType operation = OperationType.Read)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Policy
