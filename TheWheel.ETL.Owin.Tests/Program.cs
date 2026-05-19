@@ -1,4 +1,5 @@
 using System.Reflection;
+using TheWheel.ETL.Owin;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddUserSecrets(Assembly.GetExecutingAssembly(), true);
@@ -12,8 +13,10 @@ builder.Services.AddScoped<TheWheel.ETL.Contracts.IAsyncNewQueryable<TheWheel.ET
     return t.Result;
 });
 builder.Services.AddScoped<TheWheel.ETL.Owin.Middleware>();
-TheWheel.ETL.Owin.Middleware.AddJsonFormatter();
-TheWheel.ETL.Owin.Middleware.AddCsvFormatter();
+builder.Services.AddScoped<IDataFormatter, DataFormatter>();
+
+DataFormatter.AddJsonFormatter();
+DataFormatter.AddCsvFormatter();
 // builder.Services.Configure<Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerOptions>(options =>
 //    {
 //        options.AllowSynchronousIO = true;
