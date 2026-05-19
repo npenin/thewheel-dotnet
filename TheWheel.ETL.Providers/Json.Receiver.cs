@@ -37,7 +37,7 @@ namespace TheWheel.ETL.Providers
                 receiverTransport = query.Transport;
             EnsureValidForReception(query);
             var stream = await receiverTransport.GetStreamAsync(token);
-            var streamWriter = new StreamWriter(stream, Encoding.UTF8, -1, leaveOpen: true);
+            var streamWriter = new StreamWriter(stream, Encoding.UTF8, 4096, leaveOpen: true);
             using (var writer = new JsonTextWriter(streamWriter) { CloseOutput = false })
             {
                 try

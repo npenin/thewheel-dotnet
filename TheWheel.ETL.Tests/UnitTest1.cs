@@ -221,7 +221,7 @@ namespace TheWheel.ETL.Tests
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
             else
-                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length - 6, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length - 6 * (Environment.NewLine.Length - 1), new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
         }
 
         [TestMethod]
@@ -273,7 +273,7 @@ namespace TheWheel.ETL.Tests
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
             else
-                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length - 6, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length - 6 * (Environment.NewLine.Length - 1), new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
         }
     }
 }
