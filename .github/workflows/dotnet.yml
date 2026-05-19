@@ -41,18 +41,16 @@ jobs:
         #   with:
         #     release-branch: main
 
-      - name: Pack nuspec packages
-        run: |
-          nuget pack TheWheel.Lambda/Package.nuspec -Version ${{ github.runNumber }} -Properties Configuration=Release -Symbols
-          nuget pack TheWheel.Domain/Package.nuspec -Version ${{ github.runNumber }} -Properties Configuration=Release -Symbols
-          nuget pack TheWheel.WebApi/Package.nuspec -Version ${{ github.runNumber }} -Properties Configuration=Release -Symbols
-          nuget pack TheWheel.Services/Package.nuspec -Version ${{ github.runNumber }} -Properties Configuration=Release -Symbols
-          nuget pack TheWheel.Dto/Package.nuspec -Version ${{ github.runNumber }} -Properties Configuration=Release -Symbols
-          nuget pack TheWheel.OpenXml/Package.nuspec -Version ${{ github.runNumber }} -Properties Configuration=Release -Symbols
-          nuget pack TheWheel.OpenXml.WebApi/Package.nuspec -Version ${{ github.runNumber }} -Properties Configuration=Release -Symbols
-          nuget pack TheWheel.ServiceBus/Package.nuspec -Version ${{ github.runNumber }} -Properties Configuration=Release -Symbols
       - name: Pack dotnet projects
         run: |
+          dotnet pack TheWheel.Lambda -p:PackageVersion=${{ github.runNumber }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.Domain -p:PackageVersion=${{ github.runNumber }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.WebApi -p:PackageVersion=${{ github.runNumber }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.Services -p:PackageVersion=${{ github.runNumber }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.Dto -p:PackageVersion=${{ github.runNumber }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.OpenXml -p:PackageVersion=${{ github.runNumber }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.OpenXml.WebApi -p:PackageVersion=${{ github.runNumber }} --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ServiceBus -p:PackageVersion=${{ github.runNumber }} --configuration Release --include-symbols --include-source
           dotnet pack TheWheel.ETL.Contracts -p:PackageVersion=${{ github.runNumber }} --configuration Release --include-symbols --include-source
           dotnet pack TheWheel.ETL.ControlFlow -p:PackageVersion=${{ github.runNumber }} --configuration Release --include-symbols --include-source
           dotnet pack TheWheel.ETL.Providers -p:PackageVersion=${{ github.runNumber }} --configuration Release --include-symbols --include-source

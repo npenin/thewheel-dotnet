@@ -3,6 +3,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net48</TargetFrameworks>
+    <PackageId>TheWheel.WebApi</PackageId>
+    <Authors>Nicolas</Authors>
+    <Company>Nicolas</Company>
+    <PackageProjectUrl>https://github.com/npenin/thewheel-dotnet</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>Package description</Description>
+    <Copyright>Copyright 2014</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

@@ -3,6 +3,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
+    <PackageId>TheWheel.OpenXml</PackageId>
+    <Authors>Nicolas</Authors>
+    <Company>Nicolas</Company>
+    <PackageProjectUrl>https://github.com/npenin/thewheel-dotnet</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>Export a list of data to an open xml document (currently only excel spreadsheet is handled)</Description>
+    <Copyright>Copyright 2022</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

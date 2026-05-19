@@ -1,0 +1,94 @@
+version: 1.{build}
+branches:
+  only:
+    - main
+skip_tags: true
+image: Visual Studio 2022
+configuration: Debug
+platform: Any CPU
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: "{version}"
+  assembly_file_version: "{version}"
+  assembly_informational_version: "{version}"
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj;**\*.props'
+  version: "{version}"
+  version_prefix: "{version}"
+  package_version: "{version}"
+  assembly_version: "{version}"
+  file_version: "{version}"
+  informational_version: "{version}"
+nuget:
+  project_feed: true
+  disable_publish_on_pr: true
+  disable_publish_octopus: true
+before_build:
+  - ps: dotnet restore TheWheel.sln
+build:
+  project: TheWheel.sln
+  verbosity: normal
+after_build:
+  - ps: >-
+      dotnet pack TheWheel.Lambda -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.Domain -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.WebApi -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.Services -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.Dto -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.OpenXml -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.OpenXml.WebApi -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.ServiceBus -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+
+      dotnet pack TheWheel.ETL.Contracts -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.ETL.ControlFlow -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.ETL.Providers -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.ETL.Providers.Ldap -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.ETL.Providers.Mail -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.ETL.Snow -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.ETL.Jira -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.ETL.Fluent -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.ETL.DacPac -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+
+      dotnet pack TheWheel.ETL.CyberArk -p:Version=$env:APPVEYOR_BUILD_VERSION --configuration $env:CONFIGURATION --include-symbols
+before_test:
+  - ps: wget "https://cve.mitre.org/data/downloads/allitems-cvrf-year-2020.xml" -OutFile allitems-cvrf-year-2020.xml
+artifacts:
+  - path: TheWheel.Lambda\bin\*\TheWheel.Lambda.dll
+    name: release
+  - path: "*.nupkg"
+    name: nuget
+  - path: TheWheel.Domain\bin\*\TheWheel.Domain.dll
+    name: release
+  - path: TheWheel.ServiceBus\bin\*\TheWheel.ServiceBus.dll
+    name: release
+  - path: TheWheel.Dto\bin\*\TheWheel.Dto.dll
+    name: release
+  - path: TheWheel.OpenXml\bin\*\TheWheel.OpenXml.dll
+    name: release
+  - path: TheWheel.Services\bin\*\TheWheel.Services.dll
+    name: release
+  - path: '**\*.nupkg'
+    name: nuget
+deploy:
+  - provider: Environment
+    name: github release
+  - provider: Environment
+    name: Nuget

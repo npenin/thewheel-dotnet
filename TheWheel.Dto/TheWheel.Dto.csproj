@@ -3,6 +3,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
+    <PackageId>TheWheel.Dto</PackageId>
+    <Authors>Nicolas</Authors>
+    <Company>Nicolas</Company>
+    <PackageProjectUrl>https://github.com/npenin/thewheel-dotnet</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>Contains helper for integration with client side table view</Description>
+    <Copyright>Copyright 2022</Copyright>
   </PropertyGroup>
 
   <ItemGroup></ItemGroup>

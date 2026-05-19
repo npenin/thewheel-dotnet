@@ -3,6 +3,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net48</TargetFrameworks>
+    <PackageId>TheWheel.OpenXml.WebApi</PackageId>
+    <Authors>Nicolas</Authors>
+    <Company>Nicolas</Company>
+    <PackageProjectUrl>https://github.com/npenin/thewheel-dotnet</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>Adds a new web api formatter to handle rendering in xslx</Description>
+    <Copyright>Copyright 2022</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

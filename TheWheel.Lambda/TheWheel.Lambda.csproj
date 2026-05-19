@@ -3,6 +3,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
+    <PackageId>TheWheel.Lambda</PackageId>
+    <Authors>Nicolas</Authors>
+    <Company>Nicolas</Company>
+    <PackageProjectUrl>https://github.com/npenin/thewheel-dotnet</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>Easily use lambda expressions</Description>
+    <Copyright>Copyright 2022</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
