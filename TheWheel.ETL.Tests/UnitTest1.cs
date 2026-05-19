@@ -218,7 +218,7 @@ namespace TheWheel.ETL.Tests
                 .From<FileRead>("../../../test.csv", TestContext.CancellationTokenSource.Token)
                 .Query(new CsvOptions { SkipLines = csvHeader }, TestContext.CancellationTokenSource.Token));
 
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
             else
                 Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length - 6 * (Environment.NewLine.Length - 1), new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
@@ -270,7 +270,7 @@ namespace TheWheel.ETL.Tests
                 }, TestContext.CancellationTokenSource.Token)
             );
 
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
             else
                 Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length - 6 * (Environment.NewLine.Length - 1), new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
