@@ -138,6 +138,10 @@ namespace TheWheel.ETL.Providers
                             }
                             while (reader.Read() && !token.IsCancellationRequested);
                     }
+
+#if !NET5_0_OR_GREATER
+                    targetStream.Close();
+#endif
                 }
             }
         }
