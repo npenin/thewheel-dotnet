@@ -177,7 +177,7 @@ namespace TheWheel.ETL.Tests
         [TestMethod]
         public async Task TestCsvReceiver()
         {
-            await Csv.To<FileWrite>("../../../testOutput.csv", TestContext.CancellationTokenSource.Token)
+            await Csv.To<FileWrite>("../../../testOutput-csvreceiver.csv", TestContext.CancellationTokenSource.Token)
             .Receive(new CsvReceiverOptions { SkipLines = new string[] { "my first line header", "my second line header", "" }, Separator = Separator.Colon },
              await Json
              .From<FileRead>("../../../test.json", TestContext.CancellationTokenSource.Token)
@@ -212,16 +212,16 @@ namespace TheWheel.ETL.Tests
         public async Task TestCsvReceiver2()
         {
             var csvHeader = new string[4];
-            await Csv.To<FileWrite>("../../../testOutput.csv", TestContext.CancellationTokenSource.Token)
+            await Csv.To<FileWrite>("../../../testOutput-csvreceiver2.csv", TestContext.CancellationTokenSource.Token)
             .Receive(new CsvReceiverOptions { SkipLines = csvHeader, Separator = Separator.Colon },
                 await Csv
                 .From<FileRead>("../../../test.csv", TestContext.CancellationTokenSource.Token)
                 .Query(new CsvOptions { SkipLines = csvHeader }, TestContext.CancellationTokenSource.Token));
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length, new System.IO.FileInfo("../../../testOutput-csvreceiver2.csv").Length - 1);
             else
-                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length - 6 * (Environment.NewLine.Length - 1), new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length - 6 * (Environment.NewLine.Length - 1), new System.IO.FileInfo("../../../testOutput-csvreceiver2.csv").Length - 1);
         }
 
         [TestMethod]
@@ -229,7 +229,7 @@ namespace TheWheel.ETL.Tests
         {
             var json = await Json.From(new PagedTransport<Http, Stream>("offset", "limit"), TestContext.CancellationTokenSource.Token, "https://neurovault.org/api/nidm_results/", new KeyValuePair<string, object>("limit", 100), new KeyValuePair<string, object>("offset", 0), new KeyValuePair<string, object>("_Content-Type", "application/json; utf-8"));
             await json.QueryAsync(new TreeOptions { TotalPath = "json:///count/text()" }.AddMatch("json:///results/", "id/text()", "name/text()").AddMatch("json:///count/text()"), TestContext.CancellationTokenSource.Token);
-            await Csv.To<FileWrite>("../../../testOutput.csv", TestContext.CancellationTokenSource.Token)
+            await Csv.To<FileWrite>("../../../testOutput-paged.csv", TestContext.CancellationTokenSource.Token)
             .Receive(new CsvReceiverOptions { Separator = Separator.Colon },
                 json);
         }
@@ -259,7 +259,7 @@ namespace TheWheel.ETL.Tests
         {
             var csvHeader = new string[4];
 
-            await Csv.To<FileWrite>("../../../testOutput.csv", TestContext.CancellationTokenSource.Token)
+            await Csv.To<FileWrite>("../../../testOutput-simpletransformation.csv", TestContext.CancellationTokenSource.Token)
             .Receive(
                 new CsvReceiverOptions { SkipLines = csvHeader, Separator = Separator.Colon },
                 await Csv.From<FileRead>("../../../test.csv", TestContext.CancellationTokenSource.Token)
@@ -271,9 +271,9 @@ namespace TheWheel.ETL.Tests
             );
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length, new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length, new System.IO.FileInfo("../../../testOutput-simpletransformation.csv").Length - 1);
             else
-                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length - 6 * (Environment.NewLine.Length - 1), new System.IO.FileInfo("../../../testOutput.csv").Length - 1);
+                Assert.AreEqual(new System.IO.FileInfo("../../../test.csv").Length + " pwic pwic".Length - 6 * (Environment.NewLine.Length - 1), new System.IO.FileInfo("../../../testOutput-simpletransformation.csv").Length - 1);
         }
     }
 }
