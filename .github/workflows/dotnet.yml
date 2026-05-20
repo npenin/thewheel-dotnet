@@ -45,7 +45,7 @@ jobs:
       - name: offset version
         id: version
         run: |
-          echo "value=$((211 + $GITHUB_RUN_NUMBER))" >> $GITHUB_OUTPUT
+          echo "value=$((212 + $GITHUB_RUN_NUMBER))" >> $GITHUB_OUTPUT
       - name: Pack dotnet projects
         run: |
           dotnet pack TheWheel.Lambda -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
