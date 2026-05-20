@@ -71,7 +71,7 @@ jobs:
       - name: Collect & upload NuGet packages
         run: |
           mkdir -p ${{ env.NuGetDirectory }}
-          find . -name "*.nupkg" -path ${{env.NuGetDirectory}} -prune -o -exec cp {} ${{ env.NuGetDirectory }} \;
+          find . -path ${{env.NuGetDirectory}} -prune -o -name "*.nupkg" -exec cp {} ${{ env.NuGetDirectory }} \;
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
