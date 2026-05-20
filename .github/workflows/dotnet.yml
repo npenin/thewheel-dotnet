@@ -40,30 +40,34 @@ jobs:
         #   uses: codacy/git-version@2.8.7
         #   with:
         #     release-branch: main
-
+      - name: offset version
+        id: version
+        run: echo "GITHUB_RUN_NUMBER=$((211 + $GITHUB_RUN_NUMBER))" >> $GITHUB_ENV
+        outputs:
+          value: $GITHUB_RUN_NUMBER
       - name: Pack dotnet projects
         run: |
-          dotnet pack TheWheel.Lambda -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.Domain -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.WebApi -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.Services -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.Dto -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.OpenXml -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.OpenXml.WebApi -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ServiceBus -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Contracts -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.ControlFlow -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Providers -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Provider.Ldap -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Provider.Mail -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Snow -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Jira -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Fluent -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.DacPac -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.CyberArk -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Azure -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          # dotnet pack TheWheel.ETL.Parlot -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.Mail -p:PackageVersion=1.${{ 211+github.run_number }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.Lambda -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.Domain -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.WebApi -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.Services -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.Dto -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.OpenXml -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.OpenXml.WebApi -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ServiceBus -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Contracts -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.ControlFlow -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Providers -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Provider.Ldap -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Provider.Mail -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Snow -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Jira -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Fluent -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.DacPac -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.CyberArk -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.ETL.Azure -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          # dotnet pack TheWheel.ETL.Parlot -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
+          dotnet pack TheWheel.Mail -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
       - name: Upload packages
         if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-artifact@v4
