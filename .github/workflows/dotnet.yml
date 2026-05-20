@@ -47,36 +47,32 @@ jobs:
           echo "value=$((211 + $GITHUB_RUN_NUMBER))" >> $GITHUB_OUTPUT
       - name: Pack dotnet projects
         run: |
-          dotnet pack TheWheel.Lambda -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.Domain -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.WebApi -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.Services -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.Dto -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.OpenXml -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.OpenXml.WebApi -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ServiceBus -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Contracts -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.ControlFlow -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Providers -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Provider.Ldap -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Provider.Mail -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Snow -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Jira -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Fluent -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.DacPac -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.CyberArk -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.ETL.Azure -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          # dotnet pack TheWheel.ETL.Parlot -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-          dotnet pack TheWheel.Mail -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
-      - name: Collect & upload NuGet packages
-        run: |
-          mkdir -p ${{ env.NuGetDirectory }}
-          find . -path ${{env.NuGetDirectory}} -prune -o -name "*.nupkg" -exec cp {} ${{ env.NuGetDirectory }} \;
+          dotnet pack TheWheel.Lambda -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.Domain -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.WebApi -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.Services -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.Dto -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.OpenXml -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.OpenXml.WebApi -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ServiceBus -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ETL.Contracts -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ETL.ControlFlow -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ETL.Providers -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ETL.Provider.Ldap -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ETL.Provider.Mail -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ETL.Snow -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ETL.Jira -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ETL.Fluent -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ETL.DacPac -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ETL.CyberArk -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.ETL.Azure -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          # dotnet pack TheWheel.ETL.Parlot -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
+          dotnet pack TheWheel.Mail -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source --output ${{ env.NuGetDirectory }}
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
           name: nuget-packages
-          if-no-files-found: error  
+          if-no-files-found: error
           retention-days: 7
           path: |
             ${{ env.NuGetDirectory }}/*.nupkg
@@ -98,10 +94,8 @@ jobs:
         with:
           name: nuget
           path: ${{ env.NuGetDirectory }}
-  
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
-  
       # Publish the NuGet package using the dotnet utility
       - name: Publish NuGet package
         shell: pwsh
