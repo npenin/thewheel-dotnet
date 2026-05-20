@@ -42,11 +42,8 @@ jobs:
         #     release-branch: main
       - name: offset version
         id: version
-        run: echo "GITHUB_RUN_NUMBER=$((211 + $GITHUB_RUN_NUMBER))" >> $GITHUB_ENV
-        outputs:
-          value:
-            description: "The version number to use for the package, offset by 211 to avoid conflicts with AppVeyor builds"
-            value: $GITHUB_RUN_NUMBER
+        run: |
+          echo "value=$((211 + $GITHUB_RUN_NUMBER))" >> $GITHUB_OUTPUT
       - name: Pack dotnet projects
         run: |
           dotnet pack TheWheel.Lambda -p:PackageVersion=1.${{ steps.version.outputs.value }}.0 --configuration Release --include-symbols --include-source
