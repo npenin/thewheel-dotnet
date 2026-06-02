@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "8.0"
       - name: install mono
@@ -100,7 +100,7 @@ jobs:
           name: nuget
           path: ${{ env.NuGetDirectory }}
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
       - name: NuGet login (OIDC → temp API key)
         uses: NuGet/login@v1
         id: login
