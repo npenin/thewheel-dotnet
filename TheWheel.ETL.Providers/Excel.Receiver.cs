@@ -40,6 +40,32 @@ namespace TheWheel.ETL.Providers
             if (receiverTransport == null)
                 throw new ArgumentNullException(nameof(options.Transport));
 
+            // Normalize inputs: convert single-provider mode to Sheets array
+            ExcelSheetOptions[] sheetsToProcess = options.Sheets;
+            if (sheetsToProcess == null || sheetsToProcess.Length == 0)
+            {
+                if (provider == null)
+                    throw new ArgumentNullException(nameof(provider), "Either provider parameter or options.Sheets must be specified");
+
+                // Create a single sheet option from legacy parameters
+                sheetsToProcess = new ExcelSheetOptions[]
+                {
+                    new ExcelSheetOptions(options.SpreadsheetName ?? "Sheet 2", provider, options.TableName)
+                };
+            }
+
+            // Use unified multi-provider logic for both single and multiple sheets
+            await ReceiveMultipleProvidersAsync(sheetsToProcess, options, token);
+        }
+
+        /// <summary>
+        /// Unified implementation for receiving data and writing to Excel worksheets.
+        /// Handles both single-provider and multi-provider modes using the same code path.
+        /// Each provider writes to its own sheet in a shared workbook.
+        /// Similar to TreeOptions which supports multiple data matchers for hierarchical data.
+        /// </summary>
+        private async Task ReceiveMultipleProvidersAsync(ExcelSheetOptions[] sheets, ExcelReceiverOptions options, CancellationToken token)
+        {
             using (var stream = await receiverTransport.GetStreamAsync(token))
             using (this.doc = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
             {
@@ -47,72 +73,97 @@ namespace TheWheel.ETL.Providers
                 WorkbookPart workbookPart = doc.AddWorkbookPart();
                 workbookPart.Workbook = new Workbook();
 
-                // Add a WorksheetPart to the WorkbookPart.
-                WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-                var sheetData = new SheetData();
-                worksheetPart.Worksheet = new Worksheet(sheetData);
                 var sharedString = workbookPart.AddNewPart<SharedStringTablePart>();
                 sharedString.SharedStringTable = new SharedStringTable();
                 var sst = 0;
 
-                // Add Sheets to the Workbook.
-                Sheets sheets = workbookPart.Workbook.AppendChild(new Sheets());
+                // Add Sheets container to the Workbook
+                Sheets sheetsCollection = workbookPart.Workbook.AppendChild(new Sheets());
+                var sheetId = 1u;
 
-                // Append a new worksheet and associate it with the workbook.
-                Sheet sheet = new Sheet()
+                // Process each provider/sheet
+                for (int sheetIndex = 0; sheetIndex < sheets.Length; sheetIndex++)
                 {
-                    Id = workbookPart.GetIdOfPart(worksheetPart),
-                    SheetId = 1,
-                    Name = options.SpreadsheetName ?? "Sheet 2"
-                };
-                sheets.Append(sheet);
+                    var sheetOptions = sheets[sheetIndex];
+                    if (sheetOptions.Provider == null)
+                        continue;
 
-                var reader = await provider.ExecuteReaderAsync(token);
-                uint rowIndex = 0;
-                uint maxCols = 0;
-                List<string> headers = new List<string>();
+                    // Create a new WorksheetPart for this provider
+                    WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                    var sheetData = new SheetData();
+                    worksheetPart.Worksheet = new Worksheet(sheetData);
 
-                if (reader.Read())
-                {
-                    var header = new Row() { RowIndex = ++rowIndex };
-                    for (var i = 0; i < reader.FieldCount; i++)
+                    // Get sheet name
+                    string sheetName = sheetOptions.SheetName ?? $"Sheet{sheetId}";
+
+                    // Create and append the sheet reference
+                    Sheet sheet = new Sheet()
                     {
-                        headers.Add(reader.GetName(i));
-                        sharedString.SharedStringTable.AppendChild(new SharedStringItem(new Text(headers[i])));
-                        var cell = new Cell
-                        {
-                            CellReference = $"{GetColumn(i + 1)}{rowIndex}",
-                            DataType = CellValues.SharedString,
-                            CellValue = new CellValue(sst++)
-                        };
-                        header.Append(cell);
-                    }
-                    sheetData.Append(header);
+                        Id = workbookPart.GetIdOfPart(worksheetPart),
+                        SheetId = sheetId,
+                        Name = sheetName
+                    };
+                    sheetsCollection.Append(sheet);
 
-                    do
+                    // Execute the provider and write data to this sheet
+                    var reader = await sheetOptions.Provider.ExecuteReaderAsync(token);
+                    uint rowIndex = 0;
+                    uint maxCols = 0;
+                    List<string> headers = new List<string>();
+
+                    if (reader.Read())
                     {
-                        maxCols = Math.Max(maxCols, (uint)reader.FieldCount);
-                        var row = new Row() { RowIndex = ++rowIndex };
+                        // Write header row
+                        var header = new Row() { RowIndex = ++rowIndex };
                         for (var i = 0; i < reader.FieldCount; i++)
                         {
-                            sharedString.SharedStringTable.AppendChild(new SharedStringItem(new Text(reader[i].ToString())));
+                            string fieldName = reader.GetName(i);
+                            headers.Add(fieldName);
+                            sharedString.SharedStringTable.AppendChild(new SharedStringItem(new Text(fieldName)));
                             var cell = new Cell
                             {
                                 CellReference = $"{GetColumn(i + 1)}{rowIndex}",
                                 DataType = CellValues.SharedString,
                                 CellValue = new CellValue(sst++)
                             };
-                            row.Append(cell);
+                            header.Append(cell);
                         }
-                        sheetData.Append(row);
+                        sheetData.Append(header);
+
+                        // Write data rows
+                        do
+                        {
+                            maxCols = Math.Max(maxCols, (uint)reader.FieldCount);
+                            var row = new Row() { RowIndex = ++rowIndex };
+                            for (var i = 0; i < reader.FieldCount; i++)
+                            {
+                                string cellValue = reader[i]?.ToString() ?? string.Empty;
+                                sharedString.SharedStringTable.AppendChild(new SharedStringItem(new Text(cellValue)));
+                                var cell = new Cell
+                                {
+                                    CellReference = $"{GetColumn(i + 1)}{rowIndex}",
+                                    DataType = CellValues.SharedString,
+                                    CellValue = new CellValue(sst++)
+                                };
+                                row.Append(cell);
+                            }
+                            sheetData.Append(row);
+                        }
+                        while (reader.Read() && !token.IsCancellationRequested);
+
+                        // Define a table for this sheet if requested
+                        if (sheetOptions.TableName != null)
+                            DefineTable(worksheetPart, sheetOptions.TableName, 1, rowIndex, 1, headers);
+
+                        worksheetPart.Worksheet.Save();
                     }
-                    while (reader.Read() && !token.IsCancellationRequested);
-                    if (options.TableName != null)
-                        DefineTable(worksheetPart, options.TableName, 1, rowIndex, 1, headers);
-                    worksheetPart.Worksheet.Save();
-                    sharedString.SharedStringTable.Save();
-                    doc.Save();
+
+                    sheetId++;
                 }
+
+                sharedString.SharedStringTable.Save();
+                if (doc.CanSave)
+                    doc.Save();
             }
         }
         public static Table DefineTable(WorksheetPart worksheetPart, string tableName, int rowMin, uint rowMax, uint colMin, List<string> headers)
@@ -159,20 +210,75 @@ namespace TheWheel.ETL.Providers
 
 
 
+    /// <summary>
+    /// Represents configuration for a single sheet with an associated data provider.
+    /// Inspired by TreeLeaf which represents a single path in hierarchical data structures.
+    /// </summary>
+    public class ExcelSheetOptions
+    {
+        /// <summary>
+        /// Name of the sheet in the Excel workbook
+        /// </summary>
+        public string SheetName { get; set; }
+
+        /// <summary>
+        /// The data provider that supplies data for this sheet
+        /// </summary>
+        public IDataProvider Provider { get; set; }
+
+        /// <summary>
+        /// Optional name for the Excel table/range in this sheet
+        /// </summary>
+        public string TableName { get; set; }
+
+        public ExcelSheetOptions()
+        {
+        }
+
+        public ExcelSheetOptions(string sheetName, IDataProvider provider, string tableName = null)
+        {
+            SheetName = sheetName;
+            Provider = provider;
+            TableName = tableName;
+        }
+    }
+
+    /// <summary>
+    /// Options for Excel receiver supporting multiple providers (one per sheet).
+    /// Similar to TreeOptions which supports multiple data matchers for hierarchical data.
+    /// </summary>
     public class ExcelReceiverOptions : IConfigurableAsync<ITransport<Stream>, ExcelReceiverOptions>, ITransportable<ITransport<Stream>>
     {
+        private ExcelSheetOptions[] sheets;
+
+        /// <summary>
+        /// Legacy property: name for a single spreadsheet
+        /// </summary>
         public string SpreadsheetName { get; set; }
 
         public ITransport<Stream> Transport { get; set; }
+
+        /// <summary>
+        /// Legacy property: table name for single-provider mode
+        /// </summary>
         public string TableName { get; set; }
+
+        /// <summary>
+        /// Sheet options for multi-provider mode.
+        /// When set, ReceiveAsync will write each provider to its own sheet.
+        /// </summary>
+        public ExcelSheetOptions[] Sheets
+        {
+            get => sheets;
+            set => sheets = value;
+        }
 
         public ExcelReceiverOptions()
         {
-
         }
 
         public ExcelReceiverOptions(ExcelReceiverOptions options)
-        : this(options.Transport, options)
+            : this(options.Transport, options)
         {
         }
 
@@ -180,7 +286,38 @@ namespace TheWheel.ETL.Providers
         {
             this.Transport = transport;
             this.SpreadsheetName = other.SpreadsheetName;
+            this.sheets = other.sheets;
+            this.TableName = other.TableName;
         }
+
+        /// <summary>
+        /// Adds a sheet with a provider. Each provider will write to its own sheet.
+        /// Similar to TreeOptions.AddMatch() which adds a new data matcher.
+        /// </summary>
+        public ExcelReceiverOptions AddSheet(string sheetName, IDataProvider provider, string tableName = null)
+        {
+            ExcelSheetOptions newSheet = new ExcelSheetOptions(sheetName, provider, tableName);
+
+            if (sheets == null)
+                sheets = new ExcelSheetOptions[1];
+            else
+            {
+                Array.Resize(ref sheets, sheets.Length + 1);
+            }
+            sheets[sheets.Length - 1] = newSheet;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the sheets for this receiver options.
+        /// </summary>
+        public ExcelReceiverOptions WithSheets(params ExcelSheetOptions[] sheetOptions)
+        {
+            sheets = sheetOptions;
+            return this;
+        }
+
         public Task<ExcelReceiverOptions> Configure(ITransport<Stream> options, CancellationToken token)
         {
             return Task.FromResult(new ExcelReceiverOptions(options, this));
