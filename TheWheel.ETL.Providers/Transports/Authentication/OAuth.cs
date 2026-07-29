@@ -11,9 +11,17 @@ namespace TheWheel.ETL.Providers
 {
     public class OAuth : ITransport<Stream>, ITransport<HttpContent>
     {
+        public OAuth() { }
+
+        public OAuth(string tokenProperty)
+        {
+            this.tokenProperty = tokenProperty;
+        }
+
         private List<KeyValuePair<string, object>> innerParameters;
         private ITransport<Stream> inner;
         private string innerConnectionString;
+        private string tokenProperty;
 
         public void Dispose()
         {
@@ -63,7 +71,11 @@ namespace TheWheel.ETL.Providers
                     var reader = (await new Json().Configure(new TreeOptions { Transport = transport }.AddMatch("json://", "access_token/text()", "expires_in/text()", "refresh_token/text()"), token));
                     if (!reader.Read())
                         throw new InvalidDataException("Unable to get the oauth token");
-                    var accessToken = reader.GetString(0);
+                    string accessToken;
+                    if (string.IsNullOrEmpty(tokenProperty))
+                        accessToken = reader.GetString(0);
+                    else
+                        accessToken = reader.GetString(reader.GetOrdinal(tokenProperty));
                     // var expires_in = reader.GetInt32(0);
                     // var refresh_token = reader.GetString(0);
                     innerParameters.Add(new KeyValuePair<string, object>("_Authorization", "Bearer " + accessToken));
