@@ -137,6 +137,28 @@ namespace TheWheel.ETL.Providers
                             var row = new Row() { RowIndex = ++rowIndex };
                             for (var i = 0; i < reader.FieldCount; i++)
                             {
+                                if (sheetOptions.SharedStringColumns != null && sheetOptions.SharedStringColumns.TryGetValue(headers[i], out var sharedStringColumn) && sharedStringColumn == "true")
+                                {
+                                    string cellValue = reader[i]?.ToString() ?? string.Empty;
+                                    sharedString.SharedStringTable.AppendChild(new SharedStringItem(new Text(cellValue)));
+                                    var cell = new Cell
+                                    {
+                                        CellReference = $"{GetColumn(i + 1)}{rowIndex}",
+                                        DataType = CellValues.SharedString,
+                                        CellValue = new CellValue(sst++)
+                                    };
+                                    row.Append(cell);
+                                }
+                                else
+                                {
+                                    var cell = new Cell
+                                    {
+                                        CellReference = $"{GetColumn(i + 1)}{rowIndex}",
+                                        DataType = CellValues.InlineString,
+                                        CellValue = new CellValue(reader[i]?.ToString() ?? string.Empty)
+                                    };
+                                    row.Append(cell);
+                                }
                                 string cellValue = reader[i]?.ToString() ?? string.Empty;
                                 sharedString.SharedStringTable.AppendChild(new SharedStringItem(new Text(cellValue)));
                                 var cell = new Cell
@@ -231,6 +253,8 @@ namespace TheWheel.ETL.Providers
         /// </summary>
         public string TableName { get; set; }
 
+        public Dictionary<string, string> SharedStringColumns { get; set; }
+
         public ExcelSheetOptions()
         {
         }
@@ -294,9 +318,12 @@ namespace TheWheel.ETL.Providers
         /// Adds a sheet with a provider. Each provider will write to its own sheet.
         /// Similar to TreeOptions.AddMatch() which adds a new data matcher.
         /// </summary>
-        public ExcelReceiverOptions AddSheet(string sheetName, IDataProvider provider, string tableName = null)
+        public ExcelReceiverOptions AddSheet(string sheetName, IDataProvider provider, string tableName = null, Dictionary<string, string> sharedStringColumns = null)
         {
-            ExcelSheetOptions newSheet = new ExcelSheetOptions(sheetName, provider, tableName);
+            ExcelSheetOptions newSheet = new ExcelSheetOptions(sheetName, provider, tableName)
+            {
+                SharedStringColumns = sharedStringColumns
+            };
 
             if (sheets == null)
                 sheets = new ExcelSheetOptions[1];
