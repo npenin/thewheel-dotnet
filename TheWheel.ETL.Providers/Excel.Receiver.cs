@@ -159,15 +159,6 @@ namespace TheWheel.ETL.Providers
                                     };
                                     row.Append(cell);
                                 }
-                                string cellValue = reader[i]?.ToString() ?? string.Empty;
-                                sharedString.SharedStringTable.AppendChild(new SharedStringItem(new Text(cellValue)));
-                                var cell = new Cell
-                                {
-                                    CellReference = $"{GetColumn(i + 1)}{rowIndex}",
-                                    DataType = CellValues.SharedString,
-                                    CellValue = new CellValue(sst++)
-                                };
-                                row.Append(cell);
                             }
                             sheetData.Append(row);
                         }
