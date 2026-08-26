@@ -24,7 +24,7 @@
     <PackageReference Condition="'$(TargetFramework)' == 'net48'" Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Condition="'$(TargetFramework)' != 'net48'" Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.10" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <!-- <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.6.0" /> -->
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
     <PackageReference Include="System.Data.SQlclient" Version="4.8.6" />
